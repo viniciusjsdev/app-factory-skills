@@ -8,12 +8,13 @@ The skill is generic. It is meant to be copied or installed into real projects w
 
 - Preserves existing screens, flows, copy, visual identity, mock behavior and interactions.
 - Keeps the current React/TypeScript/TanStack/Tailwind stack unless explicitly told otherwise.
+- Treats PrimeReact/JavaScript/CRA-style rewrites as stack migrations, not normal normalization.
 - Moves large route/page/component files toward feature-based architecture.
 - Keeps routes thin and screen composition inside feature pages.
 - Separates UI components, hooks, services, mocks, DTOs and shared primitives.
 - Isolates mock data behind service boundaries so a real backend can be added later.
 - Checks mobile-first behavior instead of treating desktop as the default.
-- Requires format, lint, build, architecture scan and dev-server validation when possible.
+- Requires format, lint, build, architecture scan and dev-server validation when possible, without changing package managers implicitly.
 
 ## Repository Layout
 
@@ -94,6 +95,8 @@ npm run dev
 
 The package manager should come from the lockfile. Codex must not claim the project runs locally unless the dev server was actually started and checked for immediate startup errors.
 
+If the lockfile package manager is unavailable, Codex should report the mismatch instead of switching package managers, creating new lockfiles or manually repairing `node_modules`.
+
 ## Design Principles
 
 Preserve first. Normalize second.
@@ -101,4 +104,3 @@ Preserve first. Normalize second.
 Lovable is allowed to create rich UI quickly. This skill exists to keep that product work intact while improving the code underneath it: thinner routes, clearer feature boundaries, isolated mocks, better hooks/services, documented API contracts and mobile-first behavior.
 
 The output should feel like the same product with a more professional frontend architecture, not a simpler replacement.
-

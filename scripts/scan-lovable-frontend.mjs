@@ -74,9 +74,17 @@ function hasLargeJsx(content) {
   return (content.match(/<([A-Z][A-Za-z0-9]*|[a-z][a-z0-9-]*)[\s>]/g) || []).length >= 40;
 }
 
+function hasJsxElement(content) {
+  return /<([A-Z][A-Za-z0-9]*|[a-z][a-z0-9-]*)(?:>|\/>|\s+[A-Za-z_:][-A-Za-z0-9_:.]*(?:=|\s|>|\/>))/.test(content);
+}
+
 function hasNestedComponentDefinitions(content) {
   const matches = content.match(/(?:function|const)\s+[A-Z][A-Za-z0-9]*\s*(?:=|\()/g) || [];
   return matches.length > 3;
+}
+
+function isGeneratedUiPrimitive(relative) {
+  return relative.startsWith("src/components/ui/");
 }
 
 function analyzePackage() {
@@ -144,8 +152,9 @@ function analyzeFiles() {
     const isService = /\/services?\//.test(relative);
     const isHook = /\/hooks?\//.test(relative) || /use[A-Z].*\.(t|j)sx?$/.test(relative);
     const isMock = relative.startsWith("src/mocks/") || /\/mocks?\//.test(relative);
+    const isGeneratedUi = isGeneratedUiPrimitive(relative);
 
-    if (lines > 250 && isComponentish) {
+    if (lines > 250 && isComponentish && !isGeneratedUi) {
       warnings.push(`${relative}: ${lines} lines. Consider splitting responsibilities while preserving rendered UI.`);
     }
 
@@ -165,11 +174,11 @@ function analyzeFiles() {
       warnings.push(`${relative}: UI appears to call an API directly. Move data access into services/hooks.`);
     }
 
-    if (isHook && /<[^>]+>/.test(content)) {
+    if (isHook && hasJsxElement(content)) {
       warnings.push(`${relative}: hook-like file contains JSX. Hooks should orchestrate state, not render UI.`);
     }
 
-    if (isComponentish && hasLargeJsx(content) && hasNestedComponentDefinitions(content)) {
+    if (isComponentish && !isGeneratedUi && hasLargeJsx(content) && hasNestedComponentDefinitions(content)) {
       warnings.push(`${relative}: large JSX with multiple component definitions. Consider extracting focused components.`);
     }
   }
@@ -196,4 +205,3 @@ function printResults() {
 analyzePackage();
 analyzeFiles();
 printResults();
-

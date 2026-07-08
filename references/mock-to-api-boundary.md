@@ -97,16 +97,20 @@ Do not silently trigger actions.
 
 ## API Documentation
 
-When preparing backend boundaries, document per feature when useful:
+When preparing backend boundaries, document per feature. Prefer a compact table over generic prose.
 
+Minimum columns:
+
+- feature/screen
 - data needed by the screen
 - current mock source
-- future endpoint
+- future endpoint or service method
 - request shape
-- response shape
+- response shape or frontend DTO
 - loading behavior
 - error behavior
-- relevant frontend DTOs
+- empty-state behavior
 
 Do not couple components to backend models. Use frontend DTOs and mapping services.
 
+Avoid vague API docs that only list possible future integrations. The document should tell the backend implementer what the frontend currently needs.

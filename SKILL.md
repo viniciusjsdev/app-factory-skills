@@ -33,19 +33,21 @@ Run `scripts/scan-lovable-frontend.mjs` from the consuming project when the scri
 
 1. Inspect `package.json`, lockfiles, `src/routes`, `src/components`, `src/pages`, `src/features`, `src/mocks` and shared UI folders.
 2. Detect the package manager from the lockfile and preserve the current React/TypeScript/TanStack/Tailwind stack unless the user asks for a change.
-3. Identify overloaded route files, large page/component files, direct mock imports, direct API calls in UI, large shell/layout files and scattered generated data.
-4. Create a concise refactor plan that states what will be moved and what UI/UX will be preserved.
-5. Keep route files thin: route declaration, metadata, params/search validation and rendering a feature page.
-6. Move screen composition into feature pages when needed.
-7. Move reusable screen sections into feature components.
-8. Move state orchestration, derived data and side effects into hooks.
-9. Move data access, DTO mapping and mock/real switching into services.
-10. Isolate mocks behind services or feature data boundaries.
-11. Preserve visual identity, copy, flows, interactions, navigation, cards, forms, charts, dialogs, drawers, animations, toasts, loading states, empty states and existing demo behavior.
-12. Keep mobile-first behavior working at 360px width unless the product explicitly targets desktop only.
-13. Update architecture/API documentation when the refactor creates or clarifies boundaries.
-14. Run format, lint, build, architecture scan and local dev-server validation when possible.
-15. Report exactly what was changed, what was preserved and which validations passed or failed.
+3. If the detected package manager is unavailable, do not switch managers repeatedly or repair `node_modules` manually. Report the blocked validation and continue only with checks that can run safely.
+4. Identify overloaded route files, large page/component files, direct mock imports, direct API calls in UI, large shell/layout files and scattered generated data.
+5. Create a concise refactor plan that states what will be moved and what UI/UX will be preserved.
+6. Keep route files thin: route declaration, metadata, params/search validation and rendering a feature page.
+7. Move screen composition into feature pages when needed.
+8. Move reusable screen sections into feature components.
+9. Move state orchestration, derived data and side effects into hooks.
+10. Move data access, DTO mapping and mock/real switching into services.
+11. Isolate mocks behind services or feature data boundaries.
+12. Preserve visual identity, copy, flows, interactions, navigation, cards, forms, charts, dialogs, drawers, animations, toasts, loading states, empty states and existing demo behavior.
+13. Remove generated platform metadata only when it is not required for build/runtime and the project convention allows it.
+14. Keep mobile-first behavior working at 360px width unless the product explicitly targets desktop only.
+15. Update architecture/API documentation when the refactor creates or clarifies boundaries.
+16. Run format, lint, build, architecture scan and local dev-server validation when possible.
+17. Report exactly what was changed, what was preserved and which validations passed or failed.
 
 ## Architecture Target
 
@@ -108,6 +110,14 @@ Preserve:
 
 Do not replace rich generated UI with generic placeholders. Do not remove screens because they look duplicated. Do not remove mock data because there is no backend yet. If a component is too large, split it while preserving the rendered output.
 
+## Stack Migration
+
+Normalizing is not stack migration.
+
+Do not convert TypeScript to JavaScript, TanStack Router to React Router, Vite/TanStack Start to CRA/CRACO, Tailwind/shadcn/Radix to PrimeReact/SCSS, or Lucide to another icon library unless the user explicitly asks for a stack migration.
+
+If the user asks to align with another repository stack, explain that this is a separate migration. Preserve UI/UX only with explicit visual comparison, because changing the stack can alter rendering, routing, SSR/hydration behavior, styling and component semantics.
+
 ## Boundaries
 
 Use this direction:
@@ -142,7 +152,7 @@ npm run dev
 
 Adapt the script path if the skill is installed elsewhere, such as `node ~/.codex/skills/lovable-frontend-normalizer/scripts/scan-lovable-frontend.mjs`.
 
-Do not claim the project runs locally unless the dev server was actually started and checked for immediate startup errors. If validation is blocked by missing environment variables, unavailable ports, missing commands or environment limitations, say that clearly and report the closest completed validation.
+Do not claim the project runs locally unless the dev server was actually started and checked for immediate startup errors. If validation is blocked by missing environment variables, unavailable ports, missing commands, unavailable package manager, incomplete dependencies or environment limitations, say that clearly and report the closest completed validation.
 
 ## Definition of Done
 
@@ -157,4 +167,3 @@ Finish only after these are true or explicitly reported as blocked:
 - mobile-first behavior is preserved
 - docs are updated where architecture or API boundaries changed
 - format, lint, build, architecture scan and local dev-server validation were attempted
-

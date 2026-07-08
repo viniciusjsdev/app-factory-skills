@@ -27,6 +27,21 @@ npm run dev
 
 Adapt commands to the detected package manager and to the installed skill path.
 
+## Package Manager Mismatch
+
+When the lockfile points to a package manager that is not installed, stop before changing dependency state.
+
+Rules:
+
+- `bun.lock` or `bun.lockb` means use Bun. If Bun is missing, report that validation is blocked by unavailable Bun.
+- `pnpm-lock.yaml` means use pnpm. If pnpm is missing, report that validation is blocked by unavailable pnpm.
+- `yarn.lock` means use yarn. If yarn is missing, report that validation is blocked by unavailable yarn.
+- Do not fall back to `npm install` for a Bun, pnpm or yarn project unless the user explicitly approves changing package manager behavior.
+- Do not create new lockfiles as a side effect of validation.
+- Do not repair `node_modules` by manually unpacking packages or editing dependency folders.
+
+If dependencies are already installed, direct local binary execution is acceptable for diagnosis, for example `node node_modules/vite/bin/vite.js build`, but only if the dependency tree is complete enough to run.
+
 ## Dev Server Validation
 
 The agent must:
@@ -49,8 +64,8 @@ If local running is impossible, report why:
 - unavailable port
 - unsupported environment
 - package manager issue
+- incomplete `node_modules`
 - command missing
 - tool limitation
 
 Also report the closest completed validation.
-

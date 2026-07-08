@@ -3,6 +3,7 @@
 Before finishing, check:
 
 - [ ] package manager detected
+- [ ] detected package manager available or mismatch reported
 - [ ] dependencies installed or already available
 - [ ] format executed
 - [ ] lint executed
@@ -26,9 +27,10 @@ Classify failures as:
 - pre-existing issue
 - introduced by refactor
 - missing dependency
+- incomplete dependency installation
+- package manager unavailable
 - missing environment variable
 - unsupported environment
 - command not available
 
 Fix introduced failures before finishing.
-
