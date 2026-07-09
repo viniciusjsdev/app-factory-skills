@@ -17,6 +17,10 @@ Document each endpoint with:
 - path
 - method
 - auth requirement
+- permission rule
+- rate limit expectation
+- sensitive data returned, if any
+- masking/encryption/omission rule for sensitive fields
 - request body
 - query params
 - response body
@@ -24,6 +28,17 @@ Document each endpoint with:
 - error shape
 - frontend consumer
 - related service/selector
+
+## Security Fields
+
+For every endpoint, explicitly document:
+
+- public, authenticated, role-based or object-level permission
+- anonymous and authenticated rate limit expectations when relevant
+- whether IP-based throttling is required
+- whether logout invalidates sessions, tokens or refresh tokens for this endpoint's auth mode
+- fields that must never be returned to the frontend
+- sensitive fields that may be returned only masked, encrypted or scoped to the current actor
 
 ## Frontend Compatibility
 
@@ -33,6 +48,7 @@ When replacing mock frontend services:
 - avoid frontend behavior changes unless documented
 - map backend model fields to frontend response fields
 - include loading and error expectations
+- avoid adding sensitive fields to responses only because mocks contained them
 
 ## Example
 
@@ -51,4 +67,3 @@ Response `201`:
 {"id":"uuid","name":"New MVP","description":"Prototype"}
 ```
 ```
-

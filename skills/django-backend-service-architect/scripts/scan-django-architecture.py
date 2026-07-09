@@ -80,8 +80,46 @@ def check_api_contract() -> None:
         ROOT / "docs" / "api-contract.md",
         BACKEND / "docs" / "api-contract.md",
     ]
-    if not any(path.exists() for path in candidates):
+    existing = [path for path in candidates if path.exists()]
+    if not existing:
         WARNINGS.append("Missing API contract documentation.")
+        return
+
+    contract = "\n".join(path.read_text(encoding="utf-8", errors="ignore").lower() for path in existing)
+    if "auth" not in contract and "permission" not in contract:
+        WARNINGS.append("API contract does not mention auth/permission requirements.")
+    if "rate limit" not in contract and "throttle" not in contract:
+        WARNINGS.append("API contract does not mention rate limit/throttling expectations.")
+    if "sensitive" not in contract and "mask" not in contract and "encrypt" not in contract:
+        WARNINGS.append("API contract does not mention sensitive data handling.")
+
+
+def check_security_configuration(files: list[Path]) -> None:
+    text_by_file = {
+        rel(path): path.read_text(encoding="utf-8", errors="ignore").lower()
+        for path in files
+    }
+    combined = "\n".join(text_by_file.values())
+
+    settings_files = {
+        name: text
+        for name, text in text_by_file.items()
+        if "settings" in name or name.endswith("base.py") or name.endswith("local.py") or name.endswith("production.py")
+    }
+    settings_text = "\n".join(settings_files.values())
+
+    if "cors" not in settings_text and "corsheaders" not in settings_text:
+        WARNINGS.append("Backend settings do not mention CORS configuration.")
+    if "throttle" not in combined and "ratelimit" not in combined and "rate_limit" not in combined:
+        WARNINGS.append("Backend code does not mention rate limiting/throttling.")
+    if "logout" in combined and not any(term in combined for term in ("blacklist", "denylist", "session.flush", "token")):
+        WARNINGS.append("Logout is referenced but token/session invalidation is not obvious.")
+
+    for name, text in settings_files.items():
+        if "cors_allow_all_origins = true" in text or "cors_origin_allow_all = true" in text:
+            WARNINGS.append(f"{name}: CORS appears to allow all origins; keep this local-only.")
+        if "debug = true" in text and "production" in name:
+            WARNINGS.append(f"{name}: production settings appear to enable DEBUG.")
 
 
 def check_apps(files: list[Path]) -> None:
@@ -129,6 +167,7 @@ def main() -> int:
     check_api_contract()
     check_apps(files)
     check_file_patterns(files)
+    check_security_configuration(files)
 
     for warning in WARNINGS:
         print(f"warning: {warning}")
@@ -147,4 +186,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

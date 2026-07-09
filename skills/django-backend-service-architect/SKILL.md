@@ -32,6 +32,49 @@ docs/architecture/frontend-architecture.md
 
 Inspect the frontend when necessary to understand routes, user flows, entities, mock data and service calls.
 
+## Mandatory Preflight Gate
+
+This skill is generic and may be used by another AI agent in any project. Before creating, editing or deleting backend files, the agent must verify that the project has enough product and integration context.
+
+Minimum required context:
+
+- a PRD, product brief, domain notes or equivalent product description
+- an API contract, frontend service calls/mocks, or enough normalized frontend code to infer required endpoints
+- clear entities and user flows
+- known authentication/authorization expectations, even if the decision is "public MVP for now"
+- known sensitive data expectations, even if the decision is "no sensitive data in this MVP"
+
+Search common locations, including:
+
+```txt
+docs/product/prd.md
+docs/product/domain.md
+docs/product/screens.md
+docs/product/user-flows.md
+docs/architecture/api-contract.md
+docs/architecture/frontend-architecture.md
+docs/prd.md
+specs/
+README.md
+frontend/src/services/
+frontend/src/mocks/
+```
+
+If the minimum context is not available, do not create or modify backend code. Stop and tell the user which requirements are missing and what files or decisions are needed before this skill can safely continue.
+
+Allowed output when preflight fails:
+
+- a concise missing-requirements report
+- a suggested list of files or decisions the user should provide
+- optionally, a proposed API contract outline only if the user explicitly asks for planning instead of implementation
+
+Not allowed when preflight fails:
+
+- creating a Django project
+- creating models, migrations, services, serializers or views
+- inventing domain entities from guesses
+- inventing auth, permission or sensitive-data rules silently
+
 ## Load References
 
 Read the relevant references before changing code:
@@ -41,6 +84,7 @@ Read the relevant references before changing code:
 - `references/service-layer-rules.md` before implementing business actions.
 - `references/dto-serializer-rules.md` before creating DTOs or serializers.
 - `references/api-contract-rules.md` before implementing endpoints.
+- `references/security-rules.md` before implementing authentication, authorization, sensitive data, CORS, rate limiting or logout behavior.
 - `references/testing-rules.md` before writing or updating tests.
 - `references/validation-checklist.md` before finishing.
 
@@ -297,6 +341,29 @@ Default for early MVP:
 - support token/JWT integration later
 - if Supabase Auth is used, prepare backend JWT validation boundaries but do not hardcode secrets
 
+## Security Baseline
+
+Security requirements must come from the PRD/specs/API contract when available. If the product handles sensitive data, accounts, payments, personal information, private business records or authenticated sessions, document the security assumptions before implementation.
+
+Every endpoint in the API contract must declare:
+
+- authentication requirement
+- permission rule
+- rate limit expectation when applicable
+- whether the response contains sensitive data
+- whether sensitive returned fields are masked, encrypted, omitted or only returned to authorized actors
+
+Implement or document:
+
+- request rate limiting/throttling, considering client IP and authenticated user when available
+- CORS configuration for allowed frontend origins, permissive only in local development
+- logout/token invalidation strategy for session auth, JWT denylist or Supabase/Auth-provider integration
+- object-level permission checks for user-owned, account-owned or tenant-owned data
+- server-side validation that `user_id`, `account_id`, `tenant_id` or owner fields belong to the current actor
+- no plaintext secrets, tokens or sensitive values in logs or API responses
+- encryption or masking strategy for sensitive data that must be returned to the frontend
+- safe error responses that do not expose stack traces or internal implementation details
+
 ## Database
 
 Use PostgreSQL.
@@ -385,4 +452,3 @@ Work is done only when:
 - Docker compatibility is preserved
 - tests are created or updated
 - validation commands were run or limitations were reported
-
