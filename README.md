@@ -1,6 +1,6 @@
 # App Factory Skills
 
-Codex skills for turning a rough idea into a Lovable-generated MVP, then into a normalized frontend, Django backend and deploy-ready infrastructure.
+Codex skills for turning a rough idea into a Lovable-generated MVP, then into a normalized frontend, planned Django backend and deploy-ready infrastructure.
 
 Build faster. Keep the handoffs explicit. Do not let the agent guess the project into existence.
 
@@ -19,7 +19,7 @@ App Factory Skills is a small skill catalog for MVP and prototype projects. It i
 2. Codex creates a strong Lovable prompt.
 3. The user pastes that prompt into Lovable.
 4. Lovable generates the frontend.
-5. Codex normalizes the frontend, creates the backend, then prepares infrastructure.
+5. Codex normalizes the frontend, creates backend specs, builds the backend after review, then prepares infrastructure.
 
 The key rule: every stage consumes explicit artifacts from the previous one. If the required context is missing, the skill should stop and tell the user what is missing instead of inventing the project.
 
@@ -31,6 +31,7 @@ Idea or PRD
   -> user pastes prompt into Lovable
   -> Lovable generates frontend code
   -> lovable-frontend-normalizer
+  -> backend planning specs
   -> django-backend-service-architect
   -> app-factory-infra-orchestrator
   -> MVP ready for technical validation
@@ -41,8 +42,9 @@ Idea or PRD
 | 1. Pre-production | PRD, notes or rough idea | `lovable-prompt-architect` | Lovable-ready prompt |
 | 2. Front generation | Prompt | Lovable | Generated frontend code |
 | 3. Front normalization | Lovable frontend | `lovable-frontend-normalizer` | Clean frontend, mocks behind services, API contract |
-| 4. Backend | Product/frontend/API contracts | `django-backend-service-architect` | Django backend with service architecture |
-| 5. Infrastructure | Frontend/backend project shape | `app-factory-infra-orchestrator` | Docker, Supabase, Vercel and deploy docs |
+| 4. Backend specs | Product/frontend/API contracts | `django-backend-service-architect` | Backend plan, domain model, API/security contracts and validation plan |
+| 5. Backend implementation | Accepted backend specs | `django-backend-service-architect` | Django backend with service architecture |
+| 6. Infrastructure | Frontend/backend project shape | `app-factory-infra-orchestrator` | Docker, Supabase, Vercel, Render/VPS and deploy docs |
 
 ## Install
 
@@ -72,8 +74,8 @@ Use $lovable-frontend-normalizer to normalize this Lovable frontend. Preserve al
 |---|---|---|
 | `lovable-prompt-architect` | You have an app idea, PRD or rough product brief and need a Lovable prompt. | Does not edit code. |
 | `lovable-frontend-normalizer` | You have Lovable-generated frontend code. | Does not remove screens, flows, copy, mocks or visual identity unless asked. |
-| `django-backend-service-architect` | You have enough product/frontend/API context to build a Django backend. | Does not create backend code when preflight context is missing. |
-| `app-factory-infra-orchestrator` | You have frontend/backend structure and need Docker, Supabase, Vercel or VPS support. | Does not pretend there is only one production path. |
+| `django-backend-service-architect` | You have enough product/frontend/API context to plan and build a Django backend. | Does not create backend code before backend specs exist and decisions are summarized. |
+| `app-factory-infra-orchestrator` | You have frontend/backend structure and need Docker, Supabase, Vercel, Render or VPS support. | Does not pretend there is only one production path. |
 
 ## Usage
 
@@ -92,13 +94,19 @@ Use $lovable-frontend-normalizer to normalize this Lovable frontend. Preserve al
 After frontend normalization creates API contracts:
 
 ```txt
-Use $django-backend-service-architect to build the Django backend for this App Factory project.
+Use $django-backend-service-architect to create the backend specs for this App Factory project.
+```
+
+After reviewing/accepting the backend specs:
+
+```txt
+Use $django-backend-service-architect to implement the Django backend from the accepted specs.
 ```
 
 After frontend and backend structure exist:
 
 ```txt
-Use $app-factory-infra-orchestrator to create Docker, Supabase and Vercel infrastructure for this App Factory project.
+Use $app-factory-infra-orchestrator to create Docker, Supabase, Vercel and Render-ready infrastructure for this App Factory project.
 ```
 
 ## Safety Gates
@@ -109,10 +117,11 @@ These skills are intentionally conservative. They are meant to be used by AI age
 |---|---|
 | Lovable prompt | Produces prompt only. The user still generates the frontend in Lovable. |
 | Frontend | Preserve UI/UX, routes, copy, mocks and interactions unless explicitly requested. |
-| Backend | Do not create Django files unless PRD/product context, API/frontend context, entities, flows, auth and sensitive-data expectations are known. |
+| Backend | Create backend specs first. Do not create Django implementation files unless preflight passed, specs exist and decisions were summarized. |
 | Security | Backend API contracts must include auth, permissions, rate limits, sensitive data rules and logout/session invalidation when relevant. |
 | Infrastructure | Do not hardcode secrets. Do not claim local or production readiness unless validation was attempted. |
 | Supabase | Document schema ownership, RLS, SSL, network restrictions, MFA, indexes/performance and backups/PITR when relevant. |
+| Render | Treat Render as an optional Django backend host. Document native Python vs Docker, env vars, migrations, static files and CORS. |
 
 ## What The Backend Skill Enforces
 
@@ -126,6 +135,8 @@ HTTP -> View/Controller -> Selector -> Model
 It requires:
 
 - PRD/spec/frontend context before code generation
+- backend planning specs before implementation
+- decision summary to the user before implementation
 - API contract before endpoints
 - environment-driven settings
 - CORS by environment
@@ -134,6 +145,39 @@ It requires:
 - logout/session/token invalidation strategy
 - sensitive data masking, omission or encryption rules when data reaches the frontend
 - tests for services, selectors, API paths and permission behavior
+
+Required backend specs in target projects:
+
+```txt
+docs/architecture/backend-plan.md
+docs/architecture/domain-model.md
+docs/architecture/api-contract.md
+docs/architecture/security-contract.md
+docs/architecture/backend-validation-plan.md
+```
+
+## Infrastructure Targets
+
+The infra skill supports multiple deployment modes without forcing one production path.
+
+| Component | Default direction | Alternatives |
+|---|---|---|
+| Frontend | Vercel from `frontend/` | Static container or another frontend host |
+| Backend | Django container or Render web service | Railway, Fly.io, VPS, compatible container host |
+| Database/Auth/Storage | Supabase when configured | Render Postgres or another Postgres provider when explicitly chosen |
+| Local development | Docker Compose | Supabase CLI local stack when Supabase-specific services are needed |
+
+Render support covers:
+
+- native Python web service
+- Docker web service from `backend/Dockerfile.prod`
+- optional `render.yaml` Blueprint
+- build/start/pre-deploy commands
+- migrations
+- `DATABASE_URL`, `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=False`, `DJANGO_ALLOWED_HOSTS`
+- static files via WhiteNoise or equivalent
+- CORS from Vercel preview/production domains
+- secrets with `sync: false`, `generateValue: true`, env groups or dashboard-managed values
 
 ## Repository Layout
 
@@ -168,8 +212,8 @@ app-factory-skills/
 | [`docs/skill-sequence.md`](./docs/skill-sequence.md) | Which skill runs at each stage. |
 | [`docs/stack-standard.md`](./docs/stack-standard.md) | Preferred frontend, backend and infra stack. |
 | [`specs/factory-handoff-contracts.md`](./specs/factory-handoff-contracts.md) | Contracts between each stage. |
-| [`specs/django-backend-contract.md`](./specs/django-backend-contract.md) | Backend input/output and security expectations. |
-| [`specs/infra-orchestration-contract.md`](./specs/infra-orchestration-contract.md) | Infrastructure input/output expectations. |
+| [`specs/django-backend-contract.md`](./specs/django-backend-contract.md) | Backend input/output, planning specs and security expectations. |
+| [`specs/infra-orchestration-contract.md`](./specs/infra-orchestration-contract.md) | Infrastructure input/output, Vercel, Supabase and Render expectations. |
 
 ## Validation
 
