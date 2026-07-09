@@ -28,6 +28,37 @@ Minimum context:
 
 If these requirements are not met, the agent must stop and tell the user what is missing. It may produce a missing-requirements report, but it must not create Django files, models, migrations, services, serializers or views.
 
+## Planning Specs Before Implementation
+
+Before creating or changing Django implementation files, the backend stage must create or update backend planning specs in the target project.
+
+Required spec files:
+
+- `docs/architecture/backend-plan.md`
+- `docs/architecture/domain-model.md`
+- `docs/architecture/api-contract.md`
+- `docs/architecture/security-contract.md`
+- `docs/architecture/backend-validation-plan.md`
+
+The specs must cover:
+
+- product assumptions used
+- entities and relationships
+- ownership model
+- user roles and permissions
+- API endpoints and DTOs
+- services/actions
+- selectors/read models
+- auth mode
+- rate limits and IP throttling
+- CORS requirements
+- sensitive data handling
+- logout/session/token invalidation
+- database migration ownership
+- tests and validation commands
+
+After writing specs, the AI agent must summarize backend decisions to the user before proceeding with implementation. If the user only asked for planning, stop after the specs and summary. If the available context is insufficient to create safe specs, stop and report what is missing.
+
 ## Output
 
 The backend stage should produce:
@@ -44,6 +75,7 @@ The backend stage should produce:
 - API views/controllers
 - tests
 - updated API contract
+- backend planning specs
 - validation report
 
 ## Security Contract

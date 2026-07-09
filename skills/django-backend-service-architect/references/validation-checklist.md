@@ -3,6 +3,8 @@
 Before finishing, check:
 
 - [ ] mandatory preflight gate passed before backend files were changed
+- [ ] backend planning specs created or updated before implementation
+- [ ] backend decisions summarized to the user before implementation
 - [ ] product and architecture docs read
 - [ ] frontend mock services inspected when relevant
 - [ ] backend structure exists

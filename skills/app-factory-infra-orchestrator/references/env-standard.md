@@ -30,6 +30,17 @@ SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
 
+`SUPABASE_SERVICE_ROLE_KEY` is server-side only. Do not include it in `frontend/.env.example`, Vercel frontend environment variables or client-side code.
+
+If the frontend talks directly to Supabase, use frontend-safe names such as:
+
+```env
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+```
+
+Only expose the anon key when RLS and policies are designed for client access.
+
 Never commit real secrets.
 
 Examples must use placeholders such as `change-me`, `example`, or empty values.
@@ -41,3 +52,15 @@ Secrets that must stay server-side:
 - `SUPABASE_SERVICE_ROLE_KEY`
 - provider API keys
 
+Vercel Development, Preview and Production environments should be documented separately. Pulling Vercel env vars locally can create `.env` files; these must remain ignored when they contain real values.
+
+Render backend environments should document required service variables separately from frontend variables:
+
+- `DATABASE_URL`
+- `DJANGO_SECRET_KEY`
+- `DJANGO_DEBUG=False`
+- `DJANGO_ALLOWED_HOSTS`
+- `CORS_ALLOWED_ORIGINS`
+- provider API keys used only by the backend
+
+When using `render.yaml`, secrets should use `sync: false`, `generateValue: true`, environment groups or dashboard-managed values instead of committed values.

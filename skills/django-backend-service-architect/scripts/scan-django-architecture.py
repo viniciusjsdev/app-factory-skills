@@ -94,6 +94,19 @@ def check_api_contract() -> None:
         WARNINGS.append("API contract does not mention sensitive data handling.")
 
 
+def check_backend_planning_specs() -> None:
+    required_specs = [
+        ROOT / "docs" / "architecture" / "backend-plan.md",
+        ROOT / "docs" / "architecture" / "domain-model.md",
+        ROOT / "docs" / "architecture" / "api-contract.md",
+        ROOT / "docs" / "architecture" / "security-contract.md",
+        ROOT / "docs" / "architecture" / "backend-validation-plan.md",
+    ]
+    for path in required_specs:
+        if not path.exists():
+            WARNINGS.append(f"Missing backend planning spec: {path.relative_to(ROOT).as_posix()}.")
+
+
 def check_security_configuration(files: list[Path]) -> None:
     text_by_file = {
         rel(path): path.read_text(encoding="utf-8", errors="ignore").lower()
@@ -164,6 +177,7 @@ def main() -> int:
         ERRORS.append("Backend directory does not exist.")
     files = iter_py_files(BACKEND) if BACKEND.exists() else []
     check_env_example()
+    check_backend_planning_specs()
     check_api_contract()
     check_apps(files)
     check_file_patterns(files)

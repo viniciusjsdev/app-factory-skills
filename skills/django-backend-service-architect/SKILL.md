@@ -75,11 +75,59 @@ Not allowed when preflight fails:
 - inventing domain entities from guesses
 - inventing auth, permission or sensitive-data rules silently
 
+## Mandatory Planning Specs
+
+After preflight passes and before creating or changing Django implementation files, create or update backend planning specs inside the target project.
+
+Required spec files:
+
+```txt
+docs/architecture/backend-plan.md
+docs/architecture/domain-model.md
+docs/architecture/api-contract.md
+docs/architecture/security-contract.md
+docs/architecture/backend-validation-plan.md
+```
+
+If the project already uses equivalent paths, preserve them and document the path mapping in `docs/architecture/backend-plan.md`.
+
+The specs must define:
+
+- product assumptions used from PRD/spec/frontend
+- domain entities, relationships and ownership boundaries
+- user roles, permissions and auth mode
+- sensitive data and masking/encryption/omission rules
+- API endpoints, methods, request/response DTOs, status codes and error shapes
+- frontend consumers for each endpoint
+- services/actions to implement
+- selectors/read models to implement
+- rate limit and IP throttling expectations
+- CORS requirements by environment
+- logout/session/token invalidation strategy
+- database ownership decision, including Django migrations vs Supabase migrations when relevant
+- tests required before the backend can be considered complete
+- validation commands to run
+
+After writing or updating the planning specs, summarize the backend decisions to the user before implementation. The summary must include:
+
+- entities and ownership model
+- endpoint groups
+- auth/permission model
+- sensitive data handling
+- rate limit/CORS/logout decisions
+- implementation plan and expected tests
+- open assumptions or missing decisions
+
+Do not proceed from planning specs to Django implementation in the same response unless the user explicitly asked for implementation after reviewing or accepting the backend specs. If the user requested "plan only", stop after the specs and summary.
+
+If specs cannot be created safely from the available context, stop and report what is missing instead of writing backend code.
+
 ## Load References
 
 Read the relevant references before changing code:
 
 - `references/backend-architecture-standard.md` before creating or restructuring the backend.
+- `references/backend-planning-specs.md` before creating backend planning specs or implementation files.
 - `references/django-app-template.md` before adding Django apps.
 - `references/service-layer-rules.md` before implementing business actions.
 - `references/dto-serializer-rules.md` before creating DTOs or serializers.
@@ -301,13 +349,14 @@ Views must stay thin.
 
 Before implementing endpoints:
 
-1. Read `docs/architecture/api-contract.md`.
-2. Compare it with frontend service calls.
-3. If missing, update the contract before coding.
-4. Define endpoint path, method, request body, response body, status codes and errors.
-5. Implement serializer/service/selector/view.
-6. Add tests.
-7. Update docs.
+1. Read product docs, frontend services/mocks and existing architecture docs.
+2. Run the mandatory preflight gate.
+3. Create or update the mandatory planning specs.
+4. Summarize backend decisions to the user.
+5. Proceed to implementation only after the user has accepted implementation or already explicitly requested implementation after specs.
+6. Implement serializer/service/selector/view according to the specs.
+7. Add tests.
+8. Update docs if implementation changes the plan.
 
 ## Frontend Compatibility
 
@@ -440,6 +489,9 @@ The script is conservative. Warnings are acceptable; clear violations should fai
 
 Work is done only when:
 
+- mandatory preflight passed
+- backend planning specs were created or updated before implementation
+- backend decisions were summarized to the user before implementation
 - backend structure exists
 - domain apps follow the service architecture
 - models are clean

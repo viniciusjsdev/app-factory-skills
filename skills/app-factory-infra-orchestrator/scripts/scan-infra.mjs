@@ -52,6 +52,10 @@ function checkEnvExamples() {
       errors.push(`${file}: contains a value that looks like a real secret.`);
     }
   }
+
+  if (exists("frontend/.env.example") && /SUPABASE_SERVICE_ROLE_KEY/i.test(read("frontend/.env.example"))) {
+    errors.push("frontend/.env.example: SUPABASE_SERVICE_ROLE_KEY must stay server-side only.");
+  }
 }
 
 function checkDocker() {
@@ -89,6 +93,43 @@ function checkVercel() {
   if (!deployDocs.includes("vercel")) {
     warnings.push("Vercel guidance missing for frontend deployment.");
   }
+  if (deployDocs.includes("vercel") && !deployDocs.includes("preview")) {
+    warnings.push("Vercel guidance should document Preview environment behavior.");
+  }
+  if (deployDocs.includes("vercel") && !deployDocs.includes("production")) {
+    warnings.push("Vercel guidance should document Production environment behavior.");
+  }
+  if (deployDocs.includes("vercel") && !deployDocs.includes("root directory") && !deployDocs.includes("frontend")) {
+    warnings.push("Vercel monorepo guidance should document the frontend root directory.");
+  }
+}
+
+function checkRender() {
+  const renderText = `${read("render.yaml")}\n${read("docs/architecture/deploy.md")}\n${read("docs/architecture/infra-architecture.md")}\n${read("README.md")}`.toLowerCase();
+  const mentionsRender = renderText.includes("render") || exists("render.yaml");
+  if (!mentionsRender) return;
+
+  if (!renderText.includes("build")) {
+    warnings.push("Render guidance should document the backend build command.");
+  }
+  if (!renderText.includes("start") && !renderText.includes("gunicorn")) {
+    warnings.push("Render guidance should document the backend start command.");
+  }
+  if (!renderText.includes("database_url")) {
+    warnings.push("Render guidance should document DATABASE_URL.");
+  }
+  if (!renderText.includes("cors")) {
+    warnings.push("Render guidance should document CORS from frontend domains to backend.");
+  }
+  if (exists("render.yaml")) {
+    const blueprint = read("render.yaml");
+    if (hasObviousSecret(blueprint)) {
+      errors.push("render.yaml: contains a value that looks like a real secret.");
+    }
+    if (/SECRET|TOKEN|API_KEY|DATABASE_URL/i.test(blueprint) && !/sync:\s*false|generateValue:\s*true|fromDatabase:/i.test(blueprint)) {
+      warnings.push("render.yaml references secret-like env vars without sync:false, generateValue:true, or fromDatabase.");
+    }
+  }
 }
 
 function checkSupabase() {
@@ -101,6 +142,15 @@ function checkSupabase() {
   warnMissing("supabase/config.toml", "Supabase CLI config is expected after supabase init");
   if (!projectText.includes("rls") && !projectText.includes("row level security")) {
     warnings.push("Supabase production checklist should mention RLS.");
+  }
+  if (!projectText.includes("service role")) {
+    warnings.push("Supabase docs should state that the service role key is server-side only.");
+  }
+  if (!projectText.includes("ssl")) {
+    warnings.push("Supabase production checklist should mention SSL enforcement.");
+  }
+  if (!projectText.includes("network restriction")) {
+    warnings.push("Supabase production checklist should mention network restrictions.");
   }
 }
 
@@ -133,6 +183,7 @@ if (isSkillCatalogRepository()) {
   checkEnvExamples();
   checkDocs();
   checkVercel();
+  checkRender();
   checkSupabase();
   process.exitCode = printResults();
 }

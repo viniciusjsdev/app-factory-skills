@@ -10,6 +10,8 @@ docs/architecture/api-contract.md
 
 If the project uses another contract path, preserve it and document the path.
 
+The API contract is part of the mandatory backend planning specs. It must be created or updated before Django implementation files are created or changed.
+
 ## Required Endpoint Fields
 
 Document each endpoint with:

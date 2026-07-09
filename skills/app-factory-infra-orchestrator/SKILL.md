@@ -30,9 +30,9 @@ README.md
 
 Local must be easy. Production must be explicit. Vercel must not be confused with a generic Docker host.
 
-Use Docker for local orchestration and backend deployability. Use Vercel for frontend deployment from `/frontend`. Use Supabase for managed Postgres/Auth/Storage when configured.
+Use Docker for local orchestration and backend deployability. Use Vercel for frontend deployment from `/frontend`. Use Supabase for managed Postgres/Auth/Storage when configured. Use Render as a supported backend hosting option when the project needs managed Django web service hosting without managing a VPS.
 
-Do not promise one production path. Support local/full Docker, VPS/full-stack container deployment, Vercel-native frontend deployment, backend container deployment, and Supabase-managed services.
+Do not promise one production path. Support local/full Docker, VPS/full-stack container deployment, Vercel-native frontend deployment, backend container deployment on Render or similar hosts, Render native Python deployment when appropriate, and Supabase-managed services.
 
 ## Modes
 
@@ -51,7 +51,7 @@ Use for local development and full-stack smoke testing:
 Use for common MVP deployment:
 
 - frontend on Vercel from `/frontend`
-- backend as container on VPS, Render, Railway, Fly.io or compatible host
+- backend on Render, VPS, Railway, Fly.io or compatible host
 - Supabase as managed Postgres/Auth/Storage
 
 ## Load References
@@ -64,6 +64,7 @@ Read the relevant references before changing files:
 - `references/backend-docker-standard.md`
 - `references/supabase-standard.md`
 - `references/vercel-standard.md`
+- `references/render-standard.md`
 - `references/env-standard.md`
 - `references/validation-checklist.md`
 
@@ -161,6 +162,36 @@ Production backend should use a slim Python image, install only required depende
 
 Do not hardcode secrets.
 
+## Render Standard
+
+Use Render when the MVP needs a hosted Django API without managing a VPS.
+
+Supported Render backend paths:
+
+- native Python web service
+- Docker web service built from `backend/Dockerfile.prod`
+- `render.yaml` Blueprint when the project wants infrastructure-as-code
+
+For Django on Render, document:
+
+- service root or Dockerfile path for monorepos
+- build command
+- start command
+- pre-deploy command for migrations when used
+- `DATABASE_URL`
+- `DJANGO_SECRET_KEY` or equivalent
+- `DJANGO_DEBUG=False`
+- `DJANGO_ALLOWED_HOSTS` including `.onrender.com` host and custom domains
+- `RENDER_EXTERNAL_HOSTNAME` handling when used
+- static file strategy such as WhiteNoise or external object storage
+- `WEB_CONCURRENCY` or worker strategy
+- health check path
+- environment groups and secret handling
+
+If generating `render.yaml`, never hardcode secrets. Use `sync: false`, `generateValue: true`, Render environment groups, or dashboard-managed values for secrets.
+
+Do not put Render-only assumptions into local Docker Compose. Keep Render deployment docs separate from local development docs.
+
 ## Environment Standard
 
 Create:
@@ -219,7 +250,11 @@ Do not create conflicting schema ownership silently.
 
 For local Supabase development, prefer Supabase CLI structure and migrations. Keep `supabase/config.toml`, migrations and seed files versioned when generated.
 
-Production readiness must be documented rather than assumed. Include a Supabase checklist covering RLS, SSL enforcement, network restrictions, MFA, access control, indexes/performance review, backups/PITR when needed, and secret handling.
+Supabase CLI uses Docker for the local stack. Do not duplicate Supabase services inside the app Compose file unless there is a documented reason. On untrusted public networks, document binding the local Supabase stack to localhost and never expose the local Supabase stack publicly.
+
+Production readiness must be documented rather than assumed. Include a Supabase checklist covering Security Advisor, RLS, SSL enforcement, network restrictions, MFA, access control, custom SMTP/Auth email settings, Auth rate limits, CAPTCHA/abuse prevention when relevant, indexes/performance review, load testing for expected launch traffic, backups/PITR when needed, and secret handling.
+
+The Supabase anon key may be used by frontend code only when RLS and policies are correctly designed. The service role key must stay server-side only and must never appear in `frontend/.env.example`, Vercel frontend env vars, client code or logs.
 
 ## Vercel Standard
 
@@ -233,7 +268,19 @@ Output Directory: dist or framework-specific output
 
 Create `frontend/vercel.json` only when needed.
 
-Do not configure backend Django as a Vercel frontend deployment. If the backend needs deployment, prepare it as a container for a container-friendly host.
+For monorepos, document that the Vercel project root directory should be `frontend`. When using Vercel CLI with a monorepo, run linking/deploy commands from the monorepo root and select the intended Vercel project.
+
+Prefer Vercel's framework/build auto-detection. Override build command, install command or output directory only when the detected values are wrong.
+
+Document Vercel environments separately:
+
+- Development
+- Preview
+- Production
+
+Frontend variables prefixed with `VITE_` are exposed to browser code at build/runtime and must not contain secrets. Put backend/API secrets only in backend/server environments.
+
+Do not configure backend Django as a Vercel frontend deployment. Vercel supports Django through Vercel Functions, but that is an explicit alternative path with function/runtime limitations and a separate migration/static-file strategy. The App Factory default is to prepare Django as a container for a container-friendly host.
 
 ## Makefile Standard
 
@@ -285,6 +332,8 @@ README.md
 ```
 
 Docs must explain how to run locally, stop containers, run migrations, run tests, connect frontend/backend, connect backend/Supabase/Postgres, configure Vercel, required env vars, and what is local-only vs production.
+
+If Render is chosen or requested, docs must also explain how the Django backend is deployed on Render, whether it uses Docker or native Python runtime, how migrations run, how env vars are configured, and how Vercel frontend CORS/API URLs point to the Render backend.
 
 ## Validation Workflow
 
@@ -345,8 +394,8 @@ Work is done only when:
 - secrets are not committed
 - Supabase structure exists when applicable
 - Vercel deployment guidance exists when frontend exists
+- Render deployment guidance exists when Render is chosen or requested
 - Makefile exists
 - docs are updated
 - Docker config/build/up validation was attempted
 - failures are reported honestly
-
