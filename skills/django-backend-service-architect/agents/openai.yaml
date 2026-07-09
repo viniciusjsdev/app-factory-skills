@@ -1,0 +1,9 @@
+interface:
+  display_name: "Django Backend Service Architect"
+  short_description: "Build Django backends with service-layer architecture."
+  brand_color: "#0C4B33"
+  default_prompt: "Use $django-backend-service-architect to build or normalize the Django backend for this App Factory project using service-layer architecture."
+
+policy:
+  allow_implicit_invocation: true
+

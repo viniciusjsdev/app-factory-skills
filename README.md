@@ -1,106 +1,168 @@
-# Lovable Frontend Normalizer
+# App Factory Skills
 
-A Codex skill for turning Lovable-generated or Lovable-accelerated React frontends into cleaner, production-oriented codebases without throwing away the UI/UX that Lovable already created.
+Codex skills for turning a rough app idea or PRD into a Lovable-generated MVP, then normalizing that frontend into a cleaner project foundation for validation.
 
-The skill is generic. It is meant to be copied or installed into real projects whenever Codex needs to normalize a Lovable frontend, regardless of the product domain, brand, app type, page set or business model.
+This repository is a skill factory, not an application. Each folder under `skills/` is an independent Codex skill with its own `SKILL.md`, references, scripts and UI metadata.
 
-## What It Does
+## Factory Flow
 
-- Preserves existing screens, flows, copy, visual identity, mock behavior and interactions.
-- Keeps the current React/TypeScript/TanStack/Tailwind stack unless explicitly told otherwise.
-- Treats PrimeReact/JavaScript/CRA-style rewrites as stack migrations, not normal normalization.
-- Moves large route/page/component files toward feature-based architecture.
-- Keeps routes thin and screen composition inside feature pages.
-- Separates UI components, hooks, services, mocks, DTOs and shared primitives.
-- Isolates mock data behind service boundaries so a real backend can be added later.
-- Checks mobile-first behavior instead of treating desktop as the default.
-- Requires format, lint, build, architecture scan and dev-server validation when possible, without changing package managers implicitly.
+```txt
+PRD or rough idea
+  -> lovable-prompt-architect
+  -> user pastes prompt into Lovable
+  -> Lovable generates frontend code
+  -> lovable-frontend-normalizer
+  -> normalized frontend, docs and API contract
+  -> django-backend-service-architect
+  -> app-factory-infra-orchestrator
+  -> MVP technical project ready for validation
+```
+
+The handoff to Lovable is intentionally human-driven. Codex prepares the best possible prompt, but the user still pastes it into Lovable and brings the generated frontend code back before later skills continue.
 
 ## Repository Layout
 
 ```txt
-lovable-frontend-normalizer/
-  SKILL.md
+app-factory/
+  skills/
+    lovable-prompt-architect/
+    lovable-frontend-normalizer/
+    django-backend-service-architect/
+    app-factory-infra-orchestrator/
+  .codex/
+    workflows/
+    references/
+    checklists/
+    goals/
+    templates/
+  docs/
+  specs/
+  templates/
+  examples/
   AGENTS.md
   README.md
-  agents/
-    openai.yaml
-  references/
-    architecture-standard.md
-    component-responsibilities.md
-    version-baseline.md
-    mock-to-api-boundary.md
-    mobile-first-checklist.md
-    local-run-checklist.md
-    validation-checklist.md
-  scripts/
-    scan-lovable-frontend.mjs
 ```
 
-`SKILL.md` contains the always-loaded operating instructions. The files in `references/` hold deeper rules that Codex should read only when relevant. The scanner in `scripts/` gives a quick heuristic pass over a consuming frontend project.
+`skills/` is the source of truth for installable Codex skills. `.codex/` contains factory-level operating material for Codex, not installable skill folders.
+
+## Skills
+
+```txt
+skills/
+  lovable-prompt-architect/
+    Generate a Lovable-ready prompt from a PRD, brief or rough MVP idea.
+
+  lovable-frontend-normalizer/
+    Normalize Lovable-generated frontend code while preserving UI/UX.
+
+  django-backend-service-architect/
+    Build or normalize a Django backend using Models, Services, Selectors, API Views, DTOs/Serializers and tests.
+
+  app-factory-infra-orchestrator/
+    Create Docker, Supabase and Vercel infrastructure without forcing one production path.
+```
+
+Future skills should be added as separate folders under `skills/`, for example:
+
+```txt
+skills/mvp-launch-checklist/
+```
+
+## Root Documentation
+
+```txt
+docs/
+  app-factory-method.md
+  stack-standard.md
+  architecture-standard.md
+  skill-sequence.md
+  project-generation-flow.md
+  app-factory-architecture.md
+  product-workflow.md
+
+specs/
+  skill-catalog.md
+  factory-handoff-contracts.md
+  product-brief-template.md
+  prd-to-lovable-prompt.md
+  frontend-normalization-contract.md
+  django-backend-contract.md
+  infra-orchestration-contract.md
+```
+
+Use root docs/specs to understand the factory as a system. Keep executable skill behavior inside each skill folder.
+
+## Supporting Folders
+
+```txt
+.codex/
+  workflows/     Codex execution playbooks for this factory.
+  references/    Internal routing and repository references.
+  checklists/    Repeatable quality gates.
+  goals/         Durable factory objectives.
+  templates/     Codex-facing prompt and artifact templates.
+
+templates/
+  root/          Project root starter files.
+  frontend/      Frontend starter conventions.
+  backend/       Backend starter conventions.
+  docker/        Docker and deploy starter conventions.
+  docs/          Documentation starter conventions.
+
+examples/
+  lovable-prompts/
+  api-contracts/
+  project-structures/
+```
 
 ## Installation
 
-Install as a user skill:
+Install one skill:
 
 ```powershell
-Copy-Item -Recurse D:\Projetos\Skills\lovable-frontend-normalizer $env:USERPROFILE\.codex\skills\lovable-frontend-normalizer
+Copy-Item -Recurse .\skills\lovable-prompt-architect $env:USERPROFILE\.codex\skills\lovable-prompt-architect
 ```
 
-Or install inside a specific project:
+Install all current skills:
 
 ```powershell
-New-Item -ItemType Directory -Force .agents\skills | Out-Null
-Copy-Item -Recurse D:\Projetos\Skills\lovable-frontend-normalizer .agents\skills\lovable-frontend-normalizer
+Get-ChildItem .\skills -Directory | ForEach-Object {
+  Copy-Item -Recurse $_.FullName (Join-Path $env:USERPROFILE ".codex\skills\$($_.Name)") -Force
+}
 ```
-
-After installing in a project, Codex can run:
-
-```bash
-node .agents/skills/lovable-frontend-normalizer/scripts/scan-lovable-frontend.mjs
-```
-
-If installed as a user skill, run the scanner from the target frontend project with the full skill path.
 
 ## Usage
 
-Ask Codex to use the skill in a Lovable project:
+Start from a PRD or rough idea:
 
 ```txt
-Use $lovable-frontend-normalizer to normalize this Lovable frontend. Preserve all existing UI/UX.
+Use $lovable-prompt-architect to turn this PRD into a complete Lovable prompt.
 ```
 
-Good task examples:
+After Lovable generates code and the user provides the project:
 
-- Normalize the generated Lovable routes and move screen logic into feature folders.
-- Preserve the current dashboard UI but isolate mocks behind services.
-- Refactor this Lovable MVP so it is ready for a real API.
-- Improve mobile-first behavior without redesigning the product.
-- Split large generated components while keeping the rendered screen the same.
-
-Avoid using this skill for backend-only work, database-only design, copy-only edits or redesigning screens from scratch unless that is explicitly the goal.
-
-## Validation Expectations
-
-In a consuming frontend project, Codex should attempt the equivalent of:
-
-```bash
-npm install
-npm run format
-npm run lint
-npm run build
-node .agents/skills/lovable-frontend-normalizer/scripts/scan-lovable-frontend.mjs
-npm run dev
+```txt
+Use $lovable-frontend-normalizer to normalize this Lovable frontend. Preserve all UI/UX.
 ```
 
-The package manager should come from the lockfile. Codex must not claim the project runs locally unless the dev server was actually started and checked for immediate startup errors.
+After frontend normalization creates API contracts:
 
-If the lockfile package manager is unavailable, Codex should report the mismatch instead of switching package managers, creating new lockfiles or manually repairing `node_modules`.
+```txt
+Use $django-backend-service-architect to build the Django backend for this App Factory project.
+```
 
-## Design Principles
+After frontend/backend project structure exists:
 
-Preserve first. Normalize second.
+```txt
+Use $app-factory-infra-orchestrator to create Docker, Supabase and Vercel infrastructure for this App Factory project.
+```
 
-Lovable is allowed to create rich UI quickly. This skill exists to keep that product work intact while improving the code underneath it: thinner routes, clearer feature boundaries, isolated mocks, better hooks/services, documented API contracts and mobile-first behavior.
+## Principles
 
-The output should feel like the same product with a more professional frontend architecture, not a simpler replacement.
+- Optimize for fast MVP/prototype launch and validation.
+- Keep each skill single-purpose.
+- Preserve product intent between steps.
+- Generate explicit handoff artifacts.
+- Do not require downstream skills before their input exists.
+- Treat backend and infrastructure as later stages fed by product/frontend contracts.
+- Support local Docker, VPS/full-stack containers, Vercel-native frontend deployment and Supabase-managed services as explicit options.
