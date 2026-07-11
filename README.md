@@ -1,54 +1,54 @@
 # App Factory Skills
 
-Codex skills for turning a rough idea into a Lovable-generated MVP, then into a normalized frontend, planned Django backend and deploy-ready infrastructure.
+Codex skills for turning a rough idea or PRD into an executable product contract, a complete React frontend, a planned Django backend, and deploy-ready infrastructure.
 
-Build faster. Keep the handoffs explicit. Do not let the agent guess the project into existence.
-
-![Skills](https://img.shields.io/badge/skills-4-blue)
-![Stack](https://img.shields.io/badge/stack-Lovable%20%2B%20React%20%2B%20Django%20%2B%20Docker%20%2B%20Supabase-111827)
-![Workflow](https://img.shields.io/badge/workflow-PRD%20to%20MVP-16a34a)
-![Codex](https://img.shields.io/badge/Codex-skills-0f172a)
-
-[Install](#install) | [Flow](#flow) | [Skills](#skills) | [Usage](#usage) | [Safety](#safety-gates) | [Repository](#repository-layout)
-
----
-
-App Factory Skills is a small skill catalog for MVP and prototype projects. It is designed for a human + AI workflow:
-
-1. The user brings a PRD, rough idea or product notes.
-2. Codex creates a strong Lovable prompt.
-3. The user pastes that prompt into Lovable.
-4. Lovable generates the frontend.
-5. Codex normalizes the frontend, creates backend specs, builds the backend after review, then prepares infrastructure.
-
-The key rule: every stage consumes explicit artifacts from the previous one. If the required context is missing, the skill should stop and tell the user what is missing instead of inventing the project.
+The factory keeps every stage explicit. Each skill consumes durable artifacts from the previous stage and reports missing context instead of silently inventing consequential requirements.
 
 ## Flow
 
 ```txt
-Idea or PRD
-  -> lovable-prompt-architect
-  -> user pastes prompt into Lovable
-  -> Lovable generates frontend code
-  -> lovable-frontend-normalizer
-  -> backend planning specs
+Idea, PRD, or client notes
+  -> product-brief-architect
+  -> @sites + app-factory-frontend-builder
   -> django-backend-service-architect
+  -> django-backend-code-executor
+  -> django-backend-service-architect audit
   -> app-factory-infra-orchestrator
-  -> MVP ready for technical validation
+  -> publication and MVP validation
 ```
 
 | Stage | Input | Skill | Output |
-|---|---|---|---|
-| 1. Pre-production | PRD, notes or rough idea | `lovable-prompt-architect` | Lovable-ready prompt |
-| 2. Front generation | Prompt | Lovable | Generated frontend code |
-| 3. Front normalization | Lovable frontend | `lovable-frontend-normalizer` | Clean frontend, mocks behind services, API contract |
-| 4. Backend specs | Product/frontend/API contracts | `django-backend-service-architect` | Backend plan, domain model, API/security contracts and validation plan |
-| 5. Backend implementation | Accepted backend specs | `django-backend-service-architect` | Django backend with service architecture |
-| 6. Infrastructure | Frontend/backend project shape | `app-factory-infra-orchestrator` | Docker, Supabase, Vercel, Render/VPS and deploy docs |
+| --- | --- | --- | --- |
+| Product | Idea, PRD, notes, screens | `product-brief-architect` | Executable PRD and implementation contracts |
+| Frontend | Product contracts | external `@sites` + `app-factory-frontend-builder` | Visible preview, React frontend, private Sites URL, mocks/adapters, tests, API handoff |
+| Backend design | Product and frontend contracts | `django-backend-service-architect` | Approved backend contracts and project context |
+| Backend implementation | Approved backend contracts | `django-backend-code-executor` | Django code, generated migrations, tests, and validation evidence |
+| Backend audit | Contracts and implementation evidence | `django-backend-service-architect` | Approval or bounded correction findings |
+| Infrastructure | Frontend/backend shape | `app-factory-infra-orchestrator` | Docker, environments, deployment contracts and validation |
+
+## Product contract
+
+Small products may use one file:
+
+```txt
+docs/product/product-brief.md
+```
+
+Platforms and products with multiple modules use:
+
+```txt
+docs/product/
+  prd.md
+  screen-map.md
+  business-rules.md
+  data-contract.md
+  visual-direction.md
+  acceptance-criteria.md
+```
+
+An existing PRD remains the source of truth. The product skill creates only the missing companion contracts.
 
 ## Install
-
-Install all skills into your local Codex skill directory:
 
 ```powershell
 Get-ChildItem .\skills -Directory | ForEach-Object {
@@ -56,187 +56,83 @@ Get-ChildItem .\skills -Directory | ForEach-Object {
 }
 ```
 
-Install one skill:
+Install only the product skill:
 
 ```powershell
-Copy-Item -Recurse .\skills\lovable-prompt-architect $env:USERPROFILE\.codex\skills\lovable-prompt-architect -Force
+Copy-Item -Recurse .\skills\product-brief-architect $env:USERPROFILE\.codex\skills\product-brief-architect -Force
 ```
 
-After installing, open the target MVP project in Codex and call the skill by name:
+## Usage
 
 ```txt
-Use $lovable-frontend-normalizer to normalize this Lovable frontend. Preserve all UI/UX.
+Use $product-brief-architect to transform these notes into an executable product contract.
+
+Use @sites to build, show, and privately publish this product. Follow $app-factory-frontend-builder as the mandatory implementation contract and read docs/product/.
+
+Use $django-backend-service-architect to create the backend planning specs from the product and frontend contracts.
+
+Use $django-backend-code-executor to implement the explicitly approved backend implementation contract.
+
+Use $app-factory-infra-orchestrator to prepare local and deployment infrastructure.
 ```
 
 ## Skills
 
-| Skill | Use when | Does not do |
-|---|---|---|
-| `lovable-prompt-architect` | You have an app idea, PRD or rough product brief and need a Lovable prompt. | Does not edit code. |
-| `lovable-frontend-normalizer` | You have Lovable-generated frontend code. | Does not remove screens, flows, copy, mocks or visual identity unless asked. |
-| `django-backend-service-architect` | You have enough product/frontend/API context to plan and build a Django backend. | Does not create backend code before backend specs exist and decisions are summarized. |
-| `app-factory-infra-orchestrator` | You have frontend/backend structure and need Docker, Supabase, Vercel, Render or VPS support. | Does not pretend there is only one production path. |
+| Skill | Responsibility |
+| --- | --- |
+| `product-brief-architect` | Product scope, screens, rules, data, visual direction, acceptance criteria |
+| `app-factory-frontend-builder` | Direct React implementation using the factory stack and feature architecture |
+| `django-backend-service-architect` | Backend planning, project context, contract approval, and implementation audit |
+| `django-backend-code-executor` | Approved Django implementation using DTO, Controller, Service, Repository, Configuration, and Model boundaries |
+| `app-factory-infra-orchestrator` | Docker, environment, Supabase, Vercel, container and VPS paths |
 
-## Usage
+## Frontend baseline
 
-Start from a rough idea:
+- Node.js 24 LTS and npm
+- React 19, TypeScript strict, Vite, React Router
+- PrimeReact, PrimeIcons and SCSS Modules
+- React Hook Form, Zod, TanStack Query and Axios
+- Vitest, Testing Library, Playwright, ESLint and Prettier
+- feature architecture with `Route -> Feature Page -> Hook/View Model -> Service -> Repository Adapter`
+- exact direct dependency versions and committed npm lockfile
+- dependency scripts disabled by default, seven-day minimum package age, and registry/source restrictions
 
-```txt
-Use $lovable-prompt-architect to turn this product idea into a complete Lovable prompt.
-```
+Sites remains an external Codex plugin. It owns preview and publication when explicitly referenced in the creation command; it is not installed in the React dependency graph.
 
-After Lovable generates the frontend:
+## Safety gates
 
-```txt
-Use $lovable-frontend-normalizer to normalize this Lovable frontend. Preserve all UI/UX.
-```
+- Product decisions involving permissions, compliance, billing, sensitive data, or core scope are never guessed silently.
+- Frontend components cannot access API, mocks, storage, or environment variables directly.
+- Backend planning specs, decision summary, and explicit contract approval precede Django implementation.
+- ORM access is repository-only, services are persistence-agnostic, controllers use DTO payloads, and migrations are Django-generated.
+- Infrastructure never commits secrets or claims readiness without attempted validation.
 
-After frontend normalization creates API contracts:
-
-```txt
-Use $django-backend-service-architect to create the backend specs for this App Factory project.
-```
-
-After reviewing/accepting the backend specs:
-
-```txt
-Use $django-backend-service-architect to implement the Django backend from the accepted specs.
-```
-
-After frontend and backend structure exist:
-
-```txt
-Use $app-factory-infra-orchestrator to create Docker, Supabase, Vercel and Render-ready infrastructure for this App Factory project.
-```
-
-## Safety Gates
-
-These skills are intentionally conservative. They are meant to be used by AI agents, so the instructions include hard stops.
-
-| Area | Guardrail |
-|---|---|
-| Lovable prompt | Produces prompt only. The user still generates the frontend in Lovable. |
-| Frontend | Preserve UI/UX, routes, copy, mocks and interactions unless explicitly requested. |
-| Backend | Create backend specs first. Do not create Django implementation files unless preflight passed, specs exist and decisions were summarized. |
-| Security | Backend API contracts must include auth, permissions, rate limits, sensitive data rules and logout/session invalidation when relevant. |
-| Infrastructure | Do not hardcode secrets. Do not claim local or production readiness unless validation was attempted. |
-| Supabase | Document schema ownership, RLS, SSL, network restrictions, MFA, indexes/performance and backups/PITR when relevant. |
-| Render | Treat Render as an optional Django backend host. Document native Python vs Docker, env vars, migrations, static files and CORS. |
-
-## What The Backend Skill Enforces
-
-The Django skill uses a service-layer architecture:
-
-```txt
-HTTP -> View/Controller -> Serializer/DTO -> Service -> Model
-HTTP -> View/Controller -> Selector -> Model
-```
-
-It requires:
-
-- PRD/spec/frontend context before code generation
-- backend planning specs before implementation
-- decision summary to the user before implementation
-- API contract before endpoints
-- environment-driven settings
-- CORS by environment
-- rate limiting/throttling, considering IP and authenticated user when relevant
-- explicit auth and permission rules
-- logout/session/token invalidation strategy
-- sensitive data masking, omission or encryption rules when data reaches the frontend
-- tests for services, selectors, API paths and permission behavior
-
-Required backend specs in target projects:
-
-```txt
-docs/architecture/backend-plan.md
-docs/architecture/domain-model.md
-docs/architecture/api-contract.md
-docs/architecture/security-contract.md
-docs/architecture/backend-validation-plan.md
-```
-
-## Infrastructure Targets
-
-The infra skill supports multiple deployment modes without forcing one production path.
-
-| Component | Default direction | Alternatives |
-|---|---|---|
-| Frontend | Vercel from `frontend/` | Static container or another frontend host |
-| Backend | Django container or Render web service | Railway, Fly.io, VPS, compatible container host |
-| Database/Auth/Storage | Supabase when configured | Render Postgres or another Postgres provider when explicitly chosen |
-| Local development | Docker Compose | Supabase CLI local stack when Supabase-specific services are needed |
-
-Frontend projects are normalized to npm by default. pnpm, yarn or bun should remain only when the user or project docs explicitly require that exception.
-
-Render support covers:
-
-- native Python web service
-- Docker web service from `backend/Dockerfile.prod`
-- optional `render.yaml` Blueprint
-- build/start/pre-deploy commands
-- migrations
-- `DATABASE_URL`, `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=False`, `DJANGO_ALLOWED_HOSTS`
-- static files via WhiteNoise or equivalent
-- CORS from Vercel preview/production domains
-- secrets with `sync: false`, `generateValue: true`, env groups or dashboard-managed values
-
-## Repository Layout
+## Repository layout
 
 ```txt
 app-factory-skills/
   skills/
-    lovable-prompt-architect/
-    lovable-frontend-normalizer/
+    product-brief-architect/
+    app-factory-frontend-builder/
     django-backend-service-architect/
+    django-backend-code-executor/
     app-factory-infra-orchestrator/
   .codex/
-    workflows/
-    references/
-    checklists/
-    goals/
-    templates/
   docs/
   specs/
   templates/
   examples/
-  AGENTS.md
-  README.md
 ```
 
-`skills/` is the source of truth for installable Codex skills. `.codex/` contains factory-level operating material. `templates/` contains starter material for generated projects. `examples/` contains sample prompts, API contracts and project structures.
-
-## Docs
-
-| File | Purpose |
-|---|---|
-| [`docs/app-factory-method.md`](./docs/app-factory-method.md) | Factory method from idea to MVP. |
-| [`docs/skill-sequence.md`](./docs/skill-sequence.md) | Which skill runs at each stage. |
-| [`docs/stack-standard.md`](./docs/stack-standard.md) | Preferred frontend, backend and infra stack. |
-| [`specs/factory-handoff-contracts.md`](./specs/factory-handoff-contracts.md) | Contracts between each stage. |
-| [`specs/django-backend-contract.md`](./specs/django-backend-contract.md) | Backend input/output, planning specs and security expectations. |
-| [`specs/infra-orchestration-contract.md`](./specs/infra-orchestration-contract.md) | Infrastructure input/output, Vercel, Supabase and Render expectations. |
+`skills/` contains installable skills. `.codex/` contains factory-level workflows, references, checklists, goals, and templates. Generated projects use their own `.codex/` context and may add project-specific domain skills under `.agents/skills/`.
 
 ## Validation
 
-Validate a skill after editing:
-
 ```powershell
-python C:\Users\welli\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\django-backend-service-architect
-```
-
-Run available scanners from a target project:
-
-```powershell
-node .\skills\lovable-frontend-normalizer\scripts\scan-lovable-frontend.mjs
+python C:\Users\welli\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\product-brief-architect
+node .\skills\product-brief-architect\scripts\validate-product-contract.mjs <project-root>
+node .\skills\app-factory-frontend-builder\scripts\scan-app-factory-frontend.mjs <project-root>
 python .\skills\django-backend-service-architect\scripts\scan-django-architecture.py
+python .\skills\django-backend-code-executor\scripts\scan-django-boundaries.py
 node .\skills\app-factory-infra-orchestrator\scripts\scan-infra.mjs
 ```
-
-## Philosophy
-
-Fast MVPs need speed, but not guesswork.
-
-This repository exists to make Codex repeat the same high-quality product path: clarify the idea, generate the frontend prompt, normalize Lovable output, build the backend from contracts, and create infrastructure with honest validation notes.
-
-No hidden production assumptions. No backend from vibes. No infra that only works on paper.

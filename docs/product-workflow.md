@@ -1,87 +1,19 @@
 # Product Workflow
 
-## Stage 1: PRD or Rough Idea
+## 1. Product definition
 
-Input may be:
+`product-brief-architect` accepts a rough idea, PRD, notes, market problem, feature list, or screen list. It preserves an existing PRD and creates the missing executable contracts.
 
-- client notes
-- a rough app idea
-- a PRD
-- a list of desired screens
-- a market/problem statement
-- a prototype concept
+Small products use `docs/product/product-brief.md`. Larger products use PRD, screen map, business rules, data contract, visual direction, and acceptance criteria under `docs/product/`.
 
-The correct skill is `lovable-prompt-architect`.
+## 2. Frontend construction
 
-Output:
+The standard command invokes external `@sites` together with `$app-factory-frontend-builder`. Sites owns the visible preview and publication. The frontend skill consumes product contracts and remains the mandatory contract for React stack, routes, feature pages, hooks/view models, services, repository adapters, realistic mocks, local persistence, responsive states, tests, and frontend/API handoff documents. Sites is not installed as an application dependency.
 
-- a clarified product brief
-- a complete Lovable prompt
-- explicit assumptions
-- MVP scope boundaries
-- suggested screens and flows
-- validation notes
+## 3. Django backend
 
-Recommended product artifact:
+`django-backend-service-architect` consumes product rules, data contracts, authorization expectations, frontend service contracts, and acceptance criteria. It creates and audits backend contracts and enriches project context. `django-backend-code-executor` implements approved contracts with all ORM access in repositories, business rules in persistence-agnostic services, DTO-defined controller payloads, configured CamelCase entities, and Django-generated migrations.
 
-- use `specs/product-brief-template.md` when the user wants a durable product brief before Lovable generation
+## 4. Infrastructure and publication
 
-## Stage 2: Lovable Generation
-
-The user pastes the generated prompt into Lovable.
-
-Codex should not continue to frontend normalization until the generated frontend code exists.
-
-## Stage 3: Frontend Normalization
-
-Input is a Lovable-generated frontend project.
-
-The correct skill is `lovable-frontend-normalizer`.
-
-Output:
-
-- normalized frontend structure
-- preserved UI/UX
-- isolated mocks
-- API boundary
-- frontend architecture docs
-- validation report
-
-## Stage 4: Django Backend
-
-Input is a normalized frontend plus product/API contracts.
-
-The correct skill is `django-backend-service-architect`.
-
-Output:
-
-- Django backend structure
-- domain apps
-- models
-- services
-- selectors
-- API views/controllers
-- DTOs/serializers
-- tests
-- environment examples
-- updated API contracts
-
-## Stage 5: Infrastructure
-
-Input is a frontend/backend project with enough contracts to know ports, environment variables, database ownership and deployment expectations.
-
-The correct skill is `app-factory-infra-orchestrator`.
-
-Output:
-
-- local Docker Compose orchestration
-- frontend and backend Docker files
-- backend production container guidance
-- Vercel frontend deployment guidance
-- Supabase folder, migration expectations and production checklist when Supabase is used
-- root and service-level `.env.example` files
-- Makefile developer commands
-- infrastructure and deployment docs
-- validation report
-
-The skill should consume frontend/backend project structure and deployment contracts instead of rediscovering requirements from scratch.
+`app-factory-infra-orchestrator` consumes the validated frontend/backend shape, environment contract, database ownership, and deployment choice. It prepares local Docker and selected hosting paths without inventing missing application settings.

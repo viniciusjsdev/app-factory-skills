@@ -1,91 +1,51 @@
 # Factory Handoff Contracts
 
-## PRD to Lovable Prompt
+## Product to frontend
 
-Producer: `lovable-prompt-architect`
+Producer: `product-brief-architect`
 
-Consumer: user and Lovable
+Consumer: external `@sites` composed with `app-factory-frontend-builder`
 
-Output should include:
+Required output: product source of truth, scope/non-scope, primary journey, routes/screens/states/interactions, numbered business rules, data/DTO contract, visual direction, acceptance criteria, assumptions, and open questions.
 
-- product brief or product summary
-- target user
-- core problem
-- MVP objective
-- screen list
-- navigation model
-- required UI states
-- mock data expectations
-- integrations that should be visually represented
-- visual style direction
-- mobile-first requirements
-- copy tone
-- constraints and non-goals
+Invocation rule: Sites owns preview/private publication; the frontend builder owns stack, architecture, security, code quality, and application validation. Do not install Sites merely to reference the plugin.
 
-## Lovable Prompt to Generated Frontend
+## Frontend to backend
 
-Producer: Lovable
-
-Consumer: `lovable-frontend-normalizer`
-
-Required user action:
-
-- paste the prompt into Lovable
-- let Lovable generate or update the frontend
-- provide the generated code repository to Codex
-
-## Normalized Frontend to Backend Skills
-
-Producer: `lovable-frontend-normalizer`
+Producer: `app-factory-frontend-builder`
 
 Consumer: `django-backend-service-architect`
 
-Output should include:
+Required output: implemented frontend, architecture notes, repository/service contracts, mock DTOs, future API contract, environment expectations, validation report, and any variance from product contracts.
 
-- `docs/frontend-architecture.md`
-- `docs/api-contract.md`
-- `docs/data-model-notes.md` when useful
-- `docs/validation-report.md` when useful
-
-Backend skills should use these artifacts instead of guessing requirements from UI code alone.
-
-## Django Backend to Infrastructure
+## Backend architecture to implementation
 
 Producer: `django-backend-service-architect`
 
+Consumer: `django-backend-code-executor`
+
+Required output: explicitly approved backend implementation contract, domain/API/security/validation contracts, resolved project-root `.codex` backend context, writable scope, migration policy, and test expectations.
+
+## Backend implementation to audit
+
+Producer: `django-backend-code-executor`
+
+Consumer: `django-backend-service-architect`
+
+Required output: Django implementation, Django-generated migrations, tests, command results, architecture scan, changed-file manifest, contract deviations, and unresolved items.
+
+## Backend to infrastructure
+
+Producer: audited output from `django-backend-service-architect`
+
 Consumer: `app-factory-infra-orchestrator`
 
-Output should include:
+Required output: backend structure, environment example, database ownership, migrations and server commands, health endpoint, CORS/auth/rate-limit expectations, API contract, container compatibility, and validation status.
 
-- backend directory structure
-- `.env.example`
-- Dockerfile or Docker compatibility notes
-- database ownership decision
-- required environment variables
-- health endpoint
-- API contract
-- validation/test status
-
-Infrastructure skills should not invent backend settings that are missing from the backend contract.
-
-## Infrastructure to MVP Validation
+## Infrastructure to validation/publication
 
 Producer: `app-factory-infra-orchestrator`
 
-Consumer: user, deployment host, Vercel and Supabase
+Consumer: user and selected deployment target
 
-Output should include:
-
-- `docker-compose.yml`
-- `docker-compose.prod.yml` when a production container path is requested
-- frontend Dockerfiles and `.dockerignore` when frontend exists
-- backend Dockerfiles, `.dockerignore` and entrypoint when backend exists
-- root `.env.example`
-- `frontend/.env.example`
-- `backend/.env.example`
-- Supabase CLI/migration structure when Supabase is used
-- Vercel frontend deployment notes
-- VPS/container deployment notes when relevant
-- infrastructure validation status
-
-Infrastructure work should document local Docker, Vercel frontend, backend container and Supabase managed-service boundaries explicitly.
+Required output: local orchestration, service Docker assets where applicable, environment contracts, deployment instructions/configuration, secrets boundaries, smoke-test commands, and honest validation status.

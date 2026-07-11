@@ -1,52 +1,35 @@
 # Django App Template
 
-Use this structure for domain apps:
+Plan only the files required by the feature:
 
 ```txt
 apps/<app_name>/
+  configurations.py
   models.py
-  admin.py
-  urls.py
-  api/
-    views.py
-    serializers.py
-    permissions.py
+  dtos.py
+  composition.py
+  repositories/
+    __init__.py
+    contracts.py
+    django_repository.py
+    unit_of_work.py          optional
   services/
     __init__.py
     create_entity.py
     update_entity.py
-    delete_entity.py
-  selectors/
+  api/
     __init__.py
-    entity_selectors.py
-  dtos.py
-  exceptions.py
+    controllers.py
+    permissions.py
+    urls.py
   tests/
-    test_api.py
+    test_repositories.py
     test_services.py
-    test_selectors.py
+    test_api.py
   migrations/
+    __init__.py
 ```
 
-Only create files that the current app needs.
+Use CamelCase entity classes and snake_case Python modules. Name apps after domain capabilities, not screens or dashboards.
 
-## Naming
-
-Use app names that match product domain concepts, not frontend page names.
-
-Good:
-
-- `transactions`
-- `goals`
-- `projects`
-- `documents`
-- `appointments`
-
-Avoid:
-
-- `dashboard`
-- `screen_one`
-- `lovable_pages`
-
-Dashboards are usually API aggregations over domain apps, not a primary domain model.
-
+`configurations.py` owns model specifications. `models.py` declares entities. `repositories/` owns every ORM query and persistence operation. `services/` owns business rules. `dtos.py` owns payload structures. `api/controllers.py` contains endpoint transport only.

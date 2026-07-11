@@ -1,88 +1,25 @@
 # Skill Catalog
 
-## lovable-prompt-architect
+## product-brief-architect
 
-Use when the input is a PRD, product brief, raw idea, client notes or MVP concept and the user needs a complete prompt to paste into Lovable.
+Consumes product ideas, PRDs, notes, market problems, feature lists, or screen lists. Produces a compact or modular executable product contract. It does not write application code.
 
-Do not use when frontend code already exists and the user wants code refactoring.
+## app-factory-frontend-builder
 
-Required input:
+Consumes executable product contracts and builds a complete React/TypeScript frontend using factory stack, feature architecture, mocks/adapters, responsive behavior, tests, and validation. It does not build Django or full-stack infrastructure.
 
-- idea, PRD or product notes
-
-Expected output:
-
-- Lovable-ready prompt
-- product assumptions
-- MVP scope
-- screens and flows
-- design/UX instructions
-- mock data guidance
-- post-Lovable handoff instructions
-
-## lovable-frontend-normalizer
-
-Use when the input is an actual Lovable-generated frontend project and the user wants it normalized, refactored, tested or prepared for backend integration.
-
-Do not use when the user only has an idea or PRD and no generated frontend code yet.
-
-Required input:
-
-- frontend source code generated or accelerated by Lovable
-
-Expected output:
-
-- thin routes
-- feature-based frontend structure
-- mock isolation
-- API boundary docs
-- mobile-first validation
-- local validation report
+In the standard visible site workflow, invoke it together with external `@sites`. Sites owns preview/private publication; the frontend skill remains authoritative for implementation and is not replaced by an npm hosting dependency.
 
 ## django-backend-service-architect
 
-Use when the input is a normalized frontend, product documentation or API contract and the user wants to create, expand or normalize a Django backend.
+Consumes product/frontend/API contracts and creates backend planning, security, validation, and implementation contracts. It enriches root `.codex` backend context and audits completed code. It does not implement code or invent missing product semantics.
 
-Do not use when the user only needs a Lovable prompt or frontend refactor.
+## django-backend-code-executor
 
-Required input:
-
-- product docs and/or normalized frontend API contract
-- enough domain context to model backend entities
-
-Expected output:
-
-- Django backend structure
-- Models, Services, Selectors, API Views and DTOs/Serializers
-- health and baseline endpoints
-- API contract updates
-- environment examples
-- tests and validation report
+Consumes an explicitly approved backend implementation contract. It writes Django code using CamelCase ORM entities, external model configurations, repository-only database access, persistence-agnostic business services, DTO-defined controller payloads, thin controllers, Django-command-generated migrations, and tests. It does not approve or change contracts.
 
 ## app-factory-infra-orchestrator
 
-Use after frontend and backend structure exist and the user wants Docker, Supabase, Vercel, VPS support, environment contracts or deployment documentation.
+Consumes frontend/backend structure and deployment contracts to prepare Docker, environments, Supabase, frontend hosting, backend containers, or VPS paths. It does not choose a single production platform for every project.
 
-Do not use when the user only has a PRD, a Lovable prompt, or frontend-only code with no backend/deployment decision yet.
-
-Required input:
-
-- frontend/backend project structure
-- ports and framework commands when non-standard
-- database ownership decision or enough context to document one
-- deployment preference when the user has one
-
-Expected output:
-
-- local Docker Compose setup
-- frontend and backend Dockerfiles
-- backend production container setup
-- environment examples
-- Supabase CLI/migration structure when Supabase is used
-- Vercel/frontend deployment guidance from `frontend/`
-- VPS/full-stack container guidance when requested
-- production readiness checklist
-
-## Future Skills
-
-Backend and infrastructure skills should only run after they receive the contracts they need. `django-backend-service-architect` usually consumes outputs from `lovable-prompt-architect` and `lovable-frontend-normalizer`; `app-factory-infra-orchestrator` usually consumes the normalized frontend and Django backend outputs.
+Later skills run only after the artifacts they need exist. Each skill must report missing or contradictory inputs explicitly.

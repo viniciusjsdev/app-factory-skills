@@ -1,0 +1,37 @@
+.shell {
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  min-height: 4.5rem;
+  align-items: center;
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--color-surface-200);
+  background: color-mix(in srgb, var(--color-surface-0) 92%, transparent);
+}
+
+.brand {
+  display: inline-flex;
+  gap: var(--space-3);
+  align-items: center;
+  color: var(--color-text);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.mark {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary-500);
+  color: white;
+}
+
+@media (min-width: 48rem) {
+  .header {
+    padding-inline: var(--space-8);
+  }
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Django Backend Code Executor"
+  short_description: "Implement approved Django backend contracts"
+  default_prompt: "Use $django-backend-code-executor to implement the approved Django backend contract and return validation evidence."

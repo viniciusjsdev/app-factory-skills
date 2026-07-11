@@ -1,29 +1,18 @@
-# Product Brief Template
+# {{Product name}}
 
-## Product
-
-Name:
-
-## Problem
-
-Who has the problem and why it matters:
-
-## Users
-
-Primary users:
-
-## MVP Outcome
-
-What must be validated:
-
-## Screens
-
-Required screens:
-
-## Data
-
-Mock data and real integration notes:
-
-## Constraints
-
-Non-goals, stack constraints and launch constraints:
+## Summary
+## Problem and users
+## Objective and value proposition
+## MVP scope
+## Outside scope
+## Primary journey
+## Routes, screens, states, and interactions
+## Business rules (`BR-###`)
+## Data, mocks, persistence, and future API
+## Permissions, ownership, and sensitive data
+## Visual direction and responsive behavior
+## Non-functional requirements
+## Acceptance criteria
+## Success metrics
+## Assumptions
+## Open questions

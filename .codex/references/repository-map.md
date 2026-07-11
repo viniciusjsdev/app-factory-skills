@@ -9,6 +9,8 @@
 - `templates/`: starter material for generated projects.
 - `examples/`: sample outputs and project shapes.
 
+Backend planning/audit lives in `skills/django-backend-service-architect/`. Approved backend code execution lives in the independent `skills/django-backend-code-executor/` skill.
+
 ## Do Not Confuse
 
 - `.codex/` is not the install location for skills.

@@ -1,41 +1,25 @@
-# Validation Checklist
+# Architect Validation Checklist
 
-Before finishing, check:
+## Planning
 
-- [ ] mandatory preflight gate passed before backend files were changed
-- [ ] backend planning specs created or updated before implementation
-- [ ] backend decisions summarized to the user before implementation
-- [ ] product and architecture docs read
-- [ ] frontend mock services inspected when relevant
-- [ ] backend structure exists
-- [ ] `.env.example` exists
-- [ ] settings are environment-driven
-- [ ] API contract updated
-- [ ] every API contract endpoint declares auth and permission requirements
-- [ ] rate limit expectations documented for sensitive or write-heavy endpoints
-- [ ] CORS is environment-driven and production origins are restricted
-- [ ] sensitive response fields are omitted, masked or encrypted according to contract
-- [ ] logout/token invalidation behavior is documented or implemented when auth exists
-- [ ] health endpoint exists
-- [ ] domain apps follow app template
-- [ ] services own writes
-- [ ] selectors own reads
-- [ ] views/controllers are thin
-- [ ] serializers are API boundary only
-- [ ] DTOs exist where useful
-- [ ] tests added or updated
-- [ ] `python manage.py check` attempted
-- [ ] migrations check attempted
-- [ ] test command attempted
-- [ ] architecture scan attempted
-- [ ] Docker compatibility preserved or limitation reported
+- [ ] Required product/frontend context was inspected.
+- [ ] Consequential missing decisions were reported.
+- [ ] All six architecture documents exist or have mapped equivalents.
+- [ ] ORM class names are planned in CamelCase.
+- [ ] Model specifications are assigned to `configurations.py`.
+- [ ] Repository operations cover all reads and writes.
+- [ ] Services own business rules without database or HTTP access.
+- [ ] Controllers use DTO-defined request and response payloads.
+- [ ] Migration ownership and command-only generation are explicit.
+- [ ] Backend `.codex` context contains resolved project decisions.
+- [ ] User received the decision summary.
+- [ ] Approval state is explicit.
 
-Classify failures as:
+## Audit
 
-- pre-existing issue
-- introduced issue
-- missing dependency
-- missing environment variable
-- database unavailable
-- Docker unavailable
-- command unavailable
+- [ ] Approved contract version was identified.
+- [ ] Code, generated migrations, tests, and execution evidence were inspected.
+- [ ] Architecture scan was attempted.
+- [ ] Contract deviations include evidence and bounded correction scope.
+- [ ] Audit status is explicit.
+- [ ] No implementation code was changed in audit mode.

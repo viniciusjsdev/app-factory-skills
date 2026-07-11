@@ -1,71 +1,22 @@
 # API Contract Rules
 
-## Contract First
+Document each endpoint before implementation.
 
-Before coding endpoints, read and update:
+Required fields:
 
-```txt
-docs/architecture/api-contract.md
-```
+- path and method;
+- controller name;
+- request/query DTO;
+- response DTO;
+- service operation;
+- repository contract operations used by the service;
+- authentication and permission rule;
+- throttling expectation;
+- sensitive fields and masking/omission rule;
+- success status and response shape;
+- expected domain errors and HTTP mapping;
+- frontend consumer.
 
-If the project uses another contract path, preserve it and document the path.
+Controllers must not define payload dictionaries inline as a substitute for DTOs. Repositories must not return HTTP-shaped dictionaries. Services must not return DRF responses.
 
-The API contract is part of the mandatory backend planning specs. It must be created or updated before Django implementation files are created or changed.
-
-## Required Endpoint Fields
-
-Document each endpoint with:
-
-- path
-- method
-- auth requirement
-- permission rule
-- rate limit expectation
-- sensitive data returned, if any
-- masking/encryption/omission rule for sensitive fields
-- request body
-- query params
-- response body
-- status codes
-- error shape
-- frontend consumer
-- related service/selector
-
-## Security Fields
-
-For every endpoint, explicitly document:
-
-- public, authenticated, role-based or object-level permission
-- anonymous and authenticated rate limit expectations when relevant
-- whether IP-based throttling is required
-- whether logout invalidates sessions, tokens or refresh tokens for this endpoint's auth mode
-- fields that must never be returned to the frontend
-- sensitive fields that may be returned only masked, encrypted or scoped to the current actor
-
-## Frontend Compatibility
-
-When replacing mock frontend services:
-
-- preserve frontend DTO names when reasonable
-- avoid frontend behavior changes unless documented
-- map backend model fields to frontend response fields
-- include loading and error expectations
-- avoid adding sensitive fields to responses only because mocks contained them
-
-## Example
-
-```md
-### POST /api/projects/
-
-Creates a project.
-
-Request:
-```json
-{"name":"New MVP","description":"Prototype"}
-```
-
-Response `201`:
-```json
-{"id":"uuid","name":"New MVP","description":"Prototype"}
-```
-```
+Preserve frontend DTO semantics when safe. Document mappings where persisted entity fields differ from API payload fields.

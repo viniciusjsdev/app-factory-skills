@@ -1,24 +1,21 @@
 # Skill Sequence
 
-## Standard Sequence
-
 ```txt
 Idea or PRD
-  -> lovable-prompt-architect
-  -> Lovable
-  -> lovable-frontend-normalizer
+  -> product-brief-architect
+  -> @sites + app-factory-frontend-builder
   -> django-backend-service-architect
+  -> django-backend-code-executor
+  -> django-backend-service-architect audit
   -> app-factory-infra-orchestrator
-  -> MVP validation
+  -> publication and MVP validation
 ```
 
-## Routing
+- Use `product-brief-architect` when product contracts are absent or incomplete.
+- After product contracts are implementable, invoke external `@sites` together with `$app-factory-frontend-builder`. Sites owns preview/publication; the frontend skill owns stack and implementation standards.
+- Use `django-backend-service-architect` after product and frontend/API contracts exist to plan, materialize backend project context, and obtain approval.
+- Use `django-backend-code-executor` only for an explicitly approved implementation contract.
+- Return to `django-backend-service-architect` for contract-to-code audit before infrastructure handoff.
+- Use `app-factory-infra-orchestrator` after frontend/backend structure and environment requirements exist.
 
-- Use `lovable-prompt-architect` before frontend code exists.
-- Use `lovable-frontend-normalizer` only after Lovable-generated frontend code exists.
-- Use `django-backend-service-architect` after product/frontend contracts exist.
-- Use `app-factory-infra-orchestrator` after frontend/backend structure exists.
-
-## Handoffs
-
-Each stage should leave explicit artifacts for the next one: product brief, Lovable prompt, frontend architecture notes, API contract, backend contract and infra validation notes.
+Every stage leaves durable artifacts for the next one: executable PRD, frontend architecture and API boundary, backend/security contracts, and infrastructure validation notes.

@@ -1,0 +1,22 @@
+task_id: replace-me
+contract_version: 1
+status: pending-approval
+
+contracts:
+  backend_plan: docs/architecture/backend-plan.md
+  domain_model: docs/architecture/domain-model.md
+  api: docs/architecture/api-contract.md
+  security: docs/architecture/security-contract.md
+  validation: docs/architecture/backend-validation-plan.md
+  implementation: docs/architecture/backend-implementation-contract.md
+
+scope:
+  writable:
+    - backend/**
+  forbidden:
+    - frontend/**
+    - .env
+    - .env.*
+
+validation_commands: []
+max_attempts: 2

@@ -1,44 +1,38 @@
-# Service Layer Rules
+# Service and Repository Rules
 
-Services own business writes and workflows.
+## Services
 
-## Service Functions
+Services are the brain of the domain. Plan explicit operations such as `CreateProjectService.execute()` or `approve_invoice()`.
 
-Prefer explicit keyword-only APIs:
+Services may:
 
-```py
-def create_project(*, data: CreateProjectDTO, actor: User) -> Project:
-    ...
-```
+- enforce business invariants;
+- coordinate repository contracts;
+- coordinate integration-client contracts;
+- use a Unit of Work contract;
+- raise domain exceptions;
+- return typed DTOs or domain results.
 
-Use `transaction.atomic()` for multi-step writes.
+Services must not:
 
-## Services May
+- expose endpoints or import HTTP/DRF types;
+- import ORM models, managers, QuerySets, or `django.db`;
+- execute SQL;
+- instantiate concrete Django repositories directly;
+- return `Response` objects;
+- contain frontend route knowledge.
 
-- validate domain rules
-- create/update/delete models
-- coordinate multiple models
-- call selectors
-- call integration clients
-- raise domain exceptions
-- define transaction boundaries
+## Repositories
 
-## Services Must Not
+Repositories exclusively own database access:
 
-- return DRF `Response`
-- import API views
-- render serializers
-- depend on frontend routes
-- silently swallow domain errors
+- lookups and filters;
+- joins, annotations, aggregation, and pagination queries;
+- create/update/delete persistence;
+- `select_related` and `prefetch_related`;
+- row locks;
+- persistence-specific transaction or Unit of Work implementations.
 
-## Exceptions
+Expose intent-oriented methods such as `get_owned_project()` or `save_order()`, not raw QuerySets.
 
-Use domain exceptions for expected business failures:
-
-```py
-class ProjectLimitExceeded(Exception):
-    pass
-```
-
-Views map domain exceptions to HTTP status codes.
-
+Services should consume repository protocols so domain rules can be tested without a database.

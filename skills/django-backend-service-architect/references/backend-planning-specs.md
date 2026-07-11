@@ -1,12 +1,6 @@
 # Backend Planning Specs
 
-## Purpose
-
-Backend planning specs turn product/frontend context into an explicit backend implementation plan before code is written.
-
-Do not create Django implementation files before these specs exist, unless the user has explicitly asked to skip planning for a narrow maintenance change.
-
-## Required Files
+## Required files
 
 Create or update:
 
@@ -16,77 +10,52 @@ docs/architecture/domain-model.md
 docs/architecture/api-contract.md
 docs/architecture/security-contract.md
 docs/architecture/backend-validation-plan.md
+docs/architecture/backend-implementation-contract.md
 ```
 
-If equivalent paths already exist, keep the existing convention and document the path mapping in `backend-plan.md`.
+Preserve equivalent existing paths and record the mapping in `backend-plan.md`.
 
-## backend-plan.md
+## Backend plan
 
-Include:
+Include source documents, scope, non-goals, apps, dependencies, database ownership, environment assumptions, rollout constraints, and open decisions.
 
-- source documents reviewed
-- product assumptions
-- implementation scope
-- non-goals
-- Django apps to create or update
-- services/actions to implement
-- selectors/read models to implement
-- dependencies and environment assumptions
-- open decisions
+## Domain model
 
-## domain-model.md
+For each entity, include:
 
-Include:
+- CamelCase ORM class name;
+- app ownership;
+- relationships and lifecycle;
+- actor/account/tenant ownership;
+- invariants;
+- repository operations;
+- configuration values and constraints;
+- expected migration impact.
 
-- entities
-- relationships
-- ownership model
-- tenant/account/user boundaries
-- lifecycle states
-- validation rules
-- persistence notes
-- migration ownership decision
+## API contract
 
-## api-contract.md
+For each endpoint, include controller, request DTO, response DTO, service, repository interaction, permissions, sensitive fields, status codes, and errors.
 
-Include for each endpoint:
+## Security contract
 
-- path and method
-- frontend consumer
-- auth and permission requirement
-- rate limit expectation
-- request body/query params
-- response body
-- sensitive fields
-- masking/encryption/omission rules
-- status codes and error shape
-- service/selector used
+Include auth mode, object-level authorization, CORS, throttling, sensitive-data handling, session/token invalidation, logging restrictions, and safe errors.
 
-## security-contract.md
+## Validation plan
+
+Include unit, repository, API, permission, migration-generation, architecture-scan, and integration checks. Name the exact commands where the project defines them.
+
+## Implementation contract
 
 Include:
 
-- authentication mode
-- authorization model
-- object-level permission rules
-- CORS origins by environment
-- rate limit and IP throttling approach
-- sensitive data handling
-- logout/session/token invalidation strategy
-- logging restrictions
-- safe error response rules
+- approval frontmatter;
+- writable and forbidden paths;
+- files/layers expected for each app;
+- business services and invariants;
+- repository contracts and ORM implementations;
+- DTO/controller mappings;
+- Django commands allowed to generate and apply migrations;
+- tests and completion evidence;
+- unresolved blockers.
 
-## backend-validation-plan.md
-
-Include:
-
-- tests to add
-- management commands to run
-- migrations checks
-- architecture scan expectations
-- Docker validation when available
-- known risks and manual checks
-
-## User Summary
-
-After writing specs, summarize the decisions to the user before implementing. Include enough detail for the user to catch wrong assumptions.
+Do not embed executor-specific configuration or credentials.

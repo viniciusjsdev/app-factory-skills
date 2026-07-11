@@ -1,23 +1,14 @@
 # Project Generation Flow
 
-## Input
+The process may start from a rough idea, PRD, client notes, screen list, or existing partial project.
 
-The process can start from:
+1. Create or complete the executable product contract.
+2. Invoke external `@sites` together with `$app-factory-frontend-builder` to build from that contract, show the result, and publish it privately without installing Sites in the application.
+3. Validate product flows, responsive behavior, data boundaries, tests, and build.
+4. Plan Django, enrich root `.codex` backend context, and approve the implementation contract.
+5. Implement Django through the executor-neutral backend skill.
+6. Audit the backend against contracts, generated migrations, tests, and validation evidence.
+7. Prepare infrastructure for local and selected deployment paths.
+8. Publish when requested and document validation gaps.
 
-- rough idea
-- PRD
-- client notes
-- screen list
-- prototype goal
-
-## Flow
-
-1. Produce a Lovable prompt.
-2. User generates frontend in Lovable.
-3. Normalize frontend without changing product intent.
-4. Create backend from API/product contracts.
-5. Create infrastructure for local and deployment paths.
-
-## Output
-
-The target output is an MVP technical project that can be run locally, validated, and prepared for deployment with clearly documented gaps.
+The result is an MVP project that can run locally and evolve from mocks to an API without changing product semantics silently.

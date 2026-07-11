@@ -1,38 +1,14 @@
-# Testing Rules
+# Backend Testing Rules
 
-For each non-trivial feature, add tests for:
+Plan tests by layer:
 
-- service success
-- service validation/domain errors
-- selector filtering
-- API happy path
-- API error path
-- permissions when applicable
-- rate limit behavior for sensitive endpoints when implemented
-- CORS/settings expectations when changed
-- logout/session or token invalidation when auth is implemented
-- sensitive data masking/omission/encryption behavior when relevant
+- DTO tests: structural validation and serialization.
+- Service tests: business rules using fake repository contracts without HTTP or database access.
+- Repository tests: ORM queries, ownership filters, persistence, joins, and transaction behavior against the database.
+- Controller/API tests: DTO usage, status codes, errors, authentication, permissions, and response shape.
+- Security tests: denied object access, sensitive-field omission, throttling, and logout/session behavior when relevant.
+- Migration checks: `makemigrations --check --dry-run`, generated migration provenance, `migrate`, and `showmigrations`.
 
-## Service Tests
+Acceptance tests must trace back to product business-rule IDs or API contract entries where available.
 
-Service tests should assert domain behavior without HTTP.
-
-## Selector Tests
-
-Selector tests should assert filters, permissions and query shape.
-
-## API Tests
-
-API tests should assert:
-
-- status codes
-- request validation
-- response shape
-- auth/permission behavior
-- throttling behavior for protected or abuse-prone endpoints
-- error shape
-- sensitive fields are not leaked
-
-## Validation
-
-Run the project test command. If unavailable, report exactly why.
+Do not mock repositories in repository tests. Do not use the database in service tests. Do not weaken tests to match an incorrect implementation.

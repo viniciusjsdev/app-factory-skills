@@ -1,9 +1,0 @@
-interface:
-  display_name: "Lovable Prompt Architect"
-  short_description: "Transform ideas into complete Lovable prompts."
-  brand_color: "#8B5CF6"
-  default_prompt: "Use $lovable-prompt-architect to transform this product idea into a complete prompt ready to paste into Lovable."
-
-policy:
-  allow_implicit_invocation: true
-

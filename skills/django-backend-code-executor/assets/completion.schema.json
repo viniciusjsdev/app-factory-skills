@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Django backend execution completion",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "contract_version",
+    "status",
+    "changed_files",
+    "commands",
+    "generated_migrations",
+    "tests",
+    "architecture_scan",
+    "contract_deviations",
+    "unresolved_items"
+  ],
+  "properties": {
+    "task_id": { "type": "string", "minLength": 1 },
+    "contract_version": { "type": "integer", "minimum": 1 },
+    "status": {
+      "enum": ["completed", "blocked", "failed", "contract-review-required"]
+    },
+    "changed_files": { "type": "array", "items": { "type": "string" } },
+    "commands": { "type": "array", "items": { "type": "object" } },
+    "generated_migrations": { "type": "array", "items": { "type": "string" } },
+    "tests": { "type": "array", "items": { "type": "object" } },
+    "architecture_scan": { "type": "object" },
+    "contract_deviations": { "type": "array", "items": { "type": "object" } },
+    "unresolved_items": { "type": "array", "items": { "type": "string" } }
+  }
+}

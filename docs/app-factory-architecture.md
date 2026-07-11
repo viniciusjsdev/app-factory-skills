@@ -2,28 +2,36 @@
 
 ## Purpose
 
-The App Factory is a collection of Codex skills that help move from product idea to MVP quickly.
+The App Factory is a staged collection of Codex skills that moves directly from product intent to a validated MVP implementation.
 
-The factory is intentionally staged:
+```txt
+Idea or PRD
+  -> executable product contract
+  -> @sites + App Factory React implementation
+  -> Django planning and contract approval
+  -> executor-neutral Django implementation
+  -> Django contract audit
+  -> infrastructure and publication
+  -> MVP validation
+```
 
-1. Understand the product idea or PRD.
-2. Generate a strong Lovable prompt.
-3. Let the user generate the frontend in Lovable.
-4. Normalize the generated frontend.
-5. Build or normalize the Django backend from product/frontend contracts.
-6. Create Docker, Supabase and Vercel infrastructure from the generated contracts.
+## Boundaries
 
-## Core Boundary
+- `product-brief-architect` owns product meaning and executable contracts, not application code.
+- `app-factory-frontend-builder` owns visual and interactive frontend implementation, not Django or infrastructure.
+- External `@sites` owns preview and publication when composed in the creation command; it does not replace or become an npm dependency of the frontend skill.
+- `django-backend-service-architect` owns backend planning, resolved project context, and implementation audit, not product invention or code execution.
+- `django-backend-code-executor` implements approved backend contracts and never changes them silently.
+- `app-factory-infra-orchestrator` owns runtime and deployment contracts, not feature design.
 
-Lovable remains the visual acceleration tool. Codex prepares the prompt and later normalizes the output, but Codex does not assume the frontend code exists until the user provides it.
-
-## Repository Shape
+## Repository shape
 
 ```txt
 skills/
-  lovable-prompt-architect/
-  lovable-frontend-normalizer/
+  product-brief-architect/
+  app-factory-frontend-builder/
   django-backend-service-architect/
+  django-backend-code-executor/
   app-factory-infra-orchestrator/
 
 docs/
@@ -31,41 +39,11 @@ docs/
   product-workflow.md
 
 specs/
-  skill-catalog.md
-  factory-handoff-contracts.md
-  product-brief-template.md
-  prd-to-lovable-prompt.md
-  frontend-normalization-contract.md
+  product-contract.md
+  frontend-build-contract.md
   django-backend-contract.md
   infra-orchestration-contract.md
+  factory-handoff-contracts.md
 ```
 
-## Skill Design Rules
-
-- One skill per stage.
-- Each skill must be useful on its own.
-- Each skill must clearly state required inputs and outputs.
-- A skill must not silently perform a later stage.
-- Root specs define the factory workflow; skill folders define execution.
-
-## Future Expansion
-
-Backend and infrastructure skills should consume artifacts such as:
-
-- `docs/product/prd.md`
-- `docs/product/domain.md`
-- `docs/architecture/frontend-architecture.md`
-- `docs/architecture/api-contract.md`
-- `docs/architecture/data-model-notes.md`
-- `docs/architecture/validation-report.md`
-- backend service architecture and tests
-
-## Infrastructure Boundary
-
-`app-factory-infra-orchestrator` does not choose one canonical production platform for every MVP. It prepares:
-
-- local development through Docker Compose
-- full-stack container deployment for a VPS or compatible host
-- frontend-native Vercel deployment from `frontend/`
-- backend container deployment
-- Supabase-managed Postgres/Auth/Storage when configured
+Root specs define cross-skill contracts. Skill folders define execution. Generated projects keep product truth in `docs/product/`, durable architecture in `docs/architecture/`, and concise resolved backend-operational context in the project-root `.codex/`.

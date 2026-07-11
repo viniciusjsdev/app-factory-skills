@@ -1,9 +1,0 @@
-interface:
-  display_name: "Lovable Frontend Normalizer"
-  short_description: "Normalize Lovable frontends; preserve UI/UX."
-  brand_color: "#22C55E"
-  default_prompt: "Use $lovable-frontend-normalizer to normalize this Lovable-generated frontend according to the project architecture standard while preserving all existing UI/UX."
-
-policy:
-  allow_implicit_invocation: true
-

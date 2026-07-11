@@ -88,7 +88,8 @@ Validate on the server that:
 
 - the actor owns or can access the resource
 - `user_id`, `account_id`, `tenant_id` and organization fields match allowed scope
-- selectors filter by actor/scope when returning private data
-- services enforce permission checks before mutations
+- repositories expose actor/scope-aware operations for private data
+- services enforce permission checks as business rules before requesting mutations
+- controllers never trust ownership identifiers from request payloads without the service rule
 
 Add tests for denied access when permissions matter.

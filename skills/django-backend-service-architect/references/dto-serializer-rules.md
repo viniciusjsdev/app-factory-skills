@@ -1,42 +1,19 @@
-# DTO and Serializer Rules
+# DTO and Controller Payload Rules
 
-## DTOs
+DTOs are the source of truth for payload structure used by controllers.
 
-DTOs represent service-layer input and output.
+Define, when applicable:
 
-Use dataclasses where useful:
+- request DTO;
+- query/filter DTO;
+- service input DTO;
+- service result DTO;
+- response DTO.
 
-```py
-from dataclasses import dataclass
+DTOs may use dataclasses, typed structures, Pydantic, or DRF `Serializer` classes according to the project baseline. Keep them in `dtos.py` or a `dtos/` package.
 
-@dataclass(frozen=True)
-class CreateProjectDTO:
-    name: str
-    description: str | None = None
-```
+DTOs may perform structural and field-level validation. They must not query the database, call repositories, execute business workflows, or decide actor permissions.
 
-DTOs must not query the database or format HTTP responses.
+Controllers must instantiate the documented request DTO from `request.data` or query parameters and must use the documented response DTO before returning JSON.
 
-## Serializers
-
-Serializers are API boundary objects.
-
-Use them for:
-
-- request validation
-- response shape
-- JSON-safe output
-- simple field-level validation
-
-Do not put business workflows in serializers.
-
-For non-trivial writes:
-
-```txt
-serializer validates -> DTO is created -> service mutates -> response serializer formats output
-```
-
-## Mapping
-
-Document mappings when frontend DTOs differ from backend models.
-
+Do not duplicate the same payload definition across a DTO and a controller-local dictionary.
