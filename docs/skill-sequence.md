@@ -1,4 +1,8 @@
-# Skill Sequence
+# Skill Sequences
+
+There is no mandatory global sequence. Select one factory based on the user's current objective. Cross-factory handoffs are optional and require explicit invocation.
+
+## MVP Factory
 
 ```txt
 Idea or PRD
@@ -12,12 +16,44 @@ Idea or PRD
   -> publication and MVP validation
 ```
 
-- Use `product-brief-architect` when product contracts are absent or incomplete.
-- After product contracts are implementable, invoke external `@sites` together with `$app-factory-frontend-builder`. Sites owns preview/publication; the frontend skill owns stack and implementation standards.
-- Use `django-backend-service-architect` after product and frontend/API contracts exist to plan, materialize backend project context and its local architecture skill kit, and obtain approval.
-- Use `app-factory-backend-router` after approval to select OpenCode Go when ready or Codex automatically when unavailable.
-- Use `django-backend-code-executor` only for an explicitly approved implementation contract; compose the matching local Model, DTO/Mapper, Repository, Service, Controller, migration, and testing skills.
-- Return to `django-backend-service-architect` for contract-to-code audit before infrastructure handoff.
-- Use `app-factory-infra-orchestrator` after frontend/backend structure and environment requirements exist.
+This sequence is self-contained. Do not insert market research or marketing as a prerequisite.
 
-Every stage leaves durable artifacts for the next one: executable PRD, frontend architecture and API boundary, backend/security contracts, and infrastructure validation notes.
+## Research Factory
+
+```txt
+Market question
+  -> market-research-architect
+  -> app-factory-research-router
+  -> specialized retrieval/analysis tasks
+  -> market-validation-harness
+  -> decision and next experiment
+```
+
+- Use `app-market-intelligence-analyst` for iOS app/developer/family/cohort economics through AppStoreTracker plus Apple confirmation.
+- Use OpenAlex for scholarly discovery and inspect original papers for substantive claims.
+- Use Perplexity only as an optional broad-web discovery mechanism.
+- Use `manus-platform-researcher` for bounded read-only research inside native/authenticated platforms.
+- Codex owns normalization, synthesis, and the final adversarial review.
+
+## Marketing Factory
+
+```txt
+Product or launch input
+  -> commercial-launch-architect
+  -> marketing-creative-builder
+  -> app-factory-commercial-router
+  -> Codex, human, or manus-commercial-operator
+  -> commercial-validation-analyst
+```
+
+- Codex owns launch strategy, account information, copy, creative preparation, and analysis.
+- The human owns account creation, credentials, verification, 2FA, connector authorization, and final external-action approval.
+- Manus owns only bounded native actions and measurement after approval.
+- Platform-native discovery belongs to the Research Factory, not the action task.
+
+## Optional handoffs
+
+- Accepted research may be supplied to `product-brief-architect` or `commercial-launch-architect`.
+- An existing MVP may be supplied to `commercial-launch-architect` without prior research.
+- Commercial results may motivate a new research request or product change, but neither starts automatically.
+- Every optional handoff preserves the producer artifact and records user approval.

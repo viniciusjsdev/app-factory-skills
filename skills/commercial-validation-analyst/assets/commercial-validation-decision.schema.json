@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://app-factory.local/schemas/commercial-validation-decision.schema.json",
+  "title": "Commercial Validation Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "validation_id", "launch_or_experiment_id", "data_quality", "classification", "outcome", "confidence", "rationale", "external_action_triggered"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "validation_id": { "type": "string", "minLength": 1 },
+    "launch_or_experiment_id": { "type": "string", "minLength": 1 },
+    "data_quality": { "enum": ["usable", "usable_with_caveats", "inconclusive", "invalid"] },
+    "classification": { "enum": ["pass", "fail", "inconclusive", "invalid"] },
+    "outcome": { "enum": ["scale", "iterate", "pivot", "pause", "stop"] },
+    "confidence": { "enum": ["low", "medium", "high"] },
+    "rationale": { "type": "string", "minLength": 1 },
+    "next_experiment": { "type": ["object", "null"] },
+    "optional_handoffs": { "type": "array", "items": { "type": "string" } },
+    "external_action_triggered": { "const": false }
+  }
+}

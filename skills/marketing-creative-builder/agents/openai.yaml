@@ -1,0 +1,4 @@
+interface:
+  display_name: "Marketing Creative Builder"
+  short_description: "Build channel-ready marketing creative packs"
+  default_prompt: "Use $marketing-creative-builder to build an approved creative pack for this launch."

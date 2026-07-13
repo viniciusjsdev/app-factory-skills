@@ -1,5 +1,7 @@
 # App Factory End-to-End Workflow
 
+This workflow is the standalone MVP Factory. Do not insert Research Factory or Marketing Factory stages unless the user explicitly asks to run them. Their absence is not a product-contract defect.
+
 1. Inspect the idea, PRD, existing repository, and product documents.
 2. Route missing or incomplete product contracts to `product-brief-architect`.
 3. Validate `docs/product/` and resolve blocking product questions.
@@ -12,3 +14,5 @@
 10. Return implementation evidence and the deterministic boundary scan to `django-backend-service-architect` for contract audit.
 11. Route only audited backend output to `app-factory-infra-orchestrator`.
 12. Return the Sites preview/publication result when that plugin was invoked and report every validation gap honestly.
+
+If an accepted research or commercial artifact is supplied, treat it as input evidence without transferring ownership of its decisions into this workflow. Cross-factory continuation remains explicit.

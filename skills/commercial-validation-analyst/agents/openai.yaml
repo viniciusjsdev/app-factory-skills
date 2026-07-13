@@ -1,0 +1,4 @@
+interface:
+  display_name: "Commercial Validation Analyst"
+  short_description: "Evaluate launch results and next experiments"
+  default_prompt: "Use $commercial-validation-analyst to evaluate these launch results and recommend the next experiment."

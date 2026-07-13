@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://app-factory.local/schemas/market-validation-decision.schema.json",
+  "title": "Market Validation Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "decision_id", "research_id", "outcome", "confidence", "rationale", "critical_evidence_ids", "open_questions", "automatic_handoff"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "decision_id": { "type": "string", "minLength": 1 },
+    "research_id": { "type": "string", "minLength": 1 },
+    "outcome": { "enum": ["proceed_to_product_brief", "experiment_first", "revise_search", "revise_hypothesis", "pause", "reject"] },
+    "confidence": { "enum": ["low", "medium", "high"] },
+    "rationale": { "type": "string", "minLength": 1 },
+    "critical_evidence_ids": { "type": "array", "items": { "type": "string" } },
+    "assumptions": { "type": "array", "items": { "type": "string" } },
+    "open_questions": { "type": "array", "items": { "type": "string" } },
+    "search_failures": { "type": "array", "items": { "type": "string" } },
+    "next_experiment": {
+      "type": ["object", "null"],
+      "properties": {
+        "experiment_id": { "type": "string" },
+        "primary_metric": { "type": "string" },
+        "pass_threshold": { "type": "string" },
+        "fail_threshold": { "type": "string" },
+        "stop_rule": { "type": "string" }
+      }
+    },
+    "optional_handoff": { "type": ["string", "null"] },
+    "automatic_handoff": { "const": false }
+  }
+}

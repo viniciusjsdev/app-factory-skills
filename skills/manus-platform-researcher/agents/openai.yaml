@@ -1,0 +1,4 @@
+interface:
+  display_name: "Manus Platform Researcher"
+  short_description: "Research authenticated platforms without actions"
+  default_prompt: "Use $manus-platform-researcher to collect read-only evidence from the requested platform."

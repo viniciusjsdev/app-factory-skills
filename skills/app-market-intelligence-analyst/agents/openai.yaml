@@ -1,0 +1,4 @@
+interface:
+  display_name: "App Market Intelligence Analyst"
+  short_description: "Analyze iOS app markets and economics"
+  default_prompt: "Use $app-market-intelligence-analyst to analyze this app market and its competitor cohort."

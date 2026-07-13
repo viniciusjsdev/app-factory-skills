@@ -1,0 +1,4 @@
+interface:
+  display_name: "Commercial Launch Architect"
+  short_description: "Plan an executable product launch"
+  default_prompt: "Use $commercial-launch-architect to create an executable launch contract for this product."

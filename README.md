@@ -1,10 +1,20 @@
 # App Factory Skills
 
-Codex skills for turning a rough idea or PRD into an executable product contract, a complete React frontend, a planned Django backend, and deploy-ready infrastructure.
+Independent Codex skills for three opt-in workflows: building a hosted MVP, researching/validating a market, and launching/learning commercially.
 
-The factory keeps every stage explicit. Each skill consumes durable artifacts from the previous stage and reports missing context instead of silently inventing consequential requirements.
+The factories keep every stage explicit. Each skill consumes durable artifacts, reports missing context instead of silently inventing consequential requirements, and never invokes another factory automatically.
 
-## Flow
+## Factory selection
+
+| Objective | Factory | Entry skill |
+| --- | --- | --- |
+| Define, build, and host a product | MVP | `product-brief-architect` |
+| Research and challenge a market hypothesis | Research | `market-research-architect` |
+| Plan, create, execute, and evaluate a launch | Marketing | `commercial-launch-architect` |
+
+Research and marketing are optional. The MVP Factory does not depend on either of them.
+
+## MVP Factory flow
 
 ```txt
 Idea, PRD, or client notes
@@ -27,6 +37,35 @@ Idea, PRD, or client notes
 | Backend implementation | Approved backend contracts | OpenCode Go or Codex using `django-backend-code-executor` | Django code, generated migrations, tests, and validation evidence |
 | Backend audit | Contracts and implementation evidence | `django-backend-service-architect` | Approval or bounded correction findings |
 | Infrastructure | Frontend/backend shape | `app-factory-infra-orchestrator` | Docker, environments, deployment contracts and validation |
+
+## Research Factory flow
+
+```txt
+Market question
+  -> market-research-architect
+  -> app-factory-research-router
+  -> Codex / AppStoreTracker + Apple / OpenAlex / optional Perplexity / read-only Manus
+  -> market-validation-harness
+  -> proceed | experiment | revise | pause | reject
+```
+
+AppStoreTracker is the primary quantitative intelligence source for a specific iOS app, developer/app family, or comparable cohort. Revenue/download figures remain directional estimates. Manus is reserved for read-only native-platform research, such as finding relevant influencers more efficiently.
+
+## Marketing Factory flow
+
+```txt
+Product or launch input
+  -> commercial-launch-architect
+  -> marketing-creative-builder
+  -> app-factory-commercial-router
+  -> Codex / human gate / manus-commercial-operator
+  -> commercial-validation-analyst
+  -> scale | iterate | pivot | pause | stop
+```
+
+Codex produces strategy, account setup information, copy, creative assets, and analysis. The human creates and secures accounts. Manus performs only exact approved platform actions or measurement and returns a receipt.
+
+See `docs/codex-manus-integration.md` for the API v2 coupling, portable Manus skills, connector authorization, structured receipts, confirmation gates, and credit controls.
 
 ## Product contract
 
@@ -78,6 +117,18 @@ Use $app-factory-backend-router to route the explicitly approved backend impleme
 Use $django-backend-code-executor directly when Codex is selected or the router requests fallback.
 
 Use $app-factory-infra-orchestrator to prepare local and deployment infrastructure.
+
+Use $market-research-architect to create an executable research contract for this app idea.
+
+Use $app-market-intelligence-analyst to analyze this iOS app, its developer family, and a comparable cohort with AppStoreTracker and Apple evidence.
+
+Use $market-validation-harness to challenge this evidence bundle and recommend the cheapest next experiment.
+
+Use $commercial-launch-architect to create the launch contract and Instagram account setup kit for this app.
+
+Use $marketing-creative-builder to create the approved launch creative pack without publishing it.
+
+Use $app-factory-commercial-router to route this exact approved publish operation while minimizing Manus usage.
 ```
 
 ## Skills
@@ -90,6 +141,26 @@ Use $app-factory-infra-orchestrator to prepare local and deployment infrastructu
 | `app-factory-backend-router` | Optional OpenCode Go routing, passive wait, structured wake-up, and Codex fallback |
 | `django-backend-code-executor` | Approved Django implementation using scalable domain packages, explicit Mappers, DTO, Controller, Service, Repository, Configuration, and Model boundaries |
 | `app-factory-infra-orchestrator` | Docker, environment, Supabase, Vercel, container and VPS paths |
+
+### Research Factory
+
+| Skill | Responsibility |
+| --- | --- |
+| `market-research-architect` | Research decision, hypotheses, falsifiers, evidence tasks, depth and completion rules |
+| `app-factory-research-router` | Provider/source routing, cost controls, fallbacks and evidence lineage |
+| `app-market-intelligence-analyst` | AppStoreTracker/Apple analysis of iOS apps, developers/families and cohorts |
+| `manus-platform-researcher` | Read-only discovery inside native/authenticated platforms |
+| `market-validation-harness` | Adversarial evidence audit, decision and next experiment |
+
+### Marketing Factory
+
+| Skill | Responsibility |
+| --- | --- |
+| `commercial-launch-architect` | Positioning, offer, channels, account setup kits, campaign, KPIs and experiments |
+| `marketing-creative-builder` | Channel-ready copy/assets, variants, accessibility, UTM and manifest |
+| `app-factory-commercial-router` | Codex/Manus/human routing, confirmation gates and credit control |
+| `manus-commercial-operator` | Bounded approved native execution and verification receipt |
+| `commercial-validation-analyst` | Funnel/data-quality analysis and scale/iterate/pivot/pause/stop decision |
 
 ## Frontend baseline
 
@@ -118,12 +189,25 @@ Sites remains an external Codex plugin. It owns preview and publication when exp
 ```txt
 app-factory-skills/
   skills/
+    # MVP Factory
     product-brief-architect/
     app-factory-frontend-builder/
     django-backend-service-architect/
     app-factory-backend-router/
     django-backend-code-executor/
     app-factory-infra-orchestrator/
+    # Research Factory
+    market-research-architect/
+    app-factory-research-router/
+    app-market-intelligence-analyst/
+    manus-platform-researcher/
+    market-validation-harness/
+    # Marketing Factory
+    commercial-launch-architect/
+    marketing-creative-builder/
+    app-factory-commercial-router/
+    manus-commercial-operator/
+    commercial-validation-analyst/
   .codex/
   docs/
   specs/
@@ -149,6 +233,10 @@ node .\skills\app-factory-backend-router\scripts\route-backend-execution.mjs --p
 
 ```powershell
 python C:\Users\welli\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\product-brief-architect
+python C:\Users\welli\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\market-research-architect
+python C:\Users\welli\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\commercial-launch-architect
+node .\skills\app-factory-research-router\scripts\test-router.mjs
+node .\skills\app-factory-commercial-router\scripts\test-router.mjs
 node .\skills\app-factory-backend-router\scripts\opencode-doctor.mjs
 node .\skills\product-brief-architect\scripts\validate-product-contract.mjs <project-root>
 node .\skills\app-factory-frontend-builder\scripts\scan-app-factory-frontend.mjs <project-root>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Market Research Architect"
+  short_description: "Plan evidence-backed market research workflows"
+  default_prompt: "Use $market-research-architect to turn this idea into an executable market research contract."

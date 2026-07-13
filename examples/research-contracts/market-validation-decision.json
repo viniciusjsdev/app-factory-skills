@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "decision_id": "MVD-20260713-01",
+  "research_id": "MR-20260713-01",
+  "outcome": "experiment_first",
+  "confidence": "medium",
+  "rationale": "The app cohort is directionally viable, but direct behavioral evidence for the proposed Brazilian segment is still missing.",
+  "critical_evidence_ids": ["EV-APP-001", "EV-PLATFORM-004"],
+  "assumptions": ["A signup-to-first-plan flow is a useful proxy for initial value."],
+  "open_questions": ["Will qualified visitors complete a first weekly plan?"],
+  "search_failures": [],
+  "next_experiment": {
+    "experiment_id": "EXP-001",
+    "primary_metric": "activated first plans / unique qualified landing visitors",
+    "pass_threshold": "At least 8% after the precommitted sample/time condition.",
+    "fail_threshold": "Below 3% with valid tracking and the precommitted sample/time condition.",
+    "stop_rule": "Stop at the cost cap or when the precommitted sample/time condition is met."
+  },
+  "optional_handoff": "commercial-launch-architect",
+  "automatic_handoff": false
+}

@@ -1,29 +1,79 @@
 # Skill Catalog
 
-## product-brief-architect
+## Invocation model
 
-Consumes product ideas, PRDs, notes, market problems, feature lists, or screen lists. Produces a compact or modular executable product contract. It does not write application code.
+The catalog is divided into three independent factories. Install or invoke only the skills needed for the current objective. Research and Marketing are never implicit prerequisites of MVP construction.
 
-## app-factory-frontend-builder
+## MVP Factory
 
-Consumes executable product contracts and builds a complete React/TypeScript frontend using factory stack, feature architecture, mocks/adapters, responsive behavior, tests, and validation. It does not build Django or full-stack infrastructure.
+### product-brief-architect
 
-In the standard visible site workflow, invoke it together with external `@sites`. Sites owns preview/private publication; the frontend skill remains authoritative for implementation and is not replaced by an npm hosting dependency.
+Creates or completes an executable product contract from ideas, PRDs, notes, problems, features, or screens. It does not write application code.
 
-## django-backend-service-architect
+### app-factory-frontend-builder
 
-Consumes product/frontend/API contracts and creates backend planning, security, validation, and implementation contracts. It enriches root `.codex` backend context, materializes the compact project-local backend architecture kit under `.agents/skills/`, and audits completed code. It does not implement code or invent missing product semantics.
+Builds the complete React/TypeScript frontend from product contracts. In the visible-site workflow it is composed with external `@sites`, which owns preview/publication without becoming an npm dependency.
 
-## app-factory-backend-router
+### django-backend-service-architect
 
-Consumes an explicitly approved backend implementation contract. It detects OpenCode CLI, OpenCode Go authentication, and exact model availability; delegates one passive heavy-code run when ready; and requests automatic Codex fallback otherwise. It does not define backend architecture, monitor execution with model turns, store secrets, or approve the result.
+Creates backend planning, security, validation, and implementation contracts, materializes project context/architecture skills, and audits completed code. It does not implement.
 
-## django-backend-code-executor
+### app-factory-backend-router
 
-Consumes an explicitly approved backend implementation contract. It writes domain-first Django apps with one CamelCase ORM entity and matching Configuration per module, use-case DTO/explicit Mapper/Controller modules, repository-only database access, persistence-agnostic business Services, mandatory opening docstrings in authored Python modules, Django-command-generated migrations, and layered tests. It does not use AutoMapper reflection, approve, or change contracts.
+Routes an approved backend contract to OpenCode Go when ready or Codex as fallback. It does not define or approve backend architecture.
 
-## app-factory-infra-orchestrator
+### django-backend-code-executor
 
-Consumes frontend/backend structure and deployment contracts to prepare Docker, environments, Supabase, frontend hosting, backend containers, or VPS paths. It does not choose a single production platform for every project.
+Implements an approved Django contract with explicit Model/Configuration, DTO/Mapper, Controller, Service, Repository, migrations, and tests.
 
-Later skills run only after the artifacts they need exist. Each skill must report missing or contradictory inputs explicitly.
+### app-factory-infra-orchestrator
+
+Prepares Docker, environment, Supabase, frontend hosting, backend container, and VPS paths after a project shape exists.
+
+## Research Factory
+
+### market-research-architect
+
+Creates the research decision frame, hypotheses, falsifiers, source/evidence tasks, depth, budget, and completion criteria. It plans but does not retrieve or decide.
+
+### app-factory-research-router
+
+Routes evidence tasks across Codex, AppStoreTracker/Apple, OpenAlex, optional Perplexity, and Manus. It preserves source lineage and does not validate the idea.
+
+### app-market-intelligence-analyst
+
+Analyzes iOS apps, developers/families, and comparable cohorts using AppStoreTracker estimates plus Apple confirmation. It distinguishes observed, estimated, derived, and missing data.
+
+### manus-platform-researcher
+
+Runs bounded read-only research inside native/authenticated platforms. It can find creators, communities, competitors, and live signals but never contacts, follows, likes, publishes, or changes state.
+
+### market-validation-harness
+
+Applies adversarial methodology, devil/angel, arbitration, evidence audit, and experiment design to produce a traceable market decision. It does not start another factory.
+
+## Marketing Factory
+
+### commercial-launch-architect
+
+Creates positioning, offer, channels, account setup kits, campaign phases, KPIs, attribution, experiments, and human gates for any existing product.
+
+### marketing-creative-builder
+
+Creates channel-ready copy, creative/video briefs and assets, variants, accessibility fields, UTM metadata, and a production manifest. It never publishes.
+
+### app-factory-commercial-router
+
+Routes commercial work to Codex, Manus, or human gates while minimizing Manus credits and requiring exact approval for external actions.
+
+### manus-commercial-operator
+
+Executes only an approved publish, schedule, one-to-one contact, metrics read, or CRM update through a connected platform and returns a verification receipt.
+
+### commercial-validation-analyst
+
+Reconciles launch contract, receipts, funnel metrics, costs, and feedback to recommend scale, iterate, pivot, pause, or stop.
+
+## General rule
+
+Every skill reports missing/contradictory inputs. No skill silently invokes another factory, creates an account, handles credentials, authorizes spend, or changes a product contract outside its responsibility.

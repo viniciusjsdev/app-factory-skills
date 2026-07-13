@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "operation_id": "COM-20260713-01",
+  "provider_task_id": "manus-task-example",
+  "mode": "publish",
+  "status": "succeeded",
+  "platform": "instagram",
+  "account_id": "account-example",
+  "started_at": "2026-07-13T18:00:00-03:00",
+  "completed_at": "2026-07-13T18:01:00-03:00",
+  "changed_objects": [
+    {
+      "native_id": "post-example",
+      "action": "created",
+      "artifact_id": "CREATIVE-001-A"
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "platform_readback",
+      "native_id": "post-example",
+      "url": "https://www.instagram.com/p/example/"
+    }
+  ],
+  "errors": [],
+  "retries": 0,
+  "reported_usage": {
+    "credits": "provider-reported-value-if-available"
+  },
+  "external_state_changed": true
+}

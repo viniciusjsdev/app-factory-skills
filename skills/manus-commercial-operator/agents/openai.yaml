@@ -1,0 +1,4 @@
+interface:
+  display_name: "Manus Commercial Operator"
+  short_description: "Execute approved platform actions in Manus"
+  default_prompt: "Use $manus-commercial-operator to execute only the approved platform action and return a receipt."

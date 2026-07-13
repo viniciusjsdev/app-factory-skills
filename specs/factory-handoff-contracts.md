@@ -1,5 +1,9 @@
 # Factory Handoff Contracts
 
+## Independence and invocation
+
+The MVP, Research, and Marketing factories are independent. The handoffs below describe compatible artifacts, not a mandatory global pipeline. A consumer runs only after explicit user invocation or approval; a producer must never trigger it silently.
+
 ## Product to frontend
 
 Producer: `product-brief-architect`
@@ -51,3 +55,73 @@ Producer: `app-factory-infra-orchestrator`
 Consumer: user and selected deployment target
 
 Required output: local orchestration, service Docker assets where applicable, environment contracts, deployment instructions/configuration, secrets boundaries, smoke-test commands, and honest validation status.
+
+## Research architecture to routing
+
+Producer: `market-research-architect`
+
+Consumer: `app-factory-research-router`
+
+Required output: research/decision ID, market frame, numbered hypotheses and falsifiers, evidence tasks, geography/platform/period/freshness, inclusion/exclusion rules, depth, provider permissions/budget, completion/stop conditions, and open questions.
+
+## Research routing to specialized evidence work
+
+Producer: `app-factory-research-router`
+
+Consumers: Codex research, `app-market-intelligence-analyst`, OpenAlex discovery, optional Perplexity discovery, or `manus-platform-researcher`
+
+Required output: bounded task IDs, evidence class, primary/fallback mechanism, query/filters, result cap, source fields, provenance requirements, cost limits, and status. Provider mechanisms must preserve original-source lineage.
+
+## Evidence to market validation
+
+Producer: research tasks and specialized analysts
+
+Consumer: `market-validation-harness`
+
+Required output: normalized evidence items, observed/estimated/derived status, original source, retrieval mechanism, scope/period, transformations, dependence groups, confidence, limitations, counterevidence, and search failures.
+
+Optional next consumers: `product-brief-architect`, `commercial-launch-architect`, or a new research/experiment run. The market decision only recommends the handoff; it does not invoke it.
+
+## Commercial architecture to creative production
+
+Producer: `commercial-launch-architect`
+
+Consumer: `marketing-creative-builder`
+
+Required output: approved audience, positioning, offer, channel/placement, product truth and proof, prohibited claims, CTA/destination, brand/language/accessibility constraints, experiment metadata, and approval owner.
+
+## Account setup kit to human owner
+
+Producer: `commercial-launch-architect`
+
+Consumer: human account owner
+
+Required output: handle options, display/category/bio/link/contact fields, visual brief, professional settings, business/analytics connections, security/recovery checklist, and first content structure. Passwords, verification, 2FA, recovery codes, and live account creation are never included.
+
+## Creative pack to commercial routing
+
+Producer: `marketing-creative-builder`
+
+Consumer: `app-factory-commercial-router`
+
+Required output: immutable artifact/version references, final copy/assets, channel/placement, target account, CTA/URL/UTM, accessibility fields, claim proof, approval state, experiment ID, and expected metrics.
+
+## Commercial routing to Manus execution
+
+Producer: `app-factory-commercial-router`
+
+Consumer: `manus-commercial-operator`
+
+Required output: exact operation ID/mode/account, final artifact version, recipients or target objects, schedule/time zone, confirmation record, cost/item/retry/time limits, and expected receipt fields. Strategy, discovery, credentials, and account creation are prohibited.
+
+## Execution to commercial validation
+
+Producer: `manus-commercial-operator` or human executor
+
+Consumer: `commercial-validation-analyst`
+
+Required output: receipt with operation/provider task IDs, status, account/platform, timestamps, changed objects, native URLs/IDs/readback, errors, retries, reported usage, and external-state flag. The validator also consumes funnel/product/CRM metrics and complete known costs.
+
+## Cross-factory handoff rule
+
+When one factory's result suggests work in another, record `optional_handoff`, target skill, reason, required input, and `automatic_handoff: false`. The user chooses whether and when to continue.

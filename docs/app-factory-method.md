@@ -1,5 +1,7 @@
 # App Factory Method
 
+This document describes only the MVP Factory. It remains independently runnable: the Research Factory and Marketing Factory are optional workflows documented in `research-workflow.md` and `marketing-workflow.md`.
+
 1. Capture the idea, existing PRD, client notes, or product constraints.
 2. Use `product-brief-architect` to create or complete executable product contracts.
 3. Invoke external `@sites` together with `$app-factory-frontend-builder`: Sites shows and publishes the result, while the frontend skill governs the React implementation.
@@ -12,3 +14,5 @@
 10. Publish when requested and validate the MVP with explicit remaining gaps.
 
 Do not ask a later skill to reconstruct missing decisions that an earlier contract should own. Preserve product intent, keep handoffs traceable, and prefer a complete MVP journey over premature platform complexity.
+
+Do not add market research or commercial launch work to this sequence unless the user explicitly invokes the corresponding independent factory.

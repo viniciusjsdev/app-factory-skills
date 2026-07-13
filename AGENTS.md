@@ -1,6 +1,6 @@
 ## App Factory Skills Repository
 
-This repository contains independent Codex skills for direct MVP and prototype creation.
+This repository contains independent Codex skills for direct MVP/prototype creation, opt-in market research/validation, and opt-in commercial launch/validation.
 
 Rules:
 
@@ -12,6 +12,9 @@ Rules:
 - Keep `templates/` focused on reusable generated-project starter material.
 - Keep `examples/` focused on sample contracts and project structures.
 - Keep executable instructions, scripts, and detailed references inside the relevant skill folder.
+- Treat the MVP Factory, Research Factory, and Marketing Factory as independent workflows.
+- Never make Research or Marketing a prerequisite, hidden stage, or blocking gate for the MVP Factory.
+- Invoke a cross-factory handoff only after explicit user request or approval; record `automatic_handoff: false` in machine-readable decisions.
 - Start from a PRD, product brief, client notes, or rough idea.
 - Use `product-brief-architect` to create an executable product contract.
 - Use `app-factory-frontend-builder` to implement the React frontend directly from product contracts.
@@ -23,6 +26,40 @@ Rules:
 - Use `app-factory-infra-orchestrator` only after a frontend/backend project shape exists.
 - Preserve MVP validation speed over premature platform complexity.
 - Validate every changed skill with `quick_validate.py`.
+
+## Factory Routing
+
+- For product definition, construction, backend, infrastructure, hosting, or technical MVP validation, use the standalone MVP Factory.
+- For market investigation, app-market intelligence, evidence collection, or hypothesis validation, use the standalone Research Factory.
+- For positioning, account setup information, launch planning, creative production, platform execution, or commercial-result validation, use the standalone Marketing Factory.
+- Accept existing products and artifacts from outside the App Factory; no factory must have produced the input for another factory to use it.
+- Preserve producer artifacts and use optional handoff contracts instead of silently changing another factory's source of truth.
+
+## Research and Market Validation
+
+- Use `market-research-architect` to create the research decision, hypotheses, falsifiers, evidence tasks, depth, provider permissions, and completion rules.
+- Use `app-factory-research-router` after a research question/contract exists; Codex is the default researcher and synthesizer.
+- Use `app-market-intelligence-analyst` for iOS apps, developers/app families, or comparable cohorts with AppStoreTracker plus Apple confirmation.
+- Treat AppStoreTracker downloads/revenue as directional modeled estimates, never audited actuals; normalize storefronts, periods, currencies, cohorts, and metric definitions.
+- Use OpenAlex for scholarly discovery and inspect original works for substantive evidence.
+- Use Perplexity only as an optional broad open-web discovery mechanism when permitted.
+- Use `manus-platform-researcher` only for bounded read-only research inside native/authenticated platforms; it must not contact, follow, like, publish, create accounts, or change state.
+- Preserve original-source lineage separately from retrieval mechanism, transformations, dependence groups, limitations, counterevidence, and search failures.
+- Use `market-validation-harness` after evidence exists; its adversarial lenses do not justify duplicate paid calls.
+- Market validation may recommend product, marketing, experiment, revised research, pause, or rejection but must never invoke the next factory automatically.
+
+## Commercial Launch and Validation
+
+- Use `commercial-launch-architect` to define audience, positioning, offer, channels, account setup kits, campaign phases, KPIs, attribution, experiments, and human gates.
+- Codex produces account information and instructions; the human owner creates the account and controls credentials, verification, CAPTCHA, recovery, 2FA, connector authorization, roles, billing, and paid activation.
+- Never store passwords, tokens, cookies, verification codes, recovery codes, or authenticated browser state in the repository, generated projects, prompts, or receipts.
+- Use `marketing-creative-builder` for channel-ready copy/assets, real experiment variants, accessibility fields, UTM metadata, claims QA, and the creative manifest; it must not publish.
+- Use `app-factory-commercial-router` for bounded external operations. Keep strategy, synthesis, and creative preparation in Codex to minimize Manus credits.
+- Route platform-native discovery to the Research Factory, not inside a write/execution task.
+- Use `manus-commercial-operator` only after the exact account, content, target/recipients, timing, limits, and required human confirmation are present.
+- Prohibit mass engagement, autonomous recipient expansion, account creation, credential handling, unapproved spend, and blind retries of ambiguous writes.
+- Require a structured execution receipt and platform readback; task submission is not success.
+- Use `commercial-validation-analyst` to reconcile plan, execution, data quality, funnel metrics, costs, and feedback before recommending scale, iterate, pivot, pause, or stop.
 
 ## Product Definition
 

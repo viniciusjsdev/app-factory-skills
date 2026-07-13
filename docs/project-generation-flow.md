@@ -1,5 +1,7 @@
 # Project Generation Flow
 
+This is the standalone MVP generation flow. Research and marketing may consume or contribute artifacts through explicit handoffs, but they are never implicit generation stages.
+
 The process may start from a rough idea, PRD, client notes, screen list, or existing partial project.
 
 1. Create or complete the executable product contract.
