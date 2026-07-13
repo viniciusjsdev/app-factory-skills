@@ -1,0 +1,4 @@
+interface:
+  display_name: "Django Migration"
+  short_description: "Generate and verify Django migrations safely"
+  default_prompt: "Use $django-migration to generate and validate approved schema migrations through Django commands."

@@ -24,7 +24,9 @@ Django repositories may:
 - create, update, and delete rows;
 - optimize queries;
 - implement locks and persistence transactions;
-- map ORM entities to domain records or service DTOs.
+- call repository-local explicit mappers that convert ORM entities to persistence-neutral records.
+
+Keep ORM/record transformations in `repositories/mappers.py` when they are non-trivial or repeated. Those mappers may import ORM Models but must not query, save, delete, or open transactions.
 
 No other application layer may perform these operations.
 

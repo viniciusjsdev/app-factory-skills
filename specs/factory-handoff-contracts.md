@@ -22,9 +22,11 @@ Required output: implemented frontend, architecture notes, repository/service co
 
 Producer: `django-backend-service-architect`
 
-Consumer: `django-backend-code-executor`
+Consumer: `app-factory-backend-router`, then OpenCode Go or Codex using `django-backend-code-executor`
 
-Required output: explicitly approved backend implementation contract, domain/API/security/validation contracts, resolved project-root `.codex` backend context, writable scope, migration policy, and test expectations.
+Required output: explicitly approved backend implementation contract, domain/API/security/validation contracts, resolved project-root `.codex` backend context, compact `.agents/skills/` architecture kit, scalable per-domain package/module map, explicit mapper responsibilities, authored-module documentation policy, writable scope, migration policy, and layered test expectations.
+
+Routing rule: use OpenCode only when its CLI, OpenCode Go credential, and configured model are ready. Otherwise continue with Codex without changing the approved contract. OpenCode execution waits passively and emits one final completion/error result; no executor configuration enters the generated project's `.codex/`.
 
 ## Backend implementation to audit
 
@@ -32,7 +34,7 @@ Producer: `django-backend-code-executor`
 
 Consumer: `django-backend-service-architect`
 
-Required output: Django implementation, Django-generated migrations, tests, command results, architecture scan, changed-file manifest, contract deviations, and unresolved items.
+Required output: Django implementation with meaningful opening docstrings in every authored Python module, untouched Django-generated migrations, layered tests including mapper coverage, command results, architecture scan, changed-file manifest, contract deviations, and unresolved items.
 
 ## Backend to infrastructure
 

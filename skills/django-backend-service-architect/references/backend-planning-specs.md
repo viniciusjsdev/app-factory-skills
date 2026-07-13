@@ -24,6 +24,7 @@ Include source documents, scope, non-goals, apps, dependencies, database ownersh
 For each entity, include:
 
 - CamelCase ORM class name;
+- snake_case `models/<entity>.py` and matching `configurations/<entity>.py` modules;
 - app ownership;
 - relationships and lifecycle;
 - actor/account/tenant ownership;
@@ -36,24 +37,29 @@ For each entity, include:
 
 For each endpoint, include controller, request DTO, response DTO, service, repository interaction, permissions, sensitive fields, status codes, and errors.
 
+Name the `dtos/<use_case>.py`, `mappers/<use_case>.py`, and `api/controllers/<use_case>.py` modules. Define request-to-service and result-to-response transformations explicitly.
+
 ## Security contract
 
 Include auth mode, object-level authorization, CORS, throttling, sensitive-data handling, session/token invalidation, logging restrictions, and safe errors.
 
 ## Validation plan
 
-Include unit, repository, API, permission, migration-generation, architecture-scan, and integration checks. Name the exact commands where the project defines them.
+Include unit, repository, API, permission, module-docstring, migration-generation, architecture-scan, and integration checks. Name the exact commands where the project defines them.
 
 ## Implementation contract
 
 Include:
 
-- approval frontmatter;
+- exact approval frontmatter with `status`, positive integer `contract_version`, and ISO `approved_at` date;
 - writable and forbidden paths;
 - files/layers expected for each app;
+- scalable package/module layout and explicit mapper responsibilities;
 - business services and invariants;
 - repository contracts and ORM implementations;
 - DTO/controller mappings;
+- mandatory opening module docstrings and the contract or `BR-###` references expected in behavioral files;
+- project-local architecture skills required by each implementation area and any approved product-specific domain-skill candidates;
 - Django commands allowed to generate and apply migrations;
 - tests and completion evidence;
 - unresolved blockers.

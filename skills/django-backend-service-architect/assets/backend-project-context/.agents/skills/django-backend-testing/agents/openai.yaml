@@ -1,0 +1,4 @@
+interface:
+  display_name: "Django Backend Testing"
+  short_description: "Test Django contracts and architecture layers"
+  default_prompt: "Use $django-backend-testing to add and run approved backend tests and architecture validation."

@@ -2,7 +2,7 @@
 
 ## DTOs
 
-Define every payload used by a controller in `dtos.py` or a `dtos/` package:
+Define every payload used by a controller in a use-case module under `dtos/`:
 
 - request body;
 - query/filter input;
@@ -18,11 +18,12 @@ Controllers:
 
 1. declare endpoint metadata;
 2. validate request/query DTOs;
-3. resolve and invoke a service;
-4. map expected domain exceptions;
-5. serialize a response DTO;
-6. return the HTTP response.
+3. use an explicit mapper to create service input;
+4. resolve and invoke a service;
+5. map expected domain exceptions;
+6. use an explicit mapper to create a response DTO;
+7. return the HTTP response.
 
-Controllers must not import ORM models or concrete repositories, build queries, open transactions, implement business branches, or define payload structure inline.
+Controllers must not import ORM models or concrete repositories, build queries, open transactions, implement business branches, define payload structure inline, or perform field-by-field mapping.
 
 Use `composition.py` to bind services to repository implementations.

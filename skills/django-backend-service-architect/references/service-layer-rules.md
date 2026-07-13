@@ -36,3 +36,5 @@ Repositories exclusively own database access:
 Expose intent-oriented methods such as `get_owned_project()` or `save_order()`, not raw QuerySets.
 
 Services should consume repository protocols so domain rules can be tested without a database.
+
+Services receive typed service-input DTOs and return typed service-result DTOs. Controllers use explicit application mappers before and after the Service; Services must not map HTTP request or response representations.

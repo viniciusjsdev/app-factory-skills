@@ -1,0 +1,4 @@
+interface:
+  display_name: "Django Repository"
+  short_description: "Implement repository-only Django persistence"
+  default_prompt: "Use $django-repository to implement approved repository contracts and Django persistence adapters."

@@ -1,4 +1,4 @@
 interface:
   display_name: "Django Backend Service Architect"
   short_description: "Plan and audit contract-driven Django backends"
-  default_prompt: "Use $django-backend-service-architect to plan or audit this Django backend from the product and frontend contracts."
+  default_prompt: "Use $django-backend-service-architect to plan or audit this Django backend and materialize its project-local architecture skill kit."

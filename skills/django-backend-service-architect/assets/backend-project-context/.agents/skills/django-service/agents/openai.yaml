@@ -1,0 +1,4 @@
+interface:
+  display_name: "Django Service"
+  short_description: "Implement persistence-agnostic business rules"
+  default_prompt: "Use $django-service to implement approved business rules without HTTP or ORM access."

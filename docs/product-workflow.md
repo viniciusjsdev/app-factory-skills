@@ -12,7 +12,7 @@ The standard command invokes external `@sites` together with `$app-factory-front
 
 ## 3. Django backend
 
-`django-backend-service-architect` consumes product rules, data contracts, authorization expectations, frontend service contracts, and acceptance criteria. It creates and audits backend contracts and enriches project context. `django-backend-code-executor` implements approved contracts with all ORM access in repositories, business rules in persistence-agnostic services, DTO-defined controller payloads, configured CamelCase entities, and Django-generated migrations.
+`django-backend-service-architect` consumes product rules, data contracts, authorization expectations, frontend service contracts, and acceptance criteria. It creates and audits backend contracts, enriches project context, and materializes the local backend architecture skill kit. After explicit approval, `app-factory-backend-router` chooses OpenCode Go for one passive heavy-code run when ready or Codex as the automatic fallback. The selected engine follows `django-backend-code-executor` plus the matching local layer skills, using domain-first apps with `models/`, `configurations/`, `dtos/`, explicit `mappers/`, `repositories/`, `services/`, and `api/controllers/`; all ORM access stays in repositories and migrations remain Django-generated.
 
 ## 4. Infrastructure and publication
 

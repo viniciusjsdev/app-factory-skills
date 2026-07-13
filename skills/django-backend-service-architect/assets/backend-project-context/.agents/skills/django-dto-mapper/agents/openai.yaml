@@ -1,0 +1,4 @@
+interface:
+  display_name: "Django DTO Mapper"
+  short_description: "Build DTOs and explicit boundary mappings"
+  default_prompt: "Use $django-dto-mapper to implement approved DTOs and explicit representation mappings."

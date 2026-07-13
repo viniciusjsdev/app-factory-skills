@@ -63,6 +63,7 @@ When sensitive information must be returned:
 - prefer masking or partial values where full data is not required
 - encrypt sensitive persisted values at rest when the project requires storing them
 - never expose secrets, tokens, private keys, service role keys or password hashes
+- require explicit response-mapper allowlists for sensitive or permission-scoped fields; never use reflective AutoMapper copying
 - avoid logging sensitive request or response payloads
 
 Examples of sensitive data include tokens, credentials, personal identifiers, financial records, business-private data, invoices, documents and account ownership metadata.

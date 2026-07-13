@@ -5,9 +5,10 @@
 3. Validate `docs/product/` and resolve blocking product questions.
 4. Invoke `@sites` together with `$app-factory-frontend-builder`: Sites owns preview/private publication, while the frontend skill is the mandatory stack, architecture, security, and quality contract.
 5. Validate frontend behavior, architecture, npm supply chain, tests, and build without installing Sites as an application dependency.
-6. Route backend planning and project-context enrichment to `django-backend-service-architect`.
+6. Route backend planning, project-context enrichment, and local architecture-kit materialization to `django-backend-service-architect`.
 7. Require explicit approval of `docs/architecture/backend-implementation-contract.md`.
-8. Route approved backend implementation to `django-backend-code-executor`; executor selection remains a factory concern.
-9. Return implementation evidence to `django-backend-service-architect` for contract audit.
-10. Route only audited backend output to `app-factory-infra-orchestrator`.
-11. Return the Sites preview/publication result when that plugin was invoked and report every validation gap honestly.
+8. Invoke `app-factory-backend-router`; use OpenCode Go only when its CLI, credential, and configured model are ready, otherwise continue with Codex.
+9. Require the selected engine to follow `django-backend-code-executor` and the matching generated-project layer skills. When OpenCode runs, wait passively for its single completion/error exit and do not poll or narrate progress.
+10. Return implementation evidence and the deterministic boundary scan to `django-backend-service-architect` for contract audit.
+11. Route only audited backend output to `app-factory-infra-orchestrator`.
+12. Return the Sites preview/publication result when that plugin was invoked and report every validation gap honestly.

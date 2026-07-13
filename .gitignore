@@ -1,0 +1,6 @@
+.env
+.env.*
+!.env.example
+.app-factory/runs/
+**/__pycache__/
+*.pyc

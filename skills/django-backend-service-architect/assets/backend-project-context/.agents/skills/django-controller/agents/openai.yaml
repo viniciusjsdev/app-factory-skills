@@ -1,0 +1,4 @@
+interface:
+  display_name: "Django Controller"
+  short_description: "Implement thin DTO-driven API endpoints"
+  default_prompt: "Use $django-controller to implement an approved thin endpoint using DTOs, mappers, and services."

@@ -12,11 +12,15 @@ In the standard visible site workflow, invoke it together with external `@sites`
 
 ## django-backend-service-architect
 
-Consumes product/frontend/API contracts and creates backend planning, security, validation, and implementation contracts. It enriches root `.codex` backend context and audits completed code. It does not implement code or invent missing product semantics.
+Consumes product/frontend/API contracts and creates backend planning, security, validation, and implementation contracts. It enriches root `.codex` backend context, materializes the compact project-local backend architecture kit under `.agents/skills/`, and audits completed code. It does not implement code or invent missing product semantics.
+
+## app-factory-backend-router
+
+Consumes an explicitly approved backend implementation contract. It detects OpenCode CLI, OpenCode Go authentication, and exact model availability; delegates one passive heavy-code run when ready; and requests automatic Codex fallback otherwise. It does not define backend architecture, monitor execution with model turns, store secrets, or approve the result.
 
 ## django-backend-code-executor
 
-Consumes an explicitly approved backend implementation contract. It writes Django code using CamelCase ORM entities, external model configurations, repository-only database access, persistence-agnostic business services, DTO-defined controller payloads, thin controllers, Django-command-generated migrations, and tests. It does not approve or change contracts.
+Consumes an explicitly approved backend implementation contract. It writes domain-first Django apps with one CamelCase ORM entity and matching Configuration per module, use-case DTO/explicit Mapper/Controller modules, repository-only database access, persistence-agnostic business Services, mandatory opening docstrings in authored Python modules, Django-command-generated migrations, and layered tests. It does not use AutoMapper reflection, approve, or change contracts.
 
 ## app-factory-infra-orchestrator
 

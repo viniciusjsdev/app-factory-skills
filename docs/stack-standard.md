@@ -18,8 +18,11 @@ The complete version and supply-chain baseline lives in `skills/app-factory-fron
 - Python 3.12
 - Django 5 and Django REST Framework
 - PostgreSQL
-- CamelCase ORM Models, model Configurations, Repositories, Services, DTOs, thin Controllers, and tests
+- domain-first packages with one CamelCase ORM Model and matching Configuration per module, use-case DTOs, explicit Mappers, Repositories, Services, thin Controllers, and layered tests
+- explicit mapping without AutoMapper-style reflection dependencies
 - repository-only ORM access and Django-command-generated migrations
+- meaningful opening module docstrings across authored backend Python files, excluding untouched Django-generated migrations
+- project-local architecture skills for Model/Configuration, DTO/Mapper, Repository, Service, Controller, migration, and testing workflows
 - environment-driven configuration and container compatibility
 
 ## Infrastructure

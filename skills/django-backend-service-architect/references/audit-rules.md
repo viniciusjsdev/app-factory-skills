@@ -14,10 +14,14 @@ Audit:
 ## Required checks
 
 - ORM entity classes use CamelCase.
-- Model specifications come from `configurations.py`.
+- Each CamelCase Model lives in its own module, is exported by `models/__init__.py`, and receives specifications from the matching `configurations/` module.
+- DTOs, mappers, and Controllers are separated into use-case modules, with no AutoMapper dependency or Controller-local field mapping.
 - ORM queries and writes exist only in repositories.
 - Services contain business rules without ORM, database, endpoint, or HTTP access.
 - Controllers contain endpoint transport only and use DTO-defined payloads.
+- Explicit mappers contain representation conversion only; repository-local mappers never query or persist.
+- Every authored backend Python module starts with a meaningful docstring that explains its responsibility and boundary; relevant behavioral modules cite their contract or `BR-###` rules.
+- Django-generated migrations are excluded from the docstring rule and were not patched to add documentation.
 - Migration files show Django-generated provenance and were not manually patched.
 - Tests assert business invariants rather than implementation trivia.
 - API and security behavior matches approved contracts.

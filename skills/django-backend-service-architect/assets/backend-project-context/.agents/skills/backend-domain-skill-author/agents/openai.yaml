@@ -1,0 +1,4 @@
+interface:
+  display_name: "Backend Domain Skill Author"
+  short_description: "Create project-specific backend domain skills"
+  default_prompt: "Use $backend-domain-skill-author to create an approved project-specific skill from stable backend business rules."

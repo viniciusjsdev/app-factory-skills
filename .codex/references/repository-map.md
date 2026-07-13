@@ -9,9 +9,10 @@
 - `templates/`: starter material for generated projects.
 - `examples/`: sample outputs and project shapes.
 
-Backend planning/audit lives in `skills/django-backend-service-architect/`. Approved backend code execution lives in the independent `skills/django-backend-code-executor/` skill.
+Backend planning/audit lives in `skills/django-backend-service-architect/`. Optional OpenCode/Codex selection lives in `skills/app-factory-backend-router/`. Approved backend code execution lives in the independent, executor-neutral `skills/django-backend-code-executor/` skill.
 
 ## Do Not Confuse
 
 - `.codex/` is not the install location for skills.
-- `.agents/skills/` is useful inside generated app projects when embedding skills there, but this source repository keeps skills in `skills/`.
+- Generated app projects receive a compact backend architecture kit and product-specific domain capabilities under `.agents/skills/`; this source repository keeps installable factory skills in `skills/` and the generated kit as an architect-skill asset.
+- `opencode.json` and `.env.example` configure only this App Factory repository. Do not copy them into generated projects.

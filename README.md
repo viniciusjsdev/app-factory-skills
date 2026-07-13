@@ -11,7 +11,8 @@ Idea, PRD, or client notes
   -> product-brief-architect
   -> @sites + app-factory-frontend-builder
   -> django-backend-service-architect
-  -> django-backend-code-executor
+  -> app-factory-backend-router
+  -> OpenCode Go or Codex + django-backend-code-executor
   -> django-backend-service-architect audit
   -> app-factory-infra-orchestrator
   -> publication and MVP validation
@@ -21,8 +22,9 @@ Idea, PRD, or client notes
 | --- | --- | --- | --- |
 | Product | Idea, PRD, notes, screens | `product-brief-architect` | Executable PRD and implementation contracts |
 | Frontend | Product contracts | external `@sites` + `app-factory-frontend-builder` | Visible preview, React frontend, private Sites URL, mocks/adapters, tests, API handoff |
-| Backend design | Product and frontend contracts | `django-backend-service-architect` | Approved backend contracts and project context |
-| Backend implementation | Approved backend contracts | `django-backend-code-executor` | Django code, generated migrations, tests, and validation evidence |
+| Backend design | Product and frontend contracts | `django-backend-service-architect` | Approved backend contracts, project context, and local architecture skill kit |
+| Backend routing | Approved backend contracts | `app-factory-backend-router` | OpenCode delegation or automatic Codex fallback |
+| Backend implementation | Approved backend contracts | OpenCode Go or Codex using `django-backend-code-executor` | Django code, generated migrations, tests, and validation evidence |
 | Backend audit | Contracts and implementation evidence | `django-backend-service-architect` | Approval or bounded correction findings |
 | Infrastructure | Frontend/backend shape | `app-factory-infra-orchestrator` | Docker, environments, deployment contracts and validation |
 
@@ -71,7 +73,9 @@ Use @sites to build, show, and privately publish this product. Follow $app-facto
 
 Use $django-backend-service-architect to create the backend planning specs from the product and frontend contracts.
 
-Use $django-backend-code-executor to implement the explicitly approved backend implementation contract.
+Use $app-factory-backend-router to route the explicitly approved backend implementation contract to OpenCode Go with Codex fallback.
+
+Use $django-backend-code-executor directly when Codex is selected or the router requests fallback.
 
 Use $app-factory-infra-orchestrator to prepare local and deployment infrastructure.
 ```
@@ -82,8 +86,9 @@ Use $app-factory-infra-orchestrator to prepare local and deployment infrastructu
 | --- | --- |
 | `product-brief-architect` | Product scope, screens, rules, data, visual direction, acceptance criteria |
 | `app-factory-frontend-builder` | Direct React implementation using the factory stack and feature architecture |
-| `django-backend-service-architect` | Backend planning, project context, contract approval, and implementation audit |
-| `django-backend-code-executor` | Approved Django implementation using DTO, Controller, Service, Repository, Configuration, and Model boundaries |
+| `django-backend-service-architect` | Backend planning, project context, local architecture kit, contract approval, and implementation audit |
+| `app-factory-backend-router` | Optional OpenCode Go routing, passive wait, structured wake-up, and Codex fallback |
+| `django-backend-code-executor` | Approved Django implementation using scalable domain packages, explicit Mappers, DTO, Controller, Service, Repository, Configuration, and Model boundaries |
 | `app-factory-infra-orchestrator` | Docker, environment, Supabase, Vercel, container and VPS paths |
 
 ## Frontend baseline
@@ -103,8 +108,9 @@ Sites remains an external Codex plugin. It owns preview and publication when exp
 
 - Product decisions involving permissions, compliance, billing, sensitive data, or core scope are never guessed silently.
 - Frontend components cannot access API, mocks, storage, or environment variables directly.
-- Backend planning specs, decision summary, and explicit contract approval precede Django implementation.
-- ORM access is repository-only, services are persistence-agnostic, controllers use DTO payloads, and migrations are Django-generated.
+- Backend planning specs, decision summary, project-local architecture skill kit, and explicit contract approval precede Django implementation.
+- Backend execution uses OpenCode only when its CLI, OpenCode Go credential, and configured model are ready; otherwise Codex continues automatically.
+- Domain apps use one Model/Configuration module per entity, DTO/Mapper/Controller modules per use case, repository-only ORM access, persistence-agnostic Services, opening module docstrings in every authored Python file, and Django-generated migrations.
 - Infrastructure never commits secrets or claims readiness without attempted validation.
 
 ## Repository layout
@@ -115,6 +121,7 @@ app-factory-skills/
     product-brief-architect/
     app-factory-frontend-builder/
     django-backend-service-architect/
+    app-factory-backend-router/
     django-backend-code-executor/
     app-factory-infra-orchestrator/
   .codex/
@@ -124,12 +131,25 @@ app-factory-skills/
   examples/
 ```
 
-`skills/` contains installable skills. `.codex/` contains factory-level workflows, references, checklists, goals, and templates. Generated projects use their own `.codex/` context and may add project-specific domain skills under `.agents/skills/`.
+`skills/` contains installable factory skills. `.codex/` contains factory-level workflows, references, checklists, goals, and templates. Generated projects receive their own `.codex/` context and a compact `.agents/skills/` backend architecture kit, then may add contract-backed product-specific domain skills.
+
+The generated backend kit includes `django-model-configuration`, `django-dto-mapper`, `django-repository`, `django-service`, `django-controller`, `django-migration`, `django-backend-testing`, and `backend-domain-skill-author`.
+
+## Optional OpenCode backend executor
+
+OpenCode is an optional low-cost writer for approved backend work. Install and configure it using [docs/opencode-backend-execution.md](docs/opencode-backend-execution.md). The API key is stored by OpenCode outside this repository; `.env` contains only non-secret routing preferences.
+
+```powershell
+Copy-Item .env.example .env
+node .\skills\app-factory-backend-router\scripts\opencode-doctor.mjs
+node .\skills\app-factory-backend-router\scripts\route-backend-execution.mjs --project-root D:\caminho\do\projeto
+```
 
 ## Validation
 
 ```powershell
 python C:\Users\welli\.codex\skills\.system\skill-creator\scripts\quick_validate.py .\skills\product-brief-architect
+node .\skills\app-factory-backend-router\scripts\opencode-doctor.mjs
 node .\skills\product-brief-architect\scripts\validate-product-contract.mjs <project-root>
 node .\skills\app-factory-frontend-builder\scripts\scan-app-factory-frontend.mjs <project-root>
 python .\skills\django-backend-service-architect\scripts\scan-django-architecture.py

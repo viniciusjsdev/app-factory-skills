@@ -16,7 +16,7 @@ python manage.py showmigrations
 If generated operations are wrong:
 
 1. do not edit the migration;
-2. correct `models.py` or `configurations.py`;
+2. correct the relevant module under `models/` or `configurations/`;
 3. remove only the uncommitted generated migration when safe and authorized;
 4. run `makemigrations` again;
 5. inspect the regenerated output.

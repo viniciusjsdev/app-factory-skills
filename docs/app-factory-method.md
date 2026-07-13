@@ -4,10 +4,11 @@
 2. Use `product-brief-architect` to create or complete executable product contracts.
 3. Invoke external `@sites` together with `$app-factory-frontend-builder`: Sites shows and publishes the result, while the frontend skill governs the React implementation.
 4. Validate the primary journey, responsive behavior, mocks/persistence, and API boundary.
-5. Use `django-backend-service-architect` to create backend planning specs, enrich backend project context, summarize decisions, and obtain explicit approval.
-6. Use `django-backend-code-executor` to implement the approved contract with repository-only persistence, DTO-based controllers, business services, configured CamelCase models, Django-generated migrations, and tests.
-7. Use `django-backend-service-architect` in audit mode to compare contracts, code, migrations, and evidence.
-8. Use `app-factory-infra-orchestrator` to prepare local and selected deployment paths.
-9. Publish when requested and validate the MVP with explicit remaining gaps.
+5. Use `django-backend-service-architect` to create backend planning specs, enrich backend project context, materialize the project-local architecture skill kit, summarize decisions, and obtain explicit approval.
+6. Use `app-factory-backend-router` to delegate heavy writing to OpenCode Go when ready or select Codex automatically when it is not.
+7. Use `django-backend-code-executor` as the mandatory implementation contract for the selected engine, composing the matching project-local layer skills for scalable packages, explicit mappers, repository-only persistence, DTO-based Controllers, business Services, configured CamelCase Models, meaningful opening docstrings, Django-generated migrations, and layered tests.
+8. Use `django-backend-service-architect` in audit mode to compare contracts, code, migrations, and evidence.
+9. Use `app-factory-infra-orchestrator` to prepare local and selected deployment paths.
+10. Publish when requested and validate the MVP with explicit remaining gaps.
 
 Do not ask a later skill to reconstruct missing decisions that an earlier contract should own. Preserve product intent, keep handoffs traceable, and prefer a complete MVP journey over premature platform complexity.

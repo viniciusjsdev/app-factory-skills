@@ -1,0 +1,4 @@
+interface:
+  display_name: "Django Model Configuration"
+  short_description: "Build Django Models and Configurations"
+  default_prompt: "Use $django-model-configuration to implement approved ORM entities and their external configuration modules."

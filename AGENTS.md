@@ -18,6 +18,7 @@ Rules:
 - For the standard visible site flow, invoke external `@sites` together with `$app-factory-frontend-builder`; Sites owns preview/publication and the frontend skill owns implementation standards.
 - Do not install Sites as an npm dependency merely to invoke the plugin.
 - Use `django-backend-service-architect` only after enough product/frontend/API context exists; it plans, enriches backend project context, and audits but does not implement.
+- Use `app-factory-backend-router` after backend contract approval to choose OpenCode Go when ready or Codex as the automatic fallback.
 - Use `django-backend-code-executor` only after the backend implementation contract is explicitly approved.
 - Use `app-factory-infra-orchestrator` only after a frontend/backend project shape exists.
 - Preserve MVP validation speed over premature platform complexity.
@@ -44,16 +45,24 @@ Rules:
 
 - Build API-first Django backends.
 - Preserve product and frontend API contracts.
-- Use CamelCase ORM Models, external model Configurations, Repositories, Services, DTOs, thin Controllers, and tests.
+- Use per-domain packages for CamelCase ORM Models, model Configurations, DTOs, explicit Mappers, Repositories, Services, thin Controllers, and layered tests.
 - Keep every ORM query and persistence operation inside Repositories.
 - Keep Services responsible for business rules without endpoints, HTTP types, ORM imports, QuerySets, or direct database access.
 - Define Controller request and response payloads in DTOs and use those DTOs in Controllers.
 - Keep Controllers limited to endpoint transport.
-- Keep ORM Models limited to entity declaration and reference specifications from `configurations.py`.
+- Keep one ORM Model per snake_case module under `models/`, export it from `models/__init__.py`, and reference specifications from the matching module under `configurations/`.
+- Keep DTOs, explicit Mappers, and Controllers in use-case modules under `dtos/`, `mappers/`, and `api/controllers/`.
+- Use explicit, testable mapping and never add AutoMapper-style reflection dependencies; keep ORM/record mappers inside `repositories/`.
+- Start every authored backend Python file with a meaningful module docstring that answers what the file does. Include its responsibility, architectural boundary, and relevant contract or business-rule references when applicable; this includes tests and package `__init__.py` files.
+- Do not add or patch docstrings in Django-generated migration files. Their generated provenance header is the only permitted exception to the authored-file documentation rule.
 - Never handwrite or patch migration code; generate migrations only with Django management commands.
 - Prefer PostgreSQL and environment-driven settings.
 - Create and explicitly approve backend planning, security, validation, and implementation contracts before implementation.
 - Enrich the generated project's root `.codex/` with resolved backend context; do not put executor configuration there.
+- Materialize the compact project-local backend architecture kit under generated-project `.agents/skills/`; keep its skills focused on layer workflows and make them defer to approved contracts and `.codex/references/`.
+- Use additional generated-project domain skills only for stable, approved, reusable product behavior; never create one skill per entity, endpoint, or temporary task.
+- Keep OpenCode credentials, routing configuration, logs, and temporary execution artifacts outside generated-project `.codex/` directories.
+- Route OpenCode through one passive non-interactive run; wake Codex only on the final process completion or error event, then audit with `django-backend-service-architect`.
 
 ## Infrastructure Orchestration
 

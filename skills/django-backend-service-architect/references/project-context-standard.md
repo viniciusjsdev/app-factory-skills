@@ -28,9 +28,29 @@ Never create `backend/.codex` inside a full-stack repository.
 - `.codex/workflows/`: repeatable project procedures.
 - `.codex/checklists/`: verification gates.
 - `.codex/decisions/`: accepted architecture decisions.
-- `.agents/skills/`: project-specific invocable domain capabilities.
+- `.agents/skills/`: compact project-local backend architecture kit plus project-specific domain capabilities.
 
-Do not convert generic Django guidance into a project-local skill. Create a domain skill only when the project has stable, repeated, product-specific behavior that benefits from invocation.
+Materialize the compact architecture kit for Models/Configurations, DTOs/Mappers, Repositories, Services, Controllers, migrations, testing, and domain-skill authoring. The local skills route execution and hard boundaries; `.codex/references/` and approved contracts remain the source of truth.
+
+The mandatory kit is:
+
+```txt
+.agents/skills/
+  django-model-configuration/
+  django-dto-mapper/
+  django-repository/
+  django-service/
+  django-controller/
+  django-migration/
+  django-backend-testing/
+  backend-domain-skill-author/
+```
+
+Create additional domain skills only when the project has stable, repeated, product-specific behavior that benefits from invocation. Do not create one skill per entity, endpoint, or temporary task.
+
+Backend context must resolve the domain-first package layout and explicit mapping policy, including Model/Configuration pairs, use-case DTO/Mapper/Controller modules, and any repository-local ORM/record mapper.
+
+It must also include `.codex/references/module-documentation.md`, which requires a meaningful opening docstring in every authored backend Python module and records the Django-generated migration exception, plus `.codex/references/domain-skill-policy.md` for product-specific skill creation.
 
 ## Initialization
 

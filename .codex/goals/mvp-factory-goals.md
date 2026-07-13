@@ -6,3 +6,4 @@
 - Make handoff artifacts explicit.
 - Favor local validation and honest deployment notes.
 - Avoid hidden production assumptions.
+- Reduce backend implementation cost through optional OpenCode delegation without weakening Codex contract audit.

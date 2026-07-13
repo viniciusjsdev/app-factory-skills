@@ -11,6 +11,8 @@ class PurchaseOrder(models.Model):
 
 Use snake_case for app labels, modules, fields, related names, and database columns.
 
+Place one ORM entity in `models/<entity>.py`, place its specification object in `configurations/<entity>.py`, and explicitly import the entity from `models/__init__.py`. Do not use aggregate `models.py` or `configurations.py` files.
+
 ## Configuration
 
 Define specifications outside the model:
