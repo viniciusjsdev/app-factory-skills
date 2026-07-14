@@ -1,6 +1,7 @@
 # Project Agent Guidance
 
 - Read product and architecture contracts before changing backend behavior.
+- Treat `docs/architecture/backend-contract-manifest.json` as the machine-readable contract map; require its approval status/version to match the implementation contract.
 - Read relevant `.codex/references/` before changing entities, payloads, persistence, business rules, security, or migrations.
 - Follow `.codex/workflows/backend-development.md` and `.codex/checklists/backend-validation.md`.
 - Keep durable human documentation in `docs/` and concise operational context in `.codex/`.
@@ -12,6 +13,7 @@
 - Start every authored backend Python file, including tests and package `__init__.py` files, with a meaningful module docstring that answers what the file does and records its responsibility and architectural boundary.
 - Reference relevant approved contract paths or `BR-###` rules in that docstring when applicable.
 - Never edit a Django-generated migration to add a docstring; migrations are the sole exception.
+- Keep service ports/active Django `ROOT_URLCONF` and exact environment URL bindings, invariant IDs/tests, endpoint layer paths/tests, exact allowed `makemigrations` commands, and required validations synchronized with the manifest.
 
 ## Backend Skill Routing
 
@@ -24,4 +26,4 @@
 - Use `$django-backend-testing` for layered tests and architecture validation.
 - Use `$backend-domain-skill-author` when approved, repeated product behavior deserves a project-specific domain skill.
 
-For changes across multiple layers, compose only the required skills in dependency order and preserve the approved implementation contract. These local skills do not authorize architecture or product decisions.
+For changes across multiple layers, compose only the required skills in dependency order and preserve the approved implementation contract and manifest. These local skills do not authorize architecture or product decisions.

@@ -70,6 +70,8 @@ Controllers declare endpoints and translate HTTP:
 
 Controllers must not query repositories, import ORM models, open transactions, or contain business branching.
 
+Prefer one use-case Controller module. When multiple HTTP methods share the same Django URL pattern, allow one thin resource Controller only when the manifest assigns every method explicitly and each method delegates to its own DTO, Mapper, and Service workflow. Do not allow uncontracted methods or unused duplicate Controllers.
+
 ## Composition
 
 Use a small composition module to bind service dependencies to concrete repositories. Do not perform dependency construction in controllers when it obscures the endpoint.

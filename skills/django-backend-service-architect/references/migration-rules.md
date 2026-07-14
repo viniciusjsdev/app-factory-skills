@@ -4,10 +4,10 @@
 
 Never write, patch, or manually edit migration Python files.
 
-Generate schema migrations only with Django management commands:
+Generate schema migrations only with exact Django management commands approved in `backend-contract-manifest.json#allowed_execution_commands`. Keep validation commands synchronized with the manifest. For example:
 
 ```bash
-python manage.py makemigrations <app_label>
+python manage.py makemigrations billing
 python manage.py makemigrations --check --dry-run
 python manage.py migrate
 python manage.py showmigrations

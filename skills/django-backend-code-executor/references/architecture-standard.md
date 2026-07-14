@@ -9,6 +9,7 @@ Service Result -> Explicit Mapper -> Response DTO -> Controller
 ```
 
 - Controllers depend on DTOs, services, permissions, and composition only.
+- Each Controller class implements exactly the manifest HTTP methods assigned to it, and project URL configuration imports that exact class. Prefer one use-case Controller; allow same-route method grouping only when explicitly contracted.
 - Controllers use explicit mappers and contain no field-by-field transformation logic.
 - DTOs depend on validation/typing libraries only.
 - API/service mappers depend on DTO types only and contain no business rules or persistence access.

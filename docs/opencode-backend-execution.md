@@ -103,7 +103,7 @@ Readiness is true only when the CLI runs, OpenCode Go is authenticated, and the 
 
 ## 4. Route an approved backend
 
-The target project must contain all backend contracts and this frontmatter in `docs/architecture/backend-implementation-contract.md`:
+The target project must contain all six human-readable backend contracts, an approved matching `docs/architecture/backend-contract-manifest.json`, and this frontmatter in `docs/architecture/backend-implementation-contract.md`:
 
 ```yaml
 ---
@@ -133,6 +133,15 @@ node .\skills\app-factory-backend-router\scripts\route-backend-execution.mjs `
 
 The router calls `opencode --pure run` non-interactively with the configured model, a runtime-defined App Factory agent, the executor skill as mandatory instructions, restricted permissions, and `--auto`. It disables external plugins, redirects all raw events to a file, and performs no polling. The single child-process exit is the completion/error wake-up signal for Codex.
 
+The manifest must have the same `contract_version`, `status: approved`, no template values, and non-empty services, invariants, endpoints, and required validations. Environment bindings include the exact approved example URL. Invariants and endpoints list exact required test function names. `allowed_execution_commands` lists exact project-specific `makemigrations` commands. Completion evidence must cite those exact tests for every invariant/endpoint ID and report passing evidence for every required validation ID before the router returns `opencode-completed`.
+
+Validate before routing:
+
+```powershell
+node .\skills\django-backend-service-architect\scripts\validate-backend-contract-manifest.mjs `
+  $projectRoot --require-approved
+```
+
 Artifacts are stored under the operating system temporary directory:
 
 ```txt
@@ -157,9 +166,9 @@ Artifacts are stored under the operating system temporary directory:
 
 ## Security model
 
-The committed root `opencode.json` and the router's bundled `assets/opencode.backend.json` contain the same non-secret guardrails. At runtime the router applies its bundled configuration through OpenCode's highest-priority inline configuration and pins the selected provider/model. It denies edits to credentials, Git metadata, generated-project instructions/context, approved architecture contracts, and migration Python files. It also denies subagents, questions, web access, destructive Git commands, and broad external-directory access.
+The committed root `opencode.json` and the router's bundled `assets/opencode.backend.json` contain the same non-secret guardrails. At runtime the router applies its bundled configuration through OpenCode's highest-priority inline configuration and pins the selected provider/model. It denies edits to credentials, Git metadata, generated-project instructions/context, approved architecture contracts, and migration Python files. Shell commands are denied by default; the runtime permits a small exact read-only Git set, exact approved validation commands, and exact approved `makemigrations` commands. Compound shell operators are rejected in manifest commands. It also denies subagents, questions, web access, destructive Git operations, and broad external-directory access.
 
-The router permits exactly one temporary run directory for completion evidence. OpenCode never writes executor configuration into the generated project's `.codex/`. Django migrations remain command-generated only, and Codex performs the final contract audit.
+The router permits exactly one temporary run directory for completion evidence and removes any stale `completion.json` before reusing a task ID. It snapshots immutable contracts/instructions/environment files and every pre-existing migration, then rejects completion if their hashes change; only new scanner-verified Django-generated migrations may appear. OpenCode never writes executor configuration into the generated project's `.codex/`. Codex performs the final contract audit.
 
 Playwright/full-stack validation remains Codex-supervised because it benefits from active visual and behavioral inspection; this backend router only owns the heavy backend writing phase.
 
@@ -173,4 +182,6 @@ Playwright/full-stack validation remains Codex-supervised because it benefits fr
 
 PowerShell works but WSL does not, or the reverse: authenticate separately in the environment that runs the router.
 
-`preflight-blocked`: do not bypass it. Complete and approve the six backend contracts first.
+`preflight-blocked`: do not bypass it. Complete the six human-readable contracts and approve the matching implementation contract/JSON manifest version first.
+
+Projects generated before the contract-manifest gate must rerun `init-backend-project-context.mjs`, resolve the newly created manifest from their existing approved Markdown contracts, and obtain matching approval before routing again. The initializer preserves every existing contract and project file.

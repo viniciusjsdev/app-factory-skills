@@ -14,6 +14,8 @@ Security rules should be derived from:
 
 If a security decision is missing, choose the conservative default and document the assumption.
 
+Assign stable IDs to every testable security requirement, including authorization, cardinality, ownership, signed-reference scope/expiry, replay, callback integrity, production fail-closed configuration, and sensitive-data omission. Copy each invariant, its enforcement boundaries, and exact positive/negative `test_*` names into `backend-contract-manifest.json`. Do not leave required negative-test bullets only in the human contract. Cardinality rules must test zero, one, and multiple matches when those states are meaningful; do not allow `.first()` or equivalent selection to hide an invalid multiple-match state.
+
 ## Rate Limiting
 
 Every authenticated or write-heavy API should define a throttling strategy.
@@ -39,6 +41,8 @@ Rules:
 - do not use wildcard origins with credentials
 - document `CORS_ALLOWED_ORIGINS` or equivalent env vars
 - keep CSRF/cookie settings aligned with the chosen auth mode
+
+Record service ports and environment URL bindings in `backend-contract-manifest.json`. Validate each URL variable in committed environment examples against its target service instead of relying on prose topology alone.
 
 ## API Contract
 

@@ -33,7 +33,7 @@ Enforce these invariants:
 - keep one ORM model per snake_case module under `models/` and export it from `models/__init__.py`;
 - keep ORM models limited to entity declaration;
 - define field sizes, choices, defaults, indexes, constraints, table names, and related specifications in matching modules under `configurations/` and reference them from the model;
-- organize DTOs and Controllers in use-case modules under `dtos/` and `api/controllers/`;
+- organize DTOs in use-case modules under `dtos/`; prefer use-case Controllers under `api/controllers/`, with an explicitly manifested thin shared resource Controller only when Django same-path method routing requires it;
 - use explicit mapper modules under `mappers/` for API/service transformations and repository-local mappers for ORM/record transformations;
 - never add an AutoMapper-style reflection dependency or hide authorization and sensitive-field decisions in implicit mapping;
 - keep all ORM queries and persistence operations inside `repositories/`;
@@ -85,20 +85,21 @@ Use when contracts do not exist or require revision.
 
 1. Run the context initializer with `--dry-run`.
 2. Inspect existing `.codex`, `AGENTS.md`, and architecture documentation.
-3. Create or update the required planning documents.
+3. Create or update the required planning documents and machine-readable contract manifest from `assets/backend-contracts/`.
 4. Resolve the layer boundaries and migration ownership.
 5. Define the module-documentation standard and any contract identifiers each implementation area must cite.
 6. Identify the local architecture skills required by the implementation and any stable product-specific domain-skill candidates.
 7. Initialize missing backend context and the architecture skill kit, then replace template placeholders with project-specific decisions.
-8. Summarize decisions and open questions to the user.
-9. Stop before implementation.
+8. Run `node scripts/validate-backend-contract-manifest.mjs <project-root>`.
+9. Summarize decisions and open questions to the user.
+10. Stop before implementation.
 
 ### Audit mode
 
 Use when backend code already exists.
 
 1. Read the approved contracts and their approval metadata.
-2. Inspect the implementation, generated migrations, tests, and execution evidence.
+2. Read `backend-contract-manifest.json` and inspect the implementation, generated migrations, tests, environment examples, route wiring, and execution evidence.
 3. Run `scripts/scan-django-architecture.py` from the target project when available.
 4. Verify every authored Python module has a useful opening docstring and that migrations were not edited to add one.
 5. Compare contract, code, migration evidence, and tests.
@@ -119,6 +120,7 @@ docs/architecture/api-contract.md
 docs/architecture/security-contract.md
 docs/architecture/backend-validation-plan.md
 docs/architecture/backend-implementation-contract.md
+docs/architecture/backend-contract-manifest.json
 ```
 
 If equivalent paths already exist, preserve them and record the path mapping in `backend-plan.md`.
@@ -139,6 +141,8 @@ The implementation contract must identify:
 - writable and forbidden scope;
 - accepted assumptions and remaining blockers.
 
+Keep `backend-contract-manifest.json` synchronized with the Markdown contracts. It is the canonical machine-readable map for contract version, services/local ports/active Django `ROOT_URLCONF`, exact environment URL bindings, stable invariant IDs with exact required test names, endpoint-to-Controller/DTO/Mapper/Service mappings with exact endpoint test names, and required validation commands. Use `assets/backend-contracts/backend-contract-manifest.schema.json`; do not approve unresolved template values.
+
 Read `references/backend-planning-specs.md`, `references/api-contract-rules.md`, `references/migration-rules.md`, and `references/security-rules.md` before writing contracts. Read `references/mapping-rules.md` whenever representations differ across Controller, Service, Repository, or ORM boundaries.
 
 ## Contract Approval Gate
@@ -155,6 +159,14 @@ approved_at: YYYY-MM-DD
 
 Do not mark a contract approved based only on the agent's confidence. If an approved contract changes materially, increment its version and require approval again.
 
+After recording explicit approval, run:
+
+```bash
+node scripts/validate-backend-contract-manifest.mjs <project-root> --require-approved
+```
+
+Do not hand off to the router or executor when this validation fails.
+
 ## Project Context
 
 Run:
@@ -164,7 +176,7 @@ node scripts/init-backend-project-context.mjs <project-root> --dry-run
 node scripts/init-backend-project-context.mjs <project-root>
 ```
 
-The initializer creates missing backend-specific `.codex` files and the compact `.agents/skills/` architecture kit while preserving all existing frontend, product, and project context. Populate created templates with resolved project decisions; keep local skills thin and defer to project contracts and references.
+The initializer creates missing backend-specific `.codex` files, the compact `.agents/skills/` architecture kit, and missing contract templates under `docs/architecture/` while preserving all existing frontend, product, project, and contract files. Populate created templates with resolved project decisions; keep local skills thin and defer to project contracts and references.
 
 Read `references/project-context-standard.md` before initializing context.
 
@@ -187,6 +199,8 @@ Before requesting approval, summarize:
 
 - `references/backend-architecture-standard.md`: mandatory layer and naming rules.
 - `references/backend-planning-specs.md`: required document contents.
+- `assets/backend-contracts/`: reusable contract templates plus the machine-readable manifest schema.
+- `scripts/validate-backend-contract-manifest.mjs`: dependency-free planning/approval manifest validator.
 - `references/django-app-template.md`: planned app shape.
 - `references/service-layer-rules.md`: service/repository interaction.
 - `references/dto-serializer-rules.md`: DTO and controller payload rules.
@@ -207,6 +221,7 @@ Planning is done only when:
 
 - preflight context is sufficient;
 - all required planning documents exist;
+- the approved machine-readable manifest matches the contract version and resolved Markdown decisions;
 - the architecture follows Controller/DTO/Service/Repository/Model boundaries;
 - scalable per-domain packages and explicit mapping responsibilities are defined;
 - the module-documentation contract is defined and present in generated project context;
@@ -219,6 +234,7 @@ Planning is done only when:
 Audit is done only when:
 
 - approved contracts were compared with code and tests;
+- manifest service bindings, endpoint wiring, invariant tests, and required validations were compared with implementation evidence;
 - architecture and migration scans were attempted;
 - authored-module docstrings were audited, with Django-generated migrations excluded from manual edits;
 - deviations have evidence and bounded correction scope;

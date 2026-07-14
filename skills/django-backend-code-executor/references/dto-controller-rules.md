@@ -24,6 +24,8 @@ Controllers:
 6. use an explicit mapper to create a response DTO;
 7. return the HTTP response.
 
+Prefer one endpoint/use case per Controller module. When Django must serve multiple methods from the same URL pattern, a shared resource Controller may implement only the methods explicitly assigned to that exact class in `backend-contract-manifest.json`. Wire the exact class at the full contracted path, including parent `include()` prefixes, and do not retain unrelated aggregate or duplicate unused Controllers.
+
 Controllers must not import ORM models or concrete repositories, build queries, open transactions, implement business branches, define payload structure inline, or perform field-by-field mapping.
 
 Use `composition.py` to bind services to repository implementations.

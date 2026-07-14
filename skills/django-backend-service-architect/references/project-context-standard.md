@@ -15,6 +15,8 @@ project/
     decisions/
     templates/
   docs/
+    architecture/
+      backend-contract-manifest.json
   frontend/
   backend/
 ```
@@ -54,6 +56,6 @@ It must also include `.codex/references/module-documentation.md`, which requires
 
 ## Initialization
 
-Run `scripts/init-backend-project-context.mjs`. The script creates missing files and preserves existing files. After initialization, replace placeholders only in files created by the current operation or deliberately update existing project context after inspection.
+Run `scripts/init-backend-project-context.mjs`. The script creates missing context, local skills, and backend contract templates while preserving existing files. After initialization, replace placeholders only in files created by the current operation or deliberately update existing project context after inspection. Approve neither the Markdown implementation contract nor the JSON manifest while template values remain.
 
 Do not place executor configuration, API keys, OpenCode prompts, callback state, or temporary run artifacts in `.codex`.

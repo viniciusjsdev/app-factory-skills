@@ -1,0 +1,79 @@
+{
+  "$schema": "./backend-contract-manifest.schema.json",
+  "contract_version": 1,
+  "status": "pending-approval",
+  "services": [
+    {
+      "id": "django",
+      "runtime": "django",
+      "local_port": 8000,
+      "root_urlconf": "config.urls"
+    }
+  ],
+  "environment_bindings": [],
+  "invariants": [
+    {
+      "id": "BR-001",
+      "statement": "Replace with one approved and testable backend invariant.",
+      "enforcement": [
+        "apps.replace_me.services.replace_me.ReplaceMeService"
+      ],
+      "required_tests": [
+        "test_replace_me_invariant"
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "id": "API-001",
+      "method": "GET",
+      "path": "/api/replace-me/",
+      "controller": "apps.replace_me.api.controllers.get_replace_me.GetReplaceMeController",
+      "request_dto": null,
+      "response_dto": "apps.replace_me.dtos.get_replace_me.GetReplaceMeResponseDTO",
+      "mapper": "apps.replace_me.mappers.get_replace_me.map_result_to_response",
+      "service": "apps.replace_me.services.get_replace_me.GetReplaceMeService",
+      "repositories": [
+        "apps.replace_me.repositories.contracts.ReplaceMeRepository"
+      ],
+      "required_tests": [
+        "test_get_replace_me_endpoint_contract"
+      ]
+    }
+  ],
+  "allowed_execution_commands": [
+    "python manage.py makemigrations replace_me"
+  ],
+  "required_validations": [
+    {
+      "id": "VAL-001",
+      "kind": "check",
+      "command": "python manage.py check",
+      "required": true
+    },
+    {
+      "id": "VAL-002",
+      "kind": "migration",
+      "command": "python manage.py makemigrations --check --dry-run",
+      "required": true
+    },
+    {
+      "id": "VAL-003",
+      "kind": "migration",
+      "command": "python manage.py migrate",
+      "required": true
+    },
+    {
+      "id": "VAL-004",
+      "kind": "test",
+      "command": "python manage.py test",
+      "required": true
+    },
+    {
+      "id": "VAL-005",
+      "kind": "scan",
+      "command": "python scripts/scan-django-boundaries.py",
+      "required": true
+    }
+  ]
+}

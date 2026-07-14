@@ -1,0 +1,218 @@
+{
+  "$schema": "../../../skills/django-backend-service-architect/assets/backend-contracts/backend-contract-manifest.schema.json",
+  "contract_version": 1,
+  "status": "approved",
+  "services": [
+    {
+      "id": "django",
+      "runtime": "django-rest-framework",
+      "local_port": 8001,
+      "root_urlconf": "config.urls"
+    },
+    {
+      "id": "analysis_ai",
+      "runtime": "fastapi",
+      "local_port": 8000,
+      "root_urlconf": null
+    }
+  ],
+  "environment_bindings": [
+    {
+      "variable": "AI_SERVICE_BASE_URL",
+      "target_service": "analysis_ai",
+      "url_role": "base_url",
+      "expected_url": "http://127.0.0.1:8000",
+      "env_files": ["backend/.env.example"]
+    },
+    {
+      "variable": "AI_CALLBACK_PUBLIC_URL",
+      "target_service": "django",
+      "url_role": "callback_url",
+      "expected_url": "http://127.0.0.1:8001",
+      "env_files": ["backend/.env.example"]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "SEC-001",
+      "statement": "Every authenticated user has exactly one active organization membership.",
+      "enforcement": [
+        "apps.accounts.repositories.django_repository.DjangoMembershipRepository",
+        "apps.accounts.services.login.LoginService"
+      ],
+      "required_tests": [
+        "test_login_rejects_no_active_membership",
+        "test_login_accepts_one_active_membership",
+        "test_login_rejects_multiple_active_memberships"
+      ]
+    },
+    {
+      "id": "SEC-002",
+      "statement": "Private cases are readable and mutable only inside the authenticated actor and organization scope.",
+      "enforcement": [
+        "apps.cases.repositories.django_repository.DjangoCaseRepository",
+        "apps.cases.services.get_analysis.GetAnalysisService"
+      ],
+      "required_tests": [
+        "test_case_repository_hides_foreign_actor_case",
+        "test_case_repository_hides_foreign_organization_case"
+      ]
+    },
+    {
+      "id": "SEC-003",
+      "statement": "Signed document references enforce expiration, purpose, active-document state, case, actor, and organization scope.",
+      "enforcement": [
+        "apps.cases.repositories.django_repository.DjangoDocumentRepository",
+        "apps.cases.services.resolve_signed_document.ResolveSignedDocumentService"
+      ],
+      "required_tests": [
+        "test_signed_document_url_rejects_expired_reference",
+        "test_signed_document_url_rejects_wrong_purpose",
+        "test_signed_document_url_rejects_archived_document"
+      ]
+    },
+    {
+      "id": "SEC-004",
+      "statement": "Analysis callbacks reject replay, scope mismatch, invalid state transitions, and checksum mismatch.",
+      "enforcement": [
+        "apps.analysis_jobs.repositories.django_repository.DjangoAnalysisDispatchRepository",
+        "apps.analysis_jobs.services.receive_callback.ReceiveAnalysisCallbackService"
+      ],
+      "required_tests": [
+        "test_analysis_callback_rejects_replay",
+        "test_analysis_callback_rejects_scope_mismatch",
+        "test_analysis_callback_rejects_invalid_transition",
+        "test_analysis_callback_rejects_checksum_mismatch"
+      ]
+    },
+    {
+      "id": "SEC-005",
+      "statement": "Production startup rejects missing or weak Django-to-FastAPI service authentication.",
+      "enforcement": [
+        "config.settings.production.validate_service_authentication"
+      ],
+      "required_tests": [
+        "test_production_rejects_missing_service_authentication",
+        "test_production_rejects_weak_service_authentication"
+      ]
+    },
+    {
+      "id": "SEC-006",
+      "statement": "Browser response mappers omit credentials, storage paths, signed service URLs, and callback internals.",
+      "enforcement": [
+        "apps.accounts.mappers.me.map_result_to_response",
+        "apps.cases.mappers.analysis_detail.map_result_to_response"
+      ],
+      "required_tests": [
+        "test_current_actor_response_omits_sensitive_fields",
+        "test_analysis_response_omits_storage_and_callback_fields"
+      ]
+    },
+    {
+      "id": "INT-001",
+      "statement": "Django submits exactly two private PDF references to the configured analysis service.",
+      "enforcement": [
+        "apps.cases.services.create_analysis.CreateAnalysisService",
+        "apps.analysis_jobs.services.dispatch.DispatchAnalysisService"
+      ],
+      "required_tests": [
+        "test_create_analysis_requires_exactly_two_pdfs",
+        "test_dispatch_uses_private_signed_document_urls"
+      ]
+    }
+  ],
+  "endpoints": [
+    {
+      "id": "API-001",
+      "method": "POST",
+      "path": "/api/auth/login/",
+      "controller": "apps.accounts.api.controllers.login.LoginController",
+      "request_dto": "apps.accounts.dtos.login.LoginRequestDTO",
+      "response_dto": "apps.accounts.dtos.me.CurrentActorResponseDTO",
+      "mapper": "apps.accounts.mappers.login.map_request_to_input",
+      "service": "apps.accounts.services.login.LoginService",
+      "repositories": [
+        "apps.accounts.repositories.contracts.AuthenticationLookupRepository",
+        "apps.accounts.repositories.contracts.MembershipRepository"
+      ],
+      "required_tests": [
+        "test_login_endpoint_contract"
+      ]
+    },
+    {
+      "id": "API-002",
+      "method": "GET",
+      "path": "/api/analyses/",
+      "controller": "apps.cases.api.controllers.analyses.AnalysesController",
+      "request_dto": "apps.cases.dtos.list_analyses.ListAnalysesQueryDTO",
+      "response_dto": "apps.cases.dtos.list_analyses.AnalysisListResponseDTO",
+      "mapper": "apps.cases.mappers.list_analyses.map_query_to_input",
+      "service": "apps.cases.services.list_analyses.ListAnalysesService",
+      "repositories": [
+        "apps.cases.repositories.contracts.CaseRepository"
+      ],
+      "required_tests": [
+        "test_list_analyses_endpoint_contract"
+      ]
+    },
+    {
+      "id": "API-003",
+      "method": "POST",
+      "path": "/api/analyses/",
+      "controller": "apps.cases.api.controllers.analyses.AnalysesController",
+      "request_dto": "apps.cases.dtos.create_analysis.CreateAnalysisRequestDTO",
+      "response_dto": "apps.cases.dtos.analysis_detail.AnalysisDetailResponseDTO",
+      "mapper": "apps.cases.mappers.create_analysis.map_request_to_input",
+      "service": "apps.cases.services.create_analysis.CreateAnalysisService",
+      "repositories": [
+        "apps.cases.repositories.contracts.CaseRepository",
+        "apps.cases.repositories.contracts.DocumentRepository",
+        "apps.analysis_jobs.repositories.contracts.DispatchRepository"
+      ],
+      "required_tests": [
+        "test_create_analysis_endpoint_contract"
+      ]
+    }
+  ],
+  "allowed_execution_commands": [
+    "python manage.py makemigrations accounts cases analysis_jobs --settings=config.settings.test"
+  ],
+  "required_validations": [
+    {
+      "id": "VAL-001",
+      "kind": "check",
+      "command": "python manage.py check --settings=config.settings.test",
+      "required": true
+    },
+    {
+      "id": "VAL-002",
+      "kind": "migration",
+      "command": "python manage.py makemigrations --check --dry-run --settings=config.settings.test",
+      "required": true
+    },
+    {
+      "id": "VAL-003",
+      "kind": "migration",
+      "command": "python manage.py migrate --settings=config.settings.test",
+      "required": true
+    },
+    {
+      "id": "VAL-004",
+      "kind": "test",
+      "command": "python manage.py test --settings=config.settings.test",
+      "required": true
+    },
+    {
+      "id": "VAL-005",
+      "kind": "scan",
+      "command": "python scripts/scan-django-boundaries.py",
+      "required": true
+    },
+    {
+      "id": "VAL-006",
+      "kind": "integration",
+      "command": "python scripts/smoke_django_fastapi.py",
+      "required": true
+    }
+  ]
+}

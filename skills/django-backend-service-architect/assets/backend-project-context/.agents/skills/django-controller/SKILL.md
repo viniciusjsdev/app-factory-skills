@@ -9,19 +9,21 @@ Implement endpoint transport around approved DTO, Mapper, Service, security, and
 
 ## Required Context
 
-Read `AGENTS.md`, `docs/architecture/api-contract.md`, `docs/architecture/security-contract.md`, `docs/architecture/backend-implementation-contract.md`, `.codex/references/dto-controller-policy.md`, `.codex/references/mapping-policy.md`, `.codex/references/backend-security.md`, and `.codex/references/module-documentation.md`.
+Read `AGENTS.md`, `docs/architecture/api-contract.md`, `docs/architecture/security-contract.md`, `docs/architecture/backend-implementation-contract.md`, `docs/architecture/backend-contract-manifest.json`, `.codex/references/dto-controller-policy.md`, `.codex/references/mapping-policy.md`, `.codex/references/backend-security.md`, and `.codex/references/module-documentation.md`.
 
 Require an approved implementation contract. Stop if route, method, actor, permission, payload, status, or error behavior is unresolved.
 
 ## Workflow
 
-1. Declare the approved route, method, authentication, permissions, and throttling.
+1. Select the manifest endpoint ID(s) assigned to one exact Controller class and declare their route, method, authentication, permissions, and throttling.
 2. Instantiate and validate the request DTO.
 3. Invoke the explicit request-to-Service Mapper.
 4. Resolve and call the Service through the composition boundary.
 5. Map only approved domain/application errors to HTTP responses.
 6. Map the Service result to a response DTO and construct the response.
 7. Add a meaningful opening module docstring and focused API, permission, and response-shape tests.
+8. Confirm project URL configuration imports this exact Controller class at the contracted path and that it implements no HTTP method absent from the manifest.
+9. Add every exact endpoint `test_*` function named by the manifest.
 
 ## Boundaries
 
@@ -29,5 +31,6 @@ Require an approved implementation contract. Stop if route, method, actor, permi
 - Do not open transactions, build queries, enforce business branching, or call integrations.
 - Do not define payload fields or perform field-by-field mapping in the Controller.
 - Do not expose sensitive fields outside the approved response DTO.
+- Prefer one use-case Controller. Share a resource Controller only for explicitly contracted same-route methods; do not retain unrelated aggregate or duplicate unused Controller modules.
 
 Finish only when the Controller contains endpoint transport alone and tests prove DTO, permission, status, error, and response contracts.

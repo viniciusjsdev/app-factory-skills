@@ -13,4 +13,8 @@ Plan tests by layer:
 
 Organize tests into layer packages under `tests/`. Acceptance tests must trace back to product business-rule IDs or API contract entries where available.
 
+For every invariant and endpoint in `backend-contract-manifest.json`, require the exact listed `test_*` functions and record their execution evidence. Require zero/one/multiple cases for cardinality invariants, foreign-actor and foreign-tenant cases for private resources, and replay/duplicate/stale cases for idempotency or optimistic-concurrency rules.
+
+Run every manifest validation marked `required: true`. A deferred live integration, service-topology smoke test, or browser flow cannot be reported as passed. Use `approved-with-notes` only for optional evidence; use `corrections-required` or `blocked` when required evidence fails or cannot run.
+
 Do not mock repositories in repository tests. Do not use the database in service tests. Do not weaken tests to match an incorrect implementation.

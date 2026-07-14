@@ -20,9 +20,10 @@ docs/architecture/api-contract.md
 docs/architecture/security-contract.md
 docs/architecture/backend-validation-plan.md
 docs/architecture/backend-implementation-contract.md
+docs/architecture/backend-contract-manifest.json
 ```
 
-Verify `backend-implementation-contract.md` has `status: approved`, a contract version, and no unresolved implementation blocker. Inspect `AGENTS.md`, relevant `.codex/references/`, and the required project-local layer skills under `.agents/skills/`.
+Verify `backend-implementation-contract.md` and `backend-contract-manifest.json` both have `status: approved`, the same positive contract version, no unresolved template values, and no unresolved implementation blocker. Inspect `AGENTS.md`, relevant `.codex/references/`, and the required project-local layer skills under `.agents/skills/`.
 
 If the gate fails, do not create or modify backend code. Return a missing-contract or approval report.
 
@@ -54,21 +55,22 @@ Read `references/architecture-standard.md` and `references/module-documentation-
 ## Implementation Workflow
 
 1. Read the approved contracts and project context.
-2. Inspect the existing backend, package manager, settings, tests, and migration state.
-3. Produce a concise implementation plan mapped to the approved contract.
-4. Select and follow the smallest matching project-local architecture skill set for the layers being changed.
-5. Add the required opening module docstring while creating or changing each authored Python file.
-6. Create or update per-entity model configuration modules.
-7. Declare one CamelCase ORM entity per model module, export it explicitly, and use configuration values.
-8. Implement repository contracts and Django ORM repositories.
-9. Implement services against repository/Unit of Work contracts.
-10. Implement DTO modules and explicit mappers by use case.
-11. Implement one thin controller module per endpoint or use case.
-12. Wire dependencies in composition modules.
-13. Add tests by layer, including mapper tests.
-14. Run Django commands to generate and apply migrations.
-15. Run project checks, tests, and `scripts/scan-django-boundaries.py`.
-16. Produce completion evidence matching `assets/completion.schema.json`.
+2. Build a contract traceability plan from manifest service bindings, invariant IDs/tests, endpoint mappings/tests, allowed execution commands, and required validations.
+3. Inspect the existing backend, package manager, settings, environment examples, URL wiring, tests, and migration state.
+4. Produce a concise implementation plan mapped to the approved contract.
+5. Select and follow the smallest matching project-local architecture skill set for the layers being changed.
+6. Add the required opening module docstring while creating or changing each authored Python file.
+7. Create or update per-entity model configuration modules.
+8. Declare one CamelCase ORM entity per model module, export it explicitly, and use configuration values.
+9. Implement repository contracts and Django ORM repositories.
+10. Implement services against repository/Unit of Work contracts.
+11. Implement DTO modules and explicit mappers by use case.
+12. Implement the exact thin Controller class and HTTP methods declared by the manifest and wire that class in URL configuration. Prefer one use-case Controller; allow a shared resource Controller only when same-path Django routing requires it and every method is explicit in the manifest.
+13. Wire dependencies in composition modules.
+14. Add tests by layer, including every exact invariant and endpoint test named in the manifest and mapper tests.
+15. Run only the manifest's exact allowed Django command to generate migrations, then its required migration validations.
+16. Run every required manifest validation plus `scripts/scan-django-boundaries.py`.
+17. Produce completion evidence matching `assets/completion.schema.json`, including contract evidence for every invariant/endpoint ID and validation evidence for every required validation ID.
 
 Do not alter approved contracts during implementation. If the code cannot satisfy them, stop with `contract-review-required` and describe the conflict.
 
@@ -143,10 +145,10 @@ Do not introduce `selectors/`. Repository methods own read behavior.
 
 Never use a file-editing tool on a migration Python file.
 
-Use the project-equivalent commands:
+Use only the exact generation command in `backend-contract-manifest.json#allowed_execution_commands`, followed by the required manifest validation commands. A typical approved set is:
 
 ```bash
-python manage.py makemigrations <app_label>
+python manage.py makemigrations billing
 python manage.py makemigrations --check --dry-run
 python manage.py migrate
 python manage.py showmigrations
@@ -166,7 +168,7 @@ python manage.py test
 python scripts/scan-django-boundaries.py
 ```
 
-Use the repository's pytest, ruff, mypy, Docker, or task-runner commands when defined. Do not hide a failure with `|| true`. Report unavailable dependencies or services exactly.
+Use the repository's pytest, ruff, mypy, Docker, or task-runner commands only when they are listed exactly in the approved manifest validations. Do not hide a failure with `|| true`. Report unavailable dependencies or services exactly.
 
 ## Completion
 
@@ -177,11 +179,12 @@ Return one of:
 - `failed`;
 - `contract-review-required`.
 
-Completion evidence must list contract version, files changed, Django commands, generated migrations, tests, scanner result, deviations, and unresolved items. Never self-approve architectural compliance; the architect/auditor performs final approval.
+Completion evidence must list contract version, files changed, Django commands, generated migrations, tests, scanner result, deviations, unresolved items, validation limitations, `contract_evidence` for every invariant/endpoint ID, and `validation_evidence` for every required validation ID. Never self-approve architectural compliance; the architect/auditor performs final approval.
 
 ## Definition of Done
 
 - approved contract gate passed;
+- approved manifest matched the implementation contract and every ID was traced to code/test evidence;
 - implementation stays inside allowed scope;
 - all architecture invariants hold;
 - domain apps use scalable packages and explicit mapper modules without an AutoMapper dependency;

@@ -88,18 +88,20 @@ Rules:
 - Define Controller request and response payloads in DTOs and use those DTOs in Controllers.
 - Keep Controllers limited to endpoint transport.
 - Keep one ORM Model per snake_case module under `models/`, export it from `models/__init__.py`, and reference specifications from the matching module under `configurations/`.
-- Keep DTOs, explicit Mappers, and Controllers in use-case modules under `dtos/`, `mappers/`, and `api/controllers/`.
+- Keep DTOs and explicit Mappers in use-case modules under `dtos/` and `mappers/`. Prefer use-case Controllers under `api/controllers/`; when Django requires multiple methods on the same URL pattern, allow one thin shared resource Controller only when every assigned method and downstream use-case module is explicit in the approved manifest.
 - Use explicit, testable mapping and never add AutoMapper-style reflection dependencies; keep ORM/record mappers inside `repositories/`.
 - Start every authored backend Python file with a meaningful module docstring that answers what the file does. Include its responsibility, architectural boundary, and relevant contract or business-rule references when applicable; this includes tests and package `__init__.py` files.
 - Do not add or patch docstrings in Django-generated migration files. Their generated provenance header is the only permitted exception to the authored-file documentation rule.
 - Never handwrite or patch migration code; generate migrations only with Django management commands.
 - Prefer PostgreSQL and environment-driven settings.
 - Create and explicitly approve backend planning, security, validation, and implementation contracts before implementation.
+- Materialize `docs/architecture/backend-contract-manifest.json` from the architect template; keep its version/status synchronized with the implementation contract and record service ports/active Django `ROOT_URLCONF`, exact environment URL bindings, invariant IDs with exact tests, endpoint-to-layer mappings with exact endpoint tests, exact allowed `makemigrations` commands, and required validations.
 - Enrich the generated project's root `.codex/` with resolved backend context; do not put executor configuration there.
 - Materialize the compact project-local backend architecture kit under generated-project `.agents/skills/`; keep its skills focused on layer workflows and make them defer to approved contracts and `.codex/references/`.
 - Use additional generated-project domain skills only for stable, approved, reusable product behavior; never create one skill per entity, endpoint, or temporary task.
 - Keep OpenCode credentials, routing configuration, logs, and temporary execution artifacts outside generated-project `.codex/` directories.
 - Route OpenCode through one passive non-interactive run; wake Codex only on the final process completion or error event, then audit with `django-backend-service-architect`.
+- Require the final backend audit to build independent `contract ID -> implementation -> test -> command result` traceability; passing aggregate tests or executor-authored audit prose is insufficient.
 
 ## Infrastructure Orchestration
 

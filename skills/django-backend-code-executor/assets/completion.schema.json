@@ -12,8 +12,11 @@
     "generated_migrations",
     "tests",
     "architecture_scan",
+    "contract_evidence",
+    "validation_evidence",
     "contract_deviations",
-    "unresolved_items"
+    "unresolved_items",
+    "validation_limitations"
   ],
   "properties": {
     "task_id": { "type": "string", "minLength": 1 },
@@ -22,11 +25,64 @@
       "enum": ["completed", "blocked", "failed", "contract-review-required"]
     },
     "changed_files": { "type": "array", "items": { "type": "string" } },
-    "commands": { "type": "array", "items": { "type": "object" } },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["command", "result", "exit_code", "notes"],
+        "properties": {
+          "command": { "type": "string", "minLength": 1 },
+          "result": { "enum": ["passed", "failed", "not-run"] },
+          "exit_code": { "type": ["integer", "null"] },
+          "notes": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
     "generated_migrations": { "type": "array", "items": { "type": "string" } },
     "tests": { "type": "array", "items": { "type": "object" } },
     "architecture_scan": { "type": "object" },
+    "contract_evidence": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["implementation", "tests", "result", "notes"],
+        "properties": {
+          "implementation": { "type": "array", "items": { "type": "string" } },
+          "tests": { "type": "array", "items": { "type": "string" } },
+          "result": { "enum": ["passed", "failed", "not-run", "not-applicable"] },
+          "notes": { "type": "array", "items": { "type": "string" } }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "result": { "const": "passed" } }, "required": ["result"] },
+            "then": {
+              "properties": {
+                "implementation": { "minItems": 1 },
+                "tests": { "minItems": 1 }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "validation_evidence": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["command", "result", "exit_code", "notes"],
+        "properties": {
+          "command": { "type": "string", "minLength": 1 },
+          "result": { "enum": ["passed", "failed", "not-run"] },
+          "exit_code": { "type": ["integer", "null"] },
+          "notes": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
     "contract_deviations": { "type": "array", "items": { "type": "object" } },
-    "unresolved_items": { "type": "array", "items": { "type": "string" } }
+    "unresolved_items": { "type": "array", "items": { "type": "string" } },
+    "validation_limitations": { "type": "array", "items": { "type": "string" } }
   }
 }

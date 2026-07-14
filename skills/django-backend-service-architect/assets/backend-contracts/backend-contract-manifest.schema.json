@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "App Factory Django backend contract manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "status",
+    "services",
+    "environment_bindings",
+    "invariants",
+    "endpoints",
+    "allowed_execution_commands",
+    "required_validations"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "contract_version": { "type": "integer", "minimum": 1 },
+    "status": { "enum": ["pending-approval", "approved"] },
+    "services": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "runtime", "local_port", "root_urlconf"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+          "runtime": { "type": "string", "minLength": 1 },
+          "root_urlconf": { "type": ["string", "null"] },
+          "local_port": {
+            "oneOf": [
+              { "type": "integer", "minimum": 1, "maximum": 65535 },
+              { "type": "null" }
+            ]
+          }
+        }
+      }
+    },
+    "environment_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["variable", "target_service", "url_role", "expected_url", "env_files"],
+        "properties": {
+          "variable": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+          "target_service": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" },
+          "url_role": { "enum": ["base_url", "callback_url", "public_url", "internal_url"] },
+          "expected_url": { "type": "string", "pattern": "^https?://" },
+          "env_files": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "statement", "enforcement", "required_tests"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Z][A-Z0-9_-]*-[0-9]{3}$" },
+          "statement": { "type": "string", "minLength": 12 },
+          "enforcement": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "required_tests": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^test_[a-z0-9_]+$" }
+          }
+        }
+      }
+    },
+    "endpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "method",
+          "path",
+          "controller",
+          "request_dto",
+          "response_dto",
+          "mapper",
+          "service",
+          "repositories",
+          "required_tests"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^API-[0-9]{3}$" },
+          "method": { "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"] },
+          "path": { "type": "string", "pattern": "^/" },
+          "controller": { "type": "string", "minLength": 3 },
+          "request_dto": { "type": ["string", "null"] },
+          "response_dto": { "type": ["string", "null"] },
+          "mapper": { "type": ["string", "null"] },
+          "service": { "type": "string", "minLength": 3 },
+          "repositories": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "required_tests": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^test_[a-z0-9_]+$" }
+          }
+        }
+      }
+    },
+    "allowed_execution_commands": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^(?:python3?|py) manage\\.py makemigrations(?: [A-Za-z0-9_.=:/-]+)+$"
+      }
+    },
+    "required_validations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "command", "required"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^VAL-[0-9]{3}$" },
+          "kind": { "enum": ["check", "test", "scan", "migration", "integration", "browser"] },
+          "command": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!.*(?:[;&|><`]|\\$\\()).+$"
+          },
+          "required": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "approved" } } },
+      "then": {
+        "properties": {
+          "services": { "minItems": 1 },
+          "invariants": { "minItems": 1 },
+          "endpoints": { "minItems": 1 },
+          "required_validations": { "minItems": 1 }
+        }
+      }
+    }
+  ]
+}

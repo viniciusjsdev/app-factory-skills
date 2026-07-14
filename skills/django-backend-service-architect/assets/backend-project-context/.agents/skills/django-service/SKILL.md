@@ -9,18 +9,18 @@ Implement the business brain of an approved use case without coupling it to HTTP
 
 ## Required Context
 
-Read `AGENTS.md`, relevant `docs/product/` business rules, `docs/architecture/domain-model.md`, `docs/architecture/api-contract.md`, `docs/architecture/backend-implementation-contract.md`, `.codex/references/service-layer.md`, `.codex/references/repository-policy.md`, and `.codex/references/module-documentation.md`.
+Read `AGENTS.md`, relevant `docs/product/` business rules, `docs/architecture/domain-model.md`, `docs/architecture/api-contract.md`, `docs/architecture/backend-implementation-contract.md`, `docs/architecture/backend-contract-manifest.json`, `.codex/references/service-layer.md`, `.codex/references/repository-policy.md`, and `.codex/references/module-documentation.md`.
 
 Require an approved implementation contract. Stop if a business invariant, permission decision, transaction expectation, or failure state is missing or contradictory.
 
 ## Workflow
 
-1. Identify Service input, result, dependencies, `BR-###` rules, and expected domain errors.
+1. Identify Service input, result, dependencies, manifest invariant IDs, and expected domain errors.
 2. Inject Repository, Unit of Work, clock, identifier, or integration contracts explicitly.
 3. Enforce business invariants and coordinate the use case in `services/<use_case>.py`.
 4. Return persistence-neutral results and raise approved domain/application errors.
 5. Add a meaningful opening docstring naming responsibility, boundaries, and relevant business rules.
-6. Add Service tests with fakes and no database or HTTP client.
+6. Add every exact manifest Service test with fakes and no database or HTTP client.
 
 ## Boundaries
 

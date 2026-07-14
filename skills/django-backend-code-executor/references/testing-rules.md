@@ -8,5 +8,8 @@
 - Security tests cover denied object access and sensitive-field handling.
 - Migration validation runs Django management commands and verifies generated provenance.
 - Architecture validation rejects authored Python modules without meaningful opening docstrings while leaving Django-generated migrations untouched.
+- Contract validation runs every manifest command marked required and traces every invariant and endpoint ID to exact tests and implementation files.
 
 Organize tests by layer under `tests/dtos/`, `tests/mappers/`, `tests/repositories/`, `tests/services/`, and `tests/api/`. Trace tests to business-rule or API-contract identifiers when available. Never add `skip`, `xfail`, weakened assertions, or mocks merely to make the suite green.
+
+Use the exact `required_tests` names from `backend-contract-manifest.json`. Cover zero/one/multiple results for cardinality, foreign actor/tenant scope for private data, duplicate/replay/stale states for idempotency and concurrency, and real service ports/URL directions for required local integration checks. Do not report a required deferred smoke or browser check as passed.

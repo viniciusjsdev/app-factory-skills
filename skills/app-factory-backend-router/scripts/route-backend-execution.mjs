@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 import { spawn } from "node:child_process";
-import { closeSync, copyFileSync, existsSync, mkdirSync, openSync, readFileSync, writeFileSync } from "node:fs";
+import { closeSync, copyFileSync, existsSync, mkdirSync, openSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, isAbsolute, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   checkContractPreflight,
-  commandName,
   inspectOpenCode,
   loadEnvFile,
+  resolvePythonCommand,
   runCapture,
+  compareProtectedProjectState,
+  snapshotProtectedProjectState,
   toPortablePath,
   validateCompletion,
 } from "./_router-core.mjs";
@@ -174,6 +176,7 @@ const eventsPath = resolve(runDir, "opencode-events.ndjson");
 const stderrPath = resolve(runDir, "opencode-stderr.log");
 const scanPath = resolve(runDir, "architecture-scan.log");
 copyFileSync(resolve(executorSkillRoot, "assets", "completion.schema.json"), completionSchemaPath);
+rmSync(completionPath, { force: true });
 
 const baseConfig = JSON.parse(readFileSync(routerConfigPath, "utf8"));
 const portableRunDir = toPortablePath(runDir);
@@ -186,6 +189,13 @@ const runtimePermission = {
   external_directory: {
     "*": "deny",
     [`${portableRunDir}/**`]: "allow",
+  },
+  bash: {
+    ...baseConfig.permission.bash,
+    ...Object.fromEntries(
+      [...Object.values(preflight.allValidationCommands), ...preflight.allowedExecutionCommands]
+        .map((command) => [command, "allow"]),
+    ),
   },
 };
 const runtimeConfig = {
@@ -214,6 +224,7 @@ const prompt = [
   "Work autonomously until completed, blocked, failed, or contract review is required. Do not ask questions and do not call Codex.",
   "Never edit approved contracts, AGENTS.md, .codex, .env files, Git metadata, or migration Python files.",
   "Generate migrations only with Django management commands. Do not commit, push, switch branches, or use subagents or web access.",
+  "For completed work, contract evidence must cite every exact required_tests name from the manifest and validation evidence must use each exact required command.",
   `Write the final JSON completion evidence to ${toPortablePath(completionPath)} and conform to ${toPortablePath(completionSchemaPath)}.`,
   "Write completion.json before your final response. Your process exit is the only signal that wakes the Codex orchestrator.",
 ].join("\n");
@@ -227,6 +238,8 @@ writeFileSync(resolve(runDir, "request.json"), `${JSON.stringify({
   started_at: new Date().toISOString(),
   timeout_minutes: timeoutMinutes,
 }, null, 2)}\n`, "utf8");
+
+const protectedStateBefore = snapshotProtectedProjectState(projectRoot);
 
 const childEnv = {
   ...process.env,
@@ -252,8 +265,12 @@ const run = await runQuiet(readiness.command, [
   stderrPath,
 });
 
+const protectedStateAfter = snapshotProtectedProjectState(projectRoot);
+const protectedIntegrityErrors = compareProtectedProjectState(protectedStateBefore, protectedStateAfter);
+
 const scanner = resolve(executorSkillRoot, "scripts", "scan-django-boundaries.py");
-const scan = await runCapture(commandName("python"), [scanner], { cwd: projectRoot, timeoutMs: 10 * 60_000 });
+const pythonCommand = await resolvePythonCommand();
+const scan = await runCapture(pythonCommand, [scanner], { cwd: projectRoot, timeoutMs: 10 * 60_000 });
 writeFileSync(scanPath, `${scan.stdout}${scan.stderr}`, "utf8");
 
 let completion = null;
@@ -261,7 +278,16 @@ let completionErrors = [];
 if (existsSync(completionPath)) {
   try {
     completion = JSON.parse(readFileSync(completionPath, "utf8"));
-    completionErrors = validateCompletion(completion, preflight.contractVersion);
+    completionErrors = validateCompletion(
+      completion,
+      preflight.contractVersion,
+      preflight.contractIds,
+      preflight.validationCommands,
+      preflight.contractRequiredTests,
+      taskId,
+      preflight.allValidationCommands,
+      preflight.allowedExecutionCommands,
+    );
   } catch (error) {
     completionErrors = [`completion.json is invalid JSON: ${error.message}`];
   }
@@ -272,10 +298,11 @@ if (run.timedOut) reasons.push(`OpenCode exceeded ${timeoutMinutes} minute(s)`);
 if (run.error) reasons.push(run.error);
 if (run.code !== 0) reasons.push(`OpenCode exited with code ${run.code ?? "unknown"}`);
 if (scan.code !== 0) reasons.push("deterministic Django boundary scan failed");
+reasons.push(...protectedIntegrityErrors);
 reasons.push(...completionErrors);
 
 let route = "opencode-error";
-if (completion && completionErrors.length === 0 && completion.status === "completed" && run.code === 0 && scan.code === 0) {
+if (completion && completionErrors.length === 0 && completion.status === "completed" && run.code === 0 && scan.code === 0 && protectedIntegrityErrors.length === 0) {
   route = "opencode-completed";
 } else if (completion && ["blocked", "contract-review-required"].includes(completion.status)) {
   route = "opencode-reported-blocked";
@@ -290,6 +317,10 @@ const result = {
   process: run,
   completion_status: completion?.status ?? null,
   architecture_scan_exit_code: scan.code,
+  protected_integrity: {
+    ok: protectedIntegrityErrors.length === 0,
+    errors: protectedIntegrityErrors,
+  },
   artifacts: {
     run_dir: runDir,
     request: resolve(runDir, "request.json"),

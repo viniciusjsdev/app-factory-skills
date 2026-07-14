@@ -9,3 +9,4 @@
 - [ ] The project-local backend architecture skill kit exists and the required layer skills were selected.
 - [ ] Stable product-specific behavior was assessed for a domain skill without creating skills for unresolved or generic behavior.
 - [ ] Backend implementation contract is approved before coding.
+- [ ] `backend-contract-manifest.json` has the same approved version and resolved exact service URL bindings, invariants/tests, endpoints/layers/tests, allowed `makemigrations` commands, and required validations.

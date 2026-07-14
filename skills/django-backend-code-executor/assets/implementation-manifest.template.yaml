@@ -9,6 +9,7 @@ contracts:
   security: docs/architecture/security-contract.md
   validation: docs/architecture/backend-validation-plan.md
   implementation: docs/architecture/backend-implementation-contract.md
+  machine_readable: docs/architecture/backend-contract-manifest.json
 
 scope:
   writable:
@@ -18,5 +19,14 @@ scope:
     - .env
     - .env.*
 
-validation_commands: []
+validation_commands:
+  source: docs/architecture/backend-contract-manifest.json#required_validations
+
+allowed_execution_commands:
+  source: docs/architecture/backend-contract-manifest.json#allowed_execution_commands
+
+contract_evidence:
+  source: docs/architecture/backend-contract-manifest.json#invariants
+  require_endpoint_ids: true
+
 max_attempts: 2

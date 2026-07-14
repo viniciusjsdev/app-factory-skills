@@ -11,21 +11,27 @@ const targetArgument = args.find((argument) => !argument.startsWith("--"));
 const targetRoot = path.resolve(targetArgument ?? process.cwd());
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const sourceRoot = path.resolve(scriptDirectory, "../assets/backend-project-context");
+const contractSourceRoot = path.resolve(scriptDirectory, "../assets/backend-contracts");
 let created = 0;
 let preserved = 0;
 
-if (!fs.existsSync(sourceRoot)) {
-  throw new Error(`Backend project context starter not found: ${sourceRoot}`);
+for (const [label, source] of [
+  ["Backend project context starter", sourceRoot],
+  ["Backend contract templates", contractSourceRoot],
+]) {
+  if (!fs.existsSync(source)) {
+    throw new Error(`${label} not found: ${source}`);
+  }
 }
 
-const targetInsideSource = path.relative(sourceRoot, targetRoot);
-if (
-  targetInsideSource === "" ||
-  (!targetInsideSource.startsWith("..") && !path.isAbsolute(targetInsideSource))
-) {
-  throw new Error(
-    "Target root must not be the backend project context starter or one of its descendants.",
-  );
+for (const source of [sourceRoot, contractSourceRoot]) {
+  const targetInsideSource = path.relative(source, targetRoot);
+  if (
+    targetInsideSource === "" ||
+    (!targetInsideSource.startsWith("..") && !path.isAbsolute(targetInsideSource))
+  ) {
+    throw new Error("Target root must not be a bundled backend starter or one of its descendants.");
+  }
 }
 
 if (fs.existsSync(targetRoot) && !fs.statSync(targetRoot).isDirectory()) {
@@ -60,6 +66,7 @@ function copyMissing(sourceDirectory, targetDirectory) {
 }
 
 copyMissing(sourceRoot, targetRoot);
+copyMissing(contractSourceRoot, path.join(targetRoot, "docs", "architecture"));
 console.log(
   `Backend context ${dryRun ? "previewed" : "initialized"}: ${created} created, ${preserved} preserved.`,
 );

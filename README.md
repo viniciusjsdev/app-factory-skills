@@ -49,7 +49,7 @@ Idea, PRD, or client notes
 | --- | --- | --- | --- |
 | Product | Idea, PRD, notes, screens | `product-brief-architect` | Executable PRD and implementation contracts |
 | Frontend | Product contracts | external `@sites` + `app-factory-frontend-builder` | Visible preview, React frontend, private Sites URL, mocks/adapters, tests, API handoff |
-| Backend design | Product and frontend contracts | `django-backend-service-architect` | Approved backend contracts, project context, and local architecture skill kit |
+| Backend design | Product and frontend contracts | `django-backend-service-architect` | Approved backend contracts, machine-readable manifest, project context, and local architecture skill kit |
 | Backend routing | Approved backend contracts | `app-factory-backend-router` | OpenCode delegation or automatic Codex fallback |
 | Backend implementation | Approved backend contracts | OpenCode Go or Codex using `django-backend-code-executor` | Django code, generated migrations, tests, and validation evidence |
 | Backend audit | Contracts and implementation evidence | `django-backend-service-architect` | Approval or bounded correction findings |
@@ -164,6 +164,12 @@ Use $app-factory-commercial-router to route this exact approved publish operatio
 | `django-backend-code-executor` | Approved Django implementation using scalable domain packages, explicit Mappers, DTO, Controller, Service, Repository, Configuration, and Model boundaries |
 | `app-factory-infra-orchestrator` | Docker, environment, Supabase, Vercel, container and VPS paths |
 
+## Backend contract kit
+
+`django-backend-service-architect` initializes six human-readable contracts plus `docs/architecture/backend-contract-manifest.json`. The JSON manifest deterministically maps contract version, local service ports and active Django `ROOT_URLCONF`, exact environment URL bindings, invariant IDs and exact tests, endpoint Controllers/DTOs/Mappers/Services/Repositories with exact endpoint tests, exact allowed `makemigrations` commands, and required validation commands.
+
+A complete filled example is available in [examples/backend-contracts/django-case-analysis](examples/backend-contracts/django-case-analysis). Reusable source templates and the JSON Schema live under `skills/django-backend-service-architect/assets/backend-contracts/`.
+
 ### Research Factory
 
 | Skill | Responsibility |
@@ -201,7 +207,7 @@ Sites remains an external Codex plugin. It owns preview and publication when exp
 
 - Product decisions involving permissions, compliance, billing, sensitive data, or core scope are never guessed silently.
 - Frontend components cannot access API, mocks, storage, or environment variables directly.
-- Backend planning specs, decision summary, project-local architecture skill kit, and explicit contract approval precede Django implementation.
+- Backend planning specs, approved machine-readable manifest, decision summary, project-local architecture skill kit, and explicit contract approval precede Django implementation.
 - Backend execution uses OpenCode only when its CLI, OpenCode Go credential, and configured model are ready; otherwise Codex continues automatically.
 - Domain apps use one Model/Configuration module per entity, DTO/Mapper/Controller modules per use case, repository-only ORM access, persistence-agnostic Services, opening module docstrings in every authored Python file, and Django-generated migrations.
 - Infrastructure never commits secrets or claims readiness without attempted validation.
@@ -266,6 +272,7 @@ node .\skills\app-factory-commercial-router\scripts\test-router.mjs
 node .\skills\app-factory-backend-router\scripts\opencode-doctor.mjs
 node .\skills\product-brief-architect\scripts\validate-product-contract.mjs <project-root>
 node .\skills\app-factory-frontend-builder\scripts\scan-app-factory-frontend.mjs <project-root>
+node .\skills\django-backend-service-architect\scripts\validate-backend-contract-manifest.mjs <project-root> --require-approved
 python .\skills\django-backend-service-architect\scripts\scan-django-architecture.py
 python .\skills\django-backend-code-executor\scripts\scan-django-boundaries.py
 node .\skills\app-factory-infra-orchestrator\scripts\scan-infra.mjs

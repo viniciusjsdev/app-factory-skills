@@ -1,6 +1,10 @@
 # Executor Validation Checklist
 
 - [ ] Approved implementation contract and version were verified.
+- [ ] Approved contract manifest matched the implementation contract version and contained no unresolved template values.
+- [ ] Every service URL variable targets the service and local port declared by the manifest.
+- [ ] Every manifest endpoint is wired through its exact Controller class, with no uncontracted HTTP methods or unused duplicate Controller.
+- [ ] Every manifest invariant and endpoint has its exact tests and completion evidence.
 - [ ] Required project-local architecture skills were selected and followed.
 - [ ] Changes stayed inside approved scope.
 - [ ] ORM class names use CamelCase.
@@ -16,5 +20,6 @@
 - [ ] Migrations were generated with Django commands and not manually edited.
 - [ ] DTO, mapper, service, repository, API, permission, and security tests were added as required.
 - [ ] Django checks, migration check, tests, and architecture scan were attempted.
+- [ ] Every required manifest validation was executed and reported truthfully.
 - [ ] Completion evidence conforms to the schema.
 - [ ] Failures and limitations are reported without concealment.

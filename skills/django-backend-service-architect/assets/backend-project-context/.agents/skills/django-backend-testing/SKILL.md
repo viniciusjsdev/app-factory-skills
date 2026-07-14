@@ -9,18 +9,19 @@ Validate behavior and architectural boundaries against approved contracts.
 
 ## Required Context
 
-Read `AGENTS.md`, `docs/architecture/backend-validation-plan.md`, `docs/architecture/api-contract.md`, `docs/architecture/security-contract.md`, `docs/architecture/backend-implementation-contract.md`, `.codex/references/backend-testing.md`, `.codex/references/module-documentation.md`, and `.codex/checklists/backend-validation.md`.
+Read `AGENTS.md`, `docs/architecture/backend-validation-plan.md`, `docs/architecture/api-contract.md`, `docs/architecture/security-contract.md`, `docs/architecture/backend-implementation-contract.md`, `docs/architecture/backend-contract-manifest.json`, `.codex/references/backend-testing.md`, `.codex/references/module-documentation.md`, and `.codex/checklists/backend-validation.md`.
 
 ## Workflow
 
-1. Map each approved behavior and `BR-###` rule to the correct test layer.
+1. Map every manifest invariant and endpoint ID to the correct implementation and test layer.
 2. Test DTO structure and explicit Mappers without persistence.
 3. Test Services with fake Repository contracts and no database or HTTP client.
 4. Test Repositories against the database, including ownership, queries, transactions, and persistence.
 5. Test Controllers through the API boundary, including authentication, permissions, statuses, errors, and response shape.
-6. Run Django checks, pending-migration checks, the full test suite, and the architecture scanner.
-7. Verify every authored test module has a meaningful opening docstring.
-8. Record exact commands, failures, skipped surfaces, unavailable dependencies, and limitations.
+6. Add every exact positive/negative `test_*` function required by the manifest, including zero/one/multiple cardinality and foreign-tenant cases where listed.
+7. Run every required manifest validation, Django checks, pending-migration checks, the full test suite, and the architecture scanner.
+8. Verify every authored test module has a meaningful opening docstring.
+9. Record exact commands, contract evidence, failures, skipped surfaces, unavailable dependencies, and limitations.
 
 ## Integrity Rules
 
@@ -28,5 +29,6 @@ Read `AGENTS.md`, `docs/architecture/backend-validation-plan.md`, `docs/architec
 - Do not use the database in Service tests or mock the database in Repository tests.
 - Do not treat passing tests as architectural approval; the architect/auditor owns final approval.
 - Do not conceal unavailable services, flaky behavior, or validation gaps.
+- Do not claim a required integration/browser validation passed when it was deferred or simulated.
 
 Finish only when coverage traces to contracts, boundaries are exercised, and evidence distinguishes passing, failing, and untested behavior.

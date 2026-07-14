@@ -9,7 +9,7 @@ Own every database query and persistence operation while presenting persistence-
 
 ## Required Context
 
-Read `AGENTS.md`, `docs/architecture/domain-model.md`, `docs/architecture/security-contract.md`, `docs/architecture/backend-implementation-contract.md`, `.codex/references/repository-policy.md`, `.codex/references/service-layer.md`, `.codex/references/model-configuration.md`, and `.codex/references/module-documentation.md`.
+Read `AGENTS.md`, `docs/architecture/domain-model.md`, `docs/architecture/security-contract.md`, `docs/architecture/backend-implementation-contract.md`, `docs/architecture/backend-contract-manifest.json`, `.codex/references/repository-policy.md`, `.codex/references/service-layer.md`, `.codex/references/model-configuration.md`, and `.codex/references/module-documentation.md`.
 
 Require an approved implementation contract. Stop if actor, tenant, ownership, transaction, consistency, or query semantics are unresolved.
 
@@ -20,7 +20,8 @@ Require an approved implementation contract. Stop if actor, tenant, ownership, t
 3. Implement ORM/record conversion in repository-local Mappers without queries or writes.
 4. Implement all reads and writes in Django Repository adapters.
 5. Apply actor, tenant, ownership, ordering, pagination, locking, and transaction constraints from the contracts.
-6. Add meaningful opening module docstrings and focused database-backed Repository tests.
+6. Implement manifest cardinality invariants explicitly; distinguish zero, one, and multiple matches instead of hiding multiple rows with `.first()`.
+7. Add meaningful opening module docstrings and every exact database-backed Repository test named by the manifest.
 
 ## Boundaries
 

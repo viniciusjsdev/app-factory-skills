@@ -16,15 +16,15 @@ Builds the complete React/TypeScript frontend from product contracts. In the vis
 
 ### django-backend-service-architect
 
-Creates backend planning, security, validation, and implementation contracts, materializes project context/architecture skills, and audits completed code. It does not implement.
+Creates backend planning, security, validation, and implementation contracts plus the machine-readable service/invariant/endpoint/validation manifest, materializes project context/architecture skills, and audits completed code with ID-level traceability. It does not implement.
 
 ### app-factory-backend-router
 
-Routes an approved backend contract to OpenCode Go when ready or Codex as fallback. It does not define or approve backend architecture.
+Routes an approved matching backend contract/manifest version to OpenCode Go when ready or Codex as fallback and validates structured per-ID completion evidence. It does not define or approve backend architecture.
 
 ### django-backend-code-executor
 
-Implements an approved Django contract with explicit Model/Configuration, DTO/Mapper, Controller, Service, Repository, migrations, and tests.
+Implements an approved Django contract/manifest with explicit Model/Configuration, DTO/Mapper, Controller, Service, Repository, migrations, exact invariant and endpoint tests, exact allowed migration-generation commands, required validations, and structured evidence.
 
 ### app-factory-infra-orchestrator
 

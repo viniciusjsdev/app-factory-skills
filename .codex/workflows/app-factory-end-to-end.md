@@ -8,10 +8,10 @@ This workflow is the standalone MVP Factory. Do not insert Research Factory or M
 4. Invoke `@sites` together with `$app-factory-frontend-builder`: Sites owns preview/private publication, while the frontend skill is the mandatory stack, architecture, security, and quality contract.
 5. Validate frontend behavior, architecture, npm supply chain, tests, and build without installing Sites as an application dependency.
 6. Route backend planning, project-context enrichment, and local architecture-kit materialization to `django-backend-service-architect`.
-7. Require explicit approval of `docs/architecture/backend-implementation-contract.md`.
+7. Require matching explicit approval and contract version in `docs/architecture/backend-implementation-contract.md` and the strict `docs/architecture/backend-contract-manifest.json` (exact URLs, invariant/endpoint tests, allowed migration-generation commands, and validations), then run the manifest validator with `--require-approved`.
 8. Invoke `app-factory-backend-router`; use OpenCode Go only when its CLI, credential, and configured model are ready, otherwise continue with Codex.
 9. Require the selected engine to follow `django-backend-code-executor` and the matching generated-project layer skills. When OpenCode runs, wait passively for its single completion/error exit and do not poll or narrate progress.
-10. Return implementation evidence and the deterministic boundary scan to `django-backend-service-architect` for contract audit.
+10. Return implementation evidence and the deterministic boundary scan to `django-backend-service-architect` for independent ID-level contract audit.
 11. Route only audited backend output to `app-factory-infra-orchestrator`.
 12. Return the Sites preview/publication result when that plugin was invoked and report every validation gap honestly.
 

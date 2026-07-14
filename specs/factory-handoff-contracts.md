@@ -28,7 +28,7 @@ Producer: `django-backend-service-architect`
 
 Consumer: `app-factory-backend-router`, then OpenCode Go or Codex using `django-backend-code-executor`
 
-Required output: explicitly approved backend implementation contract, domain/API/security/validation contracts, resolved project-root `.codex` backend context, compact `.agents/skills/` architecture kit, scalable per-domain package/module map, explicit mapper responsibilities, authored-module documentation policy, writable scope, migration policy, and layered test expectations.
+Required output: explicitly approved backend implementation contract, domain/API/security/validation contracts, matching approved `backend-contract-manifest.json`, resolved project-root `.codex` backend context, compact `.agents/skills/` architecture kit, scalable per-domain package/module map, service/active-URLconf/exact-environment topology, invariant-to-test map, exact endpoint/layer/test map, exact allowed migration-generation commands, explicit mapper responsibilities, authored-module documentation policy, writable scope, migration policy, and layered test expectations.
 
 Routing rule: use OpenCode only when its CLI, OpenCode Go credential, and configured model are ready. Otherwise continue with Codex without changing the approved contract. OpenCode execution waits passively and emits one final completion/error result; no executor configuration enters the generated project's `.codex/`.
 
@@ -38,7 +38,7 @@ Producer: `django-backend-code-executor`
 
 Consumer: `django-backend-service-architect`
 
-Required output: Django implementation with meaningful opening docstrings in every authored Python module, untouched Django-generated migrations, layered tests including mapper coverage, command results, architecture scan, changed-file manifest, contract deviations, and unresolved items.
+Required output: Django implementation with meaningful opening docstrings in every authored Python module, untouched Django-generated migrations, layered tests including mapper coverage, command results, architecture scan, changed-file manifest, contract evidence for every invariant/endpoint ID, validation evidence for every required validation ID, validation limitations, contract deviations, and unresolved items.
 
 ## Backend to infrastructure
 

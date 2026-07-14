@@ -11,7 +11,7 @@ Keep Codex responsible for orchestration and contract audit while delegating hea
 
 ## Required Gate
 
-Require all six backend contracts and approved frontmatter in `docs/architecture/backend-implementation-contract.md`:
+Require all six human-readable backend contracts, approved frontmatter in `docs/architecture/backend-implementation-contract.md`, and an approved matching `docs/architecture/backend-contract-manifest.json` with no unresolved template values:
 
 ```yaml
 ---
@@ -52,9 +52,10 @@ OpenCode is optional. Explicit `--executor opencode` changes unavailability from
 - Load `django-backend-code-executor` and its references as runtime instructions without placing them in the target project's `.codex/`.
 - Use the model in `APP_FACTORY_OPENCODE_MODEL`, falling back to `opencode-go/kimi-k2.7-code`.
 - Apply the router's bundled `assets/opencode.backend.json` through inline runtime configuration so target-project settings cannot weaken the factory guardrails; keep it synchronized with the App Factory root `opencode.json`.
-- Auto-approve only within explicit denies for secrets, approved contracts, migrations, destructive Git operations, external web access, and subagents.
+- Auto-approve only within the default-deny shell policy and explicit denies for secrets, approved contracts, migration-file edits, destructive Git operations, external web access, and subagents. Permit generated migrations only through approved Django management commands.
 - Never pass an API key in arguments, prompts, result files, `.env`, or committed configuration.
 - Store execution artifacts in the operating system temporary directory and return their paths to Codex.
+- Snapshot and compare protected contracts, project instructions/context, environment files, target OpenCode config, and pre-existing migrations across the run; any integrity change blocks completion.
 - Run the deterministic Django boundary scanner after OpenCode exits.
 - Treat process exit as the wake-up event; do not require an LLM-based watcher.
 

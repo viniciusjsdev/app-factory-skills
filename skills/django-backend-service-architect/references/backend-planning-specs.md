@@ -11,9 +11,28 @@ docs/architecture/api-contract.md
 docs/architecture/security-contract.md
 docs/architecture/backend-validation-plan.md
 docs/architecture/backend-implementation-contract.md
+docs/architecture/backend-contract-manifest.json
 ```
 
 Preserve equivalent existing paths and record the mapping in `backend-plan.md`.
+
+Start missing files from `assets/backend-contracts/`. Resolve every placeholder before approval. Keep the Markdown contracts human-readable and keep `backend-contract-manifest.json` as the canonical deterministic map consumed by the router, executor, and architecture scanner.
+
+## Contract manifest
+
+Use `assets/backend-contracts/backend-contract-manifest.schema.json`. Record:
+
+- the same positive `contract_version` and approval status as the implementation contract;
+- every local service ID, runtime, port, and Django `ROOT_URLCONF` (or `null` for non-Django services);
+- every environment URL variable, its target service, role, exact approved example URL, and example env file;
+- every stable invariant ID, statement, enforcement boundaries, and exact required `test_*` names;
+- every endpoint ID, method, path, exact Controller class, request/response DTOs, Mapper, Service, Repository contracts, and exact required `test_*` names;
+- every exact project-specific `makemigrations` command the executor may run;
+- every required validation ID, kind, exact command, and whether it blocks approval.
+
+Do not use prose-only topology, endpoint, or invariant decisions when the same fact belongs in the manifest.
+
+Run `scripts/validate-backend-contract-manifest.mjs` while planning and again with `--require-approved` after explicit approval. Do not route an invalid or version-mismatched manifest.
 
 ## Backend plan
 
@@ -45,7 +64,7 @@ Include auth mode, object-level authorization, CORS, throttling, sensitive-data 
 
 ## Validation plan
 
-Include unit, repository, API, permission, module-docstring, migration-generation, architecture-scan, and integration checks. Name the exact commands where the project defines them.
+Include unit, repository, API, permission, module-docstring, migration-generation, architecture-scan, and integration checks. Name the exact commands where the project defines them. Trace every manifest invariant and endpoint to exact test names and every required validation to an approval outcome.
 
 ## Implementation contract
 

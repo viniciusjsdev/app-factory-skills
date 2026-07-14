@@ -2,10 +2,10 @@
 
 Never create, write, patch, or manually edit migration Python code.
 
-Use:
+Use the exact project-specific generation command listed in `backend-contract-manifest.json#allowed_execution_commands`, then the exact required migration validation commands. For example:
 
 ```bash
-python manage.py makemigrations <app_label>
+python manage.py makemigrations billing
 python manage.py makemigrations --check --dry-run
 python manage.py migrate
 python manage.py showmigrations
