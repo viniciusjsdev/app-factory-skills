@@ -20,8 +20,11 @@ Supported paths:
 - native Python web service
 - Docker web service
 - `render.yaml` Blueprint
+- Terraform with the official `render-oss/render` provider
 
 Prefer Docker when the project already has production Dockerfiles or needs reproducible OS-level dependencies. Prefer native Python runtime when the backend is simple and the project wants the fastest Render setup.
+
+Prefer Terraform when the approved infrastructure decision coordinates Render with Vercel and Supabase in one stateful declarative workflow. Do not manage the same Render service with both Terraform and `render.yaml`.
 
 ## Django Requirements
 
@@ -63,7 +66,7 @@ Render can pass service env vars as Docker build args. Do not reference build ar
 
 ## Blueprints
 
-Use `render.yaml` when the project wants infrastructure-as-code.
+Use `render.yaml` when the project selects provider-native Render Blueprint IaC instead of Terraform for that service.
 
 Rules:
 
@@ -72,6 +75,18 @@ Rules:
 - use `generateValue: true` for generated secrets when appropriate
 - do not hardcode API keys, database passwords or service role keys
 - document that `sync: false` values are prompted during initial Blueprint creation and may need manual updates later
+
+## Terraform
+
+When Terraform is selected:
+
+- use the official `render-oss/render` provider and pin a reviewed compatible version
+- import existing services by service ID before reconciling them
+- configure the backend root/Dockerfile path, build/start/pre-deploy commands, health check and custom domains supported by the pinned provider
+- use provider authentication environment variables or an approved CI secret store
+- keep secrets out of committed HCL and recognize that Terraform-managed secret values remain in state
+- record `render.yaml` resources as separate ownership or remove the duplicate management path
+- review replacement, plan/billing and domain changes before apply
 
 ## Database Choice
 

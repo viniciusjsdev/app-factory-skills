@@ -7,6 +7,8 @@ Use this target shape for App Factory monorepos:
   frontend/
   backend/
   supabase/
+  infra/
+    terraform/
   docs/
   .agents/skills/
   .codex/
@@ -25,7 +27,7 @@ Create only what is useful for the current project. Do not invent a backend, Sup
 
 - Local/full Docker: run frontend, backend and optional local db together.
 - Cloud split: Vercel for frontend, backend container on a compatible host, Supabase as managed services.
+- Declarative cloud split: Terraform coordinates selected Render, Vercel and Supabase resources from `infra/terraform/` while Docker Compose remains local-only.
 - VPS/full-stack: run frontend static server, backend and database/proxy as containers when the user chooses VPS deployment.
 
-Document which mode is active.
-
+Document which mode is active. Create `infra/terraform/` only when Terraform is explicitly selected, and declare one owner for every cloud resource it manages.

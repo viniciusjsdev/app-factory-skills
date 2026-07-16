@@ -22,6 +22,18 @@ Vercel can auto-detect install and build settings for supported frontend framewo
 
 Create `frontend/vercel.json` only when the project needs custom rewrites, headers, framework settings or other explicit Vercel project configuration.
 
+## Terraform
+
+When Terraform is selected, use the official `vercel/vercel` provider to manage only the approved project, Git repository link, `frontend` root, build settings, domains and environment variables.
+
+- Pin a reviewed compatible provider version and commit the Terraform lockfile.
+- Import an existing Vercel project before managing it.
+- Require the human owner to authorize the Vercel GitHub integration before linking a GitHub repository.
+- Prefer Git-triggered deployments; do not create a Terraform deployment for every application build unless explicitly requested.
+- Use one environment-variable resource style consistently; do not manage the same variable both inline and through standalone Terraform resources.
+- Scope variables to Development, Preview and Production and mark secrets sensitive, while recognizing they still exist in Terraform state.
+- Keep `VERCEL_API_TOKEN` in the environment or an approved secret store, never in committed files.
+
 ## Backend Boundary
 
 Do not deploy Django backend as if it were a Vercel frontend project.

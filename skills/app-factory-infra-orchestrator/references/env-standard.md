@@ -52,6 +52,10 @@ Secrets that must stay server-side:
 - `SUPABASE_SERVICE_ROLE_KEY`
 - provider API keys
 
+Terraform provider authentication must come from the operator environment or an approved CI secret store. Document names such as `RENDER_API_KEY`, `RENDER_OWNER_ID` and `VERCEL_API_TOKEN` without putting values in `.env.example`, HCL or committed `.tfvars`. Supply the Supabase provider access token through an approved secret source.
+
+Terraform `sensitive` values are redacted from normal CLI output but still exist in state. Require encrypted, access-controlled remote state before Terraform manages provider environment variables that contain secrets; otherwise leave those bindings dashboard-managed and document them.
+
 Vercel Development, Preview and Production environments should be documented separately. Pulling Vercel env vars locally can create `.env` files; these must remain ignored when they contain real values.
 
 Render backend environments should document required service variables separately from frontend variables:

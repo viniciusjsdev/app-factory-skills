@@ -24,11 +24,26 @@ On untrusted public networks, document binding the local Supabase stack to local
 
 For Django-backed products:
 
-- Django migrations can own backend domain tables.
+- Django migrations own backend domain tables by default.
 - Supabase migrations can own Auth/Storage/RLS-specific SQL.
-- Supabase can also be the source of truth for all SQL schema, but document that decision.
+- Supabase can become the source of truth for other SQL schema only after an explicit approved ownership decision.
 
 Do not mix schema ownership silently.
+
+Terraform may manage the Supabase project, supported project settings and branches, but it must not own Django domain tables, run ORM migrations or apply application DDL. Do not introduce a PostgreSQL Terraform provider, SQL resources or shell provisioners for backend domain schema unless the approved schema-ownership contract explicitly changes.
+
+## Terraform
+
+When Terraform is selected:
+
+- use the official `supabase/supabase` provider and pin a reviewed compatible version
+- import an existing project before managing it
+- reproduce current organization, region, plan/instance and supported settings before proposing changes
+- protect production resources from accidental destruction where supported
+- treat region, replacement and billing changes as explicit approval gates
+- keep database passwords, connection strings, service-role keys and access tokens out of committed HCL and example files
+- remember that sensitive provider inputs can remain in Terraform state
+- use Terraform branches only when the selected Supabase plan and environment strategy support them
 
 ## Production Readiness
 

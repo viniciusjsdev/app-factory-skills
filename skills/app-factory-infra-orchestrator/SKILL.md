@@ -1,6 +1,6 @@
 ---
 name: app-factory-infra-orchestrator
-description: Use this skill when creating or normalizing App Factory infrastructure for a monorepo with frontend, backend, Docker, Docker Compose, Supabase and Vercel. It creates root Docker orchestration, frontend/backend Dockerfiles, env examples, Supabase migration structure, Vercel configuration guidance and validation commands. Do not use this skill for frontend UI refactors or backend business logic.
+description: Use this skill when creating or normalizing App Factory infrastructure for a monorepo with frontend, backend, Docker, Docker Compose, Terraform, Render, Supabase and Vercel. It creates local container orchestration, provider-scoped Terraform for declarative cloud infrastructure, frontend/backend Dockerfiles, environment contracts, deployment guidance and validation commands. Do not use this skill for frontend UI refactors or backend business logic.
 ---
 
 # App Factory Infra Orchestrator
@@ -9,12 +9,13 @@ description: Use this skill when creating or normalizing App Factory infrastruct
 
 Create and normalize infrastructure for App Factory projects.
 
-The standard repository has:
+The standard repository may have:
 
 ```txt
 frontend/
 backend/
 supabase/
+infra/terraform/
 docs/
 .agents/skills/
 .codex/
@@ -28,9 +29,11 @@ README.md
 
 ## Core Principle
 
-Local must be easy. Production must be explicit. Vercel must not be confused with a generic Docker host.
+Local must be easy. Production and infrastructure ownership must be explicit. Vercel must not be confused with a generic Docker host.
 
 Use Docker for local orchestration and backend deployability. Use Vercel for frontend deployment from `/frontend`. Use Supabase for managed Postgres/Auth/Storage when configured. Use Render as a supported backend hosting option when the project needs managed Django web service hosting without managing a VPS.
+
+Use Terraform when the project wants Render, Vercel and Supabase resources coordinated through one declarative workflow. Terraform is optional, must not take over an existing resource silently, and must not share management of the same resource with a provider-native manifest or dashboard workflow.
 
 Do not promise one production path. Support local/full Docker, VPS/full-stack container deployment, Vercel-native frontend deployment, backend container deployment on Render or similar hosts, Render native Python deployment when appropriate, and Supabase-managed services.
 
@@ -54,6 +57,17 @@ Use for common MVP deployment:
 - backend on Render, VPS, Railway, Fly.io or compatible host
 - Supabase as managed Postgres/Auth/Storage
 
+### Declarative Cloud Split
+
+Use when Terraform is requested or the approved infrastructure decision selects it:
+
+- Terraform root under `infra/terraform/`
+- official `render-oss/render`, `vercel/vercel` and `supabase/supabase` providers only when each platform is used
+- one declared owner for every managed resource
+- imports for existing resources before reconciliation
+- remote state for shared or production environments
+- reviewed `terraform plan` before any explicitly approved apply
+
 ## Load References
 
 Read the relevant references before changing files:
@@ -65,6 +79,7 @@ Read the relevant references before changing files:
 - `references/supabase-standard.md`
 - `references/vercel-standard.md`
 - `references/render-standard.md`
+- `references/terraform-standard.md` when Terraform is selected or requested
 - `references/env-standard.md`
 - `references/validation-checklist.md`
 
@@ -79,6 +94,8 @@ Expected root:
   frontend/
   backend/
   supabase/
+  infra/
+    terraform/
   docs/
   .agents/
     skills/
@@ -170,7 +187,8 @@ Supported Render backend paths:
 
 - native Python web service
 - Docker web service built from `backend/Dockerfile.prod`
-- `render.yaml` Blueprint when the project wants infrastructure-as-code
+- `render.yaml` Blueprint when the project selects provider-native Render IaC
+- Terraform-managed web service when cross-provider declarative infrastructure is selected
 
 For Django on Render, document:
 
@@ -189,6 +207,8 @@ For Django on Render, document:
 - environment groups and secret handling
 
 If generating `render.yaml`, never hardcode secrets. Use `sync: false`, `generateValue: true`, Render environment groups, or dashboard-managed values for secrets.
+
+Do not manage the same Render service with both Terraform and `render.yaml`. Record which mechanism owns each service and import an existing service before Terraform manages it.
 
 Do not put Render-only assumptions into local Docker Compose. Keep Render deployment docs separate from local development docs.
 
@@ -242,7 +262,7 @@ Use Supabase when the product needs managed Postgres, Auth, Storage, Realtime or
 For Django-backed products:
 
 - Django can connect to Supabase Postgres through `DATABASE_URL`.
-- Django migrations can remain the source of truth for backend-owned domain tables.
+- Django migrations own backend domain tables by default.
 - Supabase migrations can be used for Auth/Storage/RLS-specific resources.
 - If Supabase SQL migrations are the source of truth for all schema, document that decision clearly.
 
@@ -282,6 +302,23 @@ Frontend variables prefixed with `VITE_` are exposed to browser code at build/ru
 
 Do not configure backend Django as a Vercel frontend deployment. Vercel supports Django through Vercel Functions, but that is an explicit alternative path with function/runtime limitations and a separate migration/static-file strategy. The App Factory default is to prepare Django as a container for a container-friendly host.
 
+## Terraform Standard
+
+When Terraform is selected, create a provider-scoped root under `infra/terraform/` and follow `references/terraform-standard.md`.
+
+Required decisions before generation:
+
+- environments and account/team/organization ownership
+- create vs import for each Render, Vercel and Supabase resource
+- one management source per resource
+- state backend, locking, encryption and access for shared/production state
+- which non-secret values Terraform wires across providers
+- which secrets remain in provider dashboards or an approved secret store
+
+For Django-backed Supabase projects, keep domain tables under Django migrations by default. Terraform may manage Supabase projects, settings and branches, but must not run Django migrations, issue domain DDL, or introduce a PostgreSQL provider to own application tables unless an explicit schema-ownership decision changes that boundary.
+
+Generate and review configuration through `fmt`, `init`, `validate` and `plan`. Never run `terraform apply`, `destroy`, state mutation or live imports without explicit approval. Treat plan files and state as sensitive artifacts.
+
 ## Makefile Standard
 
 Create root `Makefile` with commands:
@@ -320,6 +357,8 @@ prod-build:
 
 Use npm for frontend commands unless the project has a documented package-manager exception. Adapt backend commands to the available backend tooling.
 
+When Terraform is selected, also add safe convenience targets for `terraform-fmt`, `terraform-init-local`, `terraform-validate` and `terraform-plan`. Do not add an unattended apply/destroy target.
+
 ## Documentation
 
 Create or update:
@@ -334,6 +373,8 @@ README.md
 Docs must explain how to run locally, stop containers, run migrations, run tests, connect frontend/backend, connect backend/Supabase/Postgres, configure Vercel, required env vars, and what is local-only vs production.
 
 If Render is chosen or requested, docs must also explain how the Django backend is deployed on Render, whether it uses Docker or native Python runtime, how migrations run, how env vars are configured, and how Vercel frontend CORS/API URLs point to the Render backend.
+
+If Terraform is selected, docs must also include a resource ownership matrix, create/import decisions, state backend and recovery process, provider authentication names without credential values, plan/apply approval flow, migration ownership, and any intentionally dashboard-managed settings.
 
 ## Validation Workflow
 
@@ -367,6 +408,24 @@ If Supabase CLI is configured:
 supabase status
 ```
 
+If Terraform is configured:
+
+```bash
+terraform -chdir=infra/terraform fmt -check -recursive
+terraform -chdir=infra/terraform init -backend=false
+terraform -chdir=infra/terraform validate
+terraform -chdir=infra/terraform providers
+```
+
+After remote state and authentication are approved:
+
+```bash
+terraform -chdir=infra/terraform init -reconfigure
+terraform -chdir=infra/terraform plan -detailed-exitcode
+```
+
+Run authenticated planning only when credentials and a safe state decision are available. Interpret detailed exit code `0` as no changes, `2` as planned changes and `1` as failure. Review every create, update, replacement and destroy before requesting apply approval.
+
 Do not claim infra works unless validation was attempted.
 
 ## Architecture Scan
@@ -379,7 +438,7 @@ node scripts/scan-infra.mjs
 
 or the installed skill script path from the target project.
 
-The script should check root Compose, frontend/backend Dockerfiles, env examples, obvious secrets, Makefile, docs, Vercel guidance and Supabase structure when applicable.
+The script should check root Compose, frontend/backend Dockerfiles, env examples, obvious secrets, Makefile, docs, Vercel guidance, Supabase structure and Terraform ownership/state hygiene when applicable.
 
 ## Definition of Done
 
@@ -395,7 +454,12 @@ Work is done only when:
 - Supabase structure exists when applicable
 - Vercel deployment guidance exists when frontend exists
 - Render deployment guidance exists when Render is chosen or requested
+- Terraform root, provider pins, lockfile, ownership documentation and state hygiene exist when Terraform is selected
+- existing cloud resources are imported rather than recreated when Terraform adopts them
+- no Render service is jointly managed by Terraform and `render.yaml`
+- Django migrations remain the owner of backend domain tables unless an explicit approved decision says otherwise
 - Makefile exists
 - docs are updated
 - Docker config/build/up validation was attempted
+- Terraform fmt/init/validate and a safe plan were attempted when Terraform is selected
 - failures are reported honestly

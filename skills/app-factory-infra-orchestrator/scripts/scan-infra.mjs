@@ -20,6 +20,30 @@ function read(relativePath) {
   }
 }
 
+function listFiles(relativeDirectory, predicate) {
+  const absoluteDirectory = path.join(root, relativeDirectory);
+  if (!fs.existsSync(absoluteDirectory)) return [];
+
+  const files = [];
+  const ignoredDirectories = new Set([".git", ".terraform", "node_modules", ".venv", "venv"]);
+
+  function visit(absolutePath) {
+    for (const entry of fs.readdirSync(absolutePath, { withFileTypes: true })) {
+      if (entry.isDirectory() && ignoredDirectories.has(entry.name)) continue;
+      const entryPath = path.join(absolutePath, entry.name);
+      if (entry.isDirectory()) {
+        visit(entryPath);
+      } else {
+        const relativePath = path.relative(root, entryPath).replaceAll("\\", "/");
+        if (predicate(relativePath)) files.push(relativePath);
+      }
+    }
+  }
+
+  visit(absoluteDirectory);
+  return files;
+}
+
 function warnMissing(file, reason) {
   if (!exists(file)) warnings.push(`${file} missing: ${reason}`);
 }
@@ -38,6 +62,14 @@ function hasObviousSecret(content) {
     /DJANGO_SECRET_KEY\s*=\s*(?!$|change-me|example|your-|<|REPLACE|xxx)[^\s#]+/i,
     /DATABASE_URL\s*=\s*postgres(?:ql)?:\/\/(?!postgres:postgres@db|user:password|example|<|REPLACE)[^\s#]+/i,
     /(?:API_KEY|TOKEN|SECRET)\s*=\s*(?!$|change-me|example|your-|<|REPLACE|xxx)[^\s#]+/i,
+  ];
+  return patterns.some((pattern) => pattern.test(content));
+}
+
+function hasHardcodedTerraformSecret(content) {
+  const patterns = [
+    /(?:RENDER_API_KEY|VERCEL_API_TOKEN|SUPABASE_ACCESS_TOKEN|SUPABASE_SERVICE_ROLE_KEY)\s*=\s*"(?!change-me|example|your-|<|REPLACE|xxx)[^"]+"/i,
+    /(?:api_key|api_token|access_token|database_password|service_role_key)\s*=\s*"(?!change-me|example|your-|<|REPLACE|xxx)[^"]+"/i,
   ];
   return patterns.some((pattern) => pattern.test(content));
 }
@@ -154,6 +186,94 @@ function checkSupabase() {
   }
 }
 
+function checkTerraform() {
+  const docsText = `${read("README.md")}\n${read("docs/architecture/infra-architecture.md")}\n${read("docs/architecture/deploy.md")}`.toLowerCase();
+  const terraformRoot = "infra/terraform";
+  const terraformSelected = exists(terraformRoot);
+
+  if (!terraformSelected) {
+    if (docsText.includes("terraform")) {
+      warnings.push("Terraform is documented but infra/terraform is missing.");
+    }
+    return;
+  }
+
+  for (const file of ["versions.tf", "providers.tf", "variables.tf", "outputs.tf"]) {
+    warnMissing(`${terraformRoot}/${file}`, "Terraform root contract is incomplete");
+  }
+  warnMissing(`${terraformRoot}/.terraform.lock.hcl`, "provider selections should be locked and committed");
+
+  const terraformFiles = listFiles(terraformRoot, (file) => file.endsWith(".tf") || file.endsWith(".tfvars") || file.endsWith(".tfvars.example"));
+  const terraformText = terraformFiles.map((file) => read(file)).join("\n");
+  const normalizedTerraformText = terraformText.toLowerCase();
+
+  if (!normalizedTerraformText.includes("required_providers")) {
+    warnings.push("Terraform should declare required_providers with bounded version constraints.");
+  }
+  const providerVersionConstraints = [...read(`${terraformRoot}/versions.tf`).matchAll(/version\s*=\s*"([^"]+)"/gi)].map((match) => match[1]);
+  if (!providerVersionConstraints.length) {
+    warnings.push("Terraform providers should use reviewed bounded version constraints.");
+  }
+  for (const constraint of providerVersionConstraints) {
+    if (/^\s*>=/.test(constraint) && !/[<~]/.test(constraint)) {
+      warnings.push(`Terraform provider constraint "${constraint}" is not bounded against unreviewed major upgrades.`);
+    }
+  }
+  const managesRender = /render-oss\/render|provider\s+"render"|resource\s+"render_/i.test(terraformText);
+  const managesVercel = /vercel\/vercel|provider\s+"vercel"|resource\s+"vercel_/i.test(terraformText);
+  const managesSupabase = /supabase\/supabase|provider\s+"supabase"|resource\s+"supabase_/i.test(terraformText);
+
+  if (managesRender && !/source\s*=\s*"render-oss\/render"/i.test(terraformText)) {
+    warnings.push("Terraform mentions Render without the official render-oss/render provider source.");
+  }
+  if (managesVercel && !/source\s*=\s*"vercel\/vercel"/i.test(terraformText)) {
+    warnings.push("Terraform mentions Vercel without the official vercel/vercel provider source.");
+  }
+  if (managesSupabase && !/source\s*=\s*"supabase\/supabase"/i.test(terraformText)) {
+    warnings.push("Terraform mentions Supabase without the official supabase/supabase provider source.");
+  }
+
+  if (exists("render.yaml") && /resource\s+"render_web_service"/i.test(terraformText)) {
+    warnings.push("render.yaml and Terraform Render web services coexist; document distinct ownership and verify no service is managed twice.");
+  }
+  if (exists("backend") && /resource\s+"postgresql_|resource\s+"null_resource"|local-exec/i.test(terraformText)) {
+    warnings.push("Terraform contains PostgreSQL or provisioner resources; verify Django domain tables and migrations remain outside Terraform.");
+  }
+
+  for (const file of terraformFiles) {
+    if (hasHardcodedTerraformSecret(read(file))) {
+      errors.push(`${file}: contains a Terraform value that looks like a hardcoded provider or database secret.`);
+    }
+  }
+
+  const sensitiveArtifacts = listFiles(terraformRoot, (file) =>
+    /(?:^|\/)(?:terraform\.tfstate(?:\..+)?|[^/]+\.tfstate(?:\..+)?|[^/]+\.tfplan|terraform\.tfvars|[^/]+\.auto\.tfvars|crash(?:\.[^/]+)?\.log)$/i.test(file),
+  );
+  for (const file of sensitiveArtifacts) {
+    warnings.push(`${file}: local state, plan, crash log or secret variable file must remain ignored and uncommitted.`);
+  }
+
+  const gitignore = read(".gitignore");
+  for (const pattern of [".terraform/", "*.tfstate", "*.tfstate.*", "*.tfplan", "*.auto.tfvars", "terraform.tfvars"]) {
+    if (!gitignore.includes(pattern)) {
+      warnings.push(`.gitignore should include ${pattern} for Terraform hygiene.`);
+    }
+  }
+
+  if (!docsText.includes("ownership") && !docsText.includes("owner")) {
+    warnings.push("Terraform docs should include a resource ownership matrix.");
+  }
+  if (!docsText.includes("import")) {
+    warnings.push("Terraform docs should record create/import decisions for existing resources.");
+  }
+  if (!docsText.includes("state")) {
+    warnings.push("Terraform docs should explain remote state, access and recovery.");
+  }
+  if (!docsText.includes("plan") || !docsText.includes("apply")) {
+    warnings.push("Terraform docs should explain the reviewed plan and explicit apply approval flow.");
+  }
+}
+
 function printResults() {
   console.log("App Factory infra scan");
   console.log("======================");
@@ -185,5 +305,6 @@ if (isSkillCatalogRepository()) {
   checkVercel();
   checkRender();
   checkSupabase();
+  checkTerraform();
   process.exitCode = printResults();
 }
